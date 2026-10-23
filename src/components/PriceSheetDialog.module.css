@@ -1,0 +1,171 @@
+/*
+ * Окно листа прайса: лист тёплой бумаги над страницей (предмет поверх страницы — мягкая тень
+ * «ярлык»), вокруг — фарфоровая дымка. Шапка с заголовком дидоном и крестиком из двух линий,
+ * ведомость прокручивается внутри листа, внизу — «Записаться» над латунным волоском.
+ * Телефон — окно во весь экран; от 900 px — лист по центру, не выше экрана.
+ */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: grid;
+  place-items: stretch;
+  background: color-mix(in srgb, var(--color-porcelain) 84%, transparent);
+  overscroll-behavior: contain;
+  cursor: zoom-out;
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 100vh;
+  max-height: 100dvh;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  cursor: auto;
+}
+
+/* намётка: чернильный волосок на отступе от края листа */
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: var(--hairline) solid var(--color-ink);
+  pointer-events: none;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--target-min);
+  align-items: start;
+  gap: var(--space-4);
+  margin: 0 7px;
+  padding: var(--space-6) var(--space-3) var(--space-4) calc(var(--space-5) - 7px);
+  border-bottom: var(--hairline) solid var(--color-brass);
+}
+
+.title {
+  max-width: 24ch;
+  font-family: var(--font-didone);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  scrollbar-color: var(--color-brass) var(--color-paper);
+}
+
+.body:focus-visible {
+  outline-offset: -6px;
+}
+
+.notes {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.note {
+  max-width: 62ch;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+}
+
+.foot {
+  display: flex;
+  justify-content: flex-start;
+  margin: 0 7px;
+  padding: var(--space-3) calc(var(--space-5) - 7px) var(--space-5);
+  border-top: var(--hairline) solid var(--color-brass);
+}
+
+.call {
+  font-size: var(--text-md);
+}
+
+/* крестик — две волосяные линии, цель нажатия 44 px */
+.close {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--target-min);
+  height: var(--target-min);
+  margin-top: calc(-1 * var(--space-3));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.cross {
+  position: relative;
+  width: 26px;
+  height: 26px;
+}
+
+.cross::before,
+.cross::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 1.5px;
+  background: currentColor;
+}
+
+.cross::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cross::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@media (min-width: 900px) {
+  .backdrop {
+    place-items: center;
+    padding: var(--space-6) var(--gutter);
+  }
+
+  .panel {
+    width: min(100%, 1080px);
+    max-height: calc(100vh - 2 * var(--space-6));
+    max-height: calc(100dvh - 2 * var(--space-6));
+    box-shadow: 0 22px 44px -22px rgb(var(--color-shadow) / 0.55);
+  }
+
+  .panel::after {
+    inset: 10px;
+  }
+
+  .head,
+  .foot {
+    margin: 0 10px;
+  }
+
+  .head {
+    padding: var(--space-7) calc(var(--space-6) - 10px) var(--space-5) calc(var(--space-7) - 10px);
+  }
+
+  .body {
+    padding: var(--space-6) var(--space-7) var(--space-6);
+  }
+
+  .foot {
+    padding: var(--space-4) calc(var(--space-7) - 10px) var(--space-6);
+  }
+}

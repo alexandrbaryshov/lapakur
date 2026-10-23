@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+__pycache__/
+.DS_Store
+*.log
+.autopilot/serve.*
+
+# исходники пользователя (AGENTS.md → «Где что») — в публичный репозиторий не выкладываются
+/product.md
+/лого студии.jpg
+/prices/
+/dogs-foto-live/
+/lapakur referenses/

@@ -1,0 +1,206 @@
+/*
+ * Фотоэссе работ на фарфоре: кадры разного размера вразбежку, каждый — в рамке-намётке
+ * (волосяная линия чернилами на отступе, как наметочная нить ателье), подпись породы
+ * разреженными капителями. Телефон — две колонки со сдвигом, крупные кадры во всю ширину;
+ * от 900 px — 12 колонок, место каждого кадра задано в data-slot.
+ */
+
+.section {
+  position: relative;
+  padding: var(--space-9) var(--gutter) var(--space-9);
+  --key-gap: 7px;
+}
+
+.essay {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--space-5);
+  row-gap: var(--space-7);
+  align-items: start;
+}
+
+.title {
+  grid-column: 1 / -1;
+  max-width: 12ch;
+  font-family: var(--font-didone);
+  font-weight: 400;
+  font-size: var(--text-2xl);
+  line-height: 1.02;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.item {
+  display: grid;
+  gap: calc(var(--key-gap) + var(--space-3));
+  margin: var(--key-gap);
+}
+
+.item[data-wide] {
+  grid-column: 1 / -1;
+}
+
+/* второй кадр пары опускается — колонки идут вразбежку */
+.item[data-slot="yorkie"],
+.item[data-slot="cocker-black"] {
+  margin-top: calc(var(--space-8) + var(--key-gap));
+}
+
+.frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--color-paper);
+  cursor: zoom-in;
+  transform-origin: 50% 55%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* рамка: волосяная линия на отступе от фото */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--key-gap));
+  border: var(--hairline) solid var(--color-ink);
+  pointer-events: none;
+}
+
+.frame:focus-visible {
+  outline-offset: calc(var(--key-gap) + 4px);
+}
+
+.picture,
+.img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+}
+
+.picture {
+  overflow: hidden;
+}
+
+.img {
+  object-fit: cover;
+}
+
+/*
+ * Появление (грамматика движения страницы): заголовок дописывается слева направо, как строка
+ * чернилами, кадр «проявляется» — снимок оседает в рамке. Ведёт прокрутка (view-timeline), без JS:
+ * без поддержки и при reduced-motion всё сразу на месте.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .title {
+      animation: ink-write linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 32%;
+    }
+
+    .img {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
+
+@keyframes ink-write {
+  from {
+    clip-path: inset(-0.2em 100% -0.2em 0);
+  }
+  to {
+    clip-path: inset(-0.2em 0 -0.2em 0);
+  }
+}
+
+@keyframes settle {
+  from {
+    transform: scale(1.08);
+    opacity: 0.6;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.caption {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+/* ── компьютер: 12 колонок, кадры по клеткам эссе ── */
+@media (min-width: 900px) {
+  .section {
+    padding: calc(250 * var(--cpx)) calc(99 * var(--cpx)) calc(200 * var(--cpx));
+    --key-gap: clamp(8px, calc(16 * var(--cpx)), 14px);
+  }
+
+  .essay {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: calc(40 * var(--cpx));
+    row-gap: calc(140 * var(--cpx));
+  }
+
+  .title {
+    grid-column: 1 / 8;
+    grid-row: 1;
+    align-self: end;
+    max-width: none;
+    font-size: clamp(2.5rem, calc(112 * var(--cpx)), 6rem);
+    line-height: 1;
+  }
+
+  .item {
+    gap: calc(var(--key-gap) + calc(24 * var(--cpx)));
+  }
+
+  .item[data-wide] {
+    grid-column: auto;
+  }
+
+  .item[data-slot="poodle"] {
+    grid-column: 8 / 13;
+    grid-row: 1 / span 2;
+    margin-top: var(--key-gap);
+  }
+
+  .item[data-slot="bichon"] {
+    grid-column: 1 / 5;
+    grid-row: 2;
+  }
+
+  .item[data-slot="yorkie"] {
+    grid-column: 5 / 8;
+    grid-row: 2;
+    margin-top: calc(300 * var(--cpx));
+  }
+
+  .item[data-slot="cocker"] {
+    grid-column: 2 / 5;
+    grid-row: 3;
+    margin-top: calc(160 * var(--cpx));
+  }
+
+  .item[data-slot="spitz"] {
+    grid-column: 6 / 10;
+    grid-row: 3;
+  }
+
+  .item[data-slot="cocker-black"] {
+    grid-column: 10 / 13;
+    grid-row: 3;
+    margin-top: calc(340 * var(--cpx));
+  }
+
+  .caption {
+    font-size: clamp(0.75rem, calc(24 * var(--cpx)), 0.9375rem);
+  }
+}

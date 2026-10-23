@@ -1,0 +1,156 @@
+.call {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--target-min);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.label {
+  position: relative;
+  padding-bottom: 0.34em;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+}
+
+/* серо-голубая волосяная линия под «Записаться» (макет) */
+.label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: max(1px, 0.06em);
+  background: var(--color-dove);
+  transition: background-color var(--duration-base) var(--ease-out-expo);
+}
+
+.call:hover .label::after,
+.call:focus-visible .label::after {
+  background: var(--color-ink);
+}
+
+.dog {
+  display: block;
+  flex: none;
+  transform-origin: 50% 70%;
+}
+
+.dogImg {
+  width: 100%;
+  height: auto;
+}
+
+.number {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* ── в шапке обложки: подпись и номер плотнее текста, как в макете ── */
+.hero {
+  font-weight: 500;
+}
+
+.hero .label {
+  font-size: 0.9375rem;
+}
+
+.hero .dog {
+  width: 46px;
+}
+
+/* номер на узких экранах только для экранного диктора */
+.hero .number {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * В шапке обложки от 900 px — области макета: подпись (1703…1881, базовая 116, линия 131),
+ * собака у телефона — пластина 136 × 144 с 1900/36, номер — с 2052, базовая 117.
+ * Координаты — от левого верхнего угла ссылки (1700, 36).
+ */
+@media (min-width: 900px) {
+  .hero {
+    position: relative;
+    display: block;
+    width: calc(604 * var(--cpx));
+    height: calc(144 * var(--cpx));
+  }
+
+  .hero .label {
+    position: absolute;
+    left: calc(1.4 * var(--cpx));
+    top: calc(51.2 * var(--cpx));
+    padding-bottom: calc(9.8 * var(--cpx));
+    font-size: calc(34 * var(--cpx));
+    letter-spacing: 0.03em;
+  }
+
+  .hero .label::after {
+    height: max(1px, calc(2 * var(--cpx)));
+  }
+
+  .hero .dog {
+    position: absolute;
+    left: calc(200 * var(--cpx));
+    top: 0;
+    width: calc(136 * var(--cpx));
+    height: calc(144 * var(--cpx));
+  }
+
+  .hero .dogImg {
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero .number {
+    position: absolute;
+    left: calc(350 * var(--cpx));
+    top: calc(53.9 * var(--cpx));
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    font-size: calc(32 * var(--cpx));
+    letter-spacing: 0;
+  }
+}
+
+/* ── липкая кнопка на телефоне ── */
+.compact {
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-4) var(--space-1) var(--space-2);
+  background: var(--color-porcelain);
+  box-shadow: var(--shadow-soft);
+}
+
+.compact .label {
+  font-size: 1rem;
+}
+
+.compact .dog {
+  width: 42px;
+}
+
+/* ── внутри текста ── */
+.inline {
+  gap: 0.4em;
+  font-size: inherit;
+}
+
+.inline .dog {
+  width: 1.8em;
+}

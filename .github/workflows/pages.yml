@@ -1,0 +1,48 @@
+# Публикация на GitHub Pages: каждый push в master — проверка (`npm run check`) и выкладка dist/.
+# Один раз в репозитории: Settings → Pages → Build and deployment → Source: GitHub Actions.
+name: GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - id: pages
+        uses: actions/configure-pages@v6
+      - run: npm ci
+      # check = типы, линтер, тесты, сборка с пререндером и бюджет размеров;
+      # SITE_URL делает og:image, og:url и canonical абсолютными (scripts/build.mjs)
+      - run: npm run check
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

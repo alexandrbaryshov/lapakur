@@ -1,0 +1,80 @@
+/*
+ * Токены «Лапакюр» — мир «Ателье одной линии».
+ * Цвета сняты пипеткой с утверждённого макета (.impeccable/mocks/decision/atelier-line.png,
+ * палитра `impeccable comp-spec --print`) и с исходников мира (атлас шторки, латунь карниза,
+ * эталон «собака на спа»). Секции не вводят своих «сырых» цветов — только эти переменные.
+ */
+:root {
+  /* ── цвет ── */
+  --color-porcelain: #f8f7f3; /* фон страницы — фарфор (макет) */
+  --color-paper: #f1eada; /* поле прайса — тёплая бумага (макет) */
+  --color-ink: #141312; /* чернила: линия, шапка, текст (макет) */
+  --color-ink-soft: #4a4641; /* второстепенный текст на фарфоре и бумаге, контраст ≥ 7:1 */
+  --color-dove: #80898e; /* серо-голубая волосяная линия под «Записаться» (макет) */
+  --color-dove-pale: #c6d0d8; /* холодный противовес из эталона «собака в стиле вог» */
+  --color-blush: #dd9b97; /* розовая плитка (макет) */
+  --color-blush-pale: #e9c8c8; /* светлая плитка, полотенце в тени (макет) */
+  --color-satin: #bd7871; /* атлас шторки, средний тон складки */
+  --color-satin-light: #eec3c3; /* атлас на свету */
+  --color-satin-deep: #793e39; /* атлас в глубине складки */
+  --color-brass: #b5935c; /* латунь карниза и кранов */
+  --color-brass-deep: #a16820;
+  --color-leather: #964b25; /* оранжевая кожа книги — единственный тёплый акцент */
+  --color-selection: #e9c8c8;
+  --color-shadow: 20 19 18; /* чернила для теней: rgb(var(--color-shadow) / α) */
+
+  /* ── шрифты (локальные woff2, src/styles/fonts.css) ── */
+  --font-didone: "Prata", "Didot", "Bodoni 72", Georgia, serif;
+  --font-sans: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+  /* Высота заглавной к кеглю: Prata 0,794 (font-match: 316,7 px при 398 px), Jost 0,70 */
+  --cap-didone: 0.794;
+  --cap-sans: 0.7;
+
+  /* ── шкала текста (вне сетки макета) ── */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.375rem;
+  --text-xl: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+  --text-2xl: clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem);
+  --tracking-caps: 0.08em;
+
+  /* ── отступы: одна шкала на всю страницу ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+  --gutter: clamp(1rem, 0.5rem + 2.2vw, 6rem);
+
+  /* ── форма: пластины-фото с прямыми углами, линии — волосяные ── */
+  --radius-0: 0;
+  --hairline: 1px;
+  --rule: 2px;
+  --ink-stroke: 4; /* толщина сквозной линии в единицах макета 2400 px */
+  --target-min: 44px; /* цель нажатия */
+
+  /* ── тени: всегда со смещением и мягким размытием ── */
+  --shadow-soft: 0 10px 30px -12px rgb(var(--color-shadow) / 0.28);
+  --shadow-fold: -18px 0 40px -8px rgb(var(--color-shadow) / 0.35);
+
+  /* ── движение ── */
+  --duration-fast: 160ms;
+  --duration-base: 320ms;
+  --duration-slow: 700ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ── сетка макета: 1 px макета 2400 × 1792 в ширине страницы ──
+   * Не зарегистрированное свойство подставляется как текст, поэтому `100cqw` считается
+   * от контейнера `.page` там, где переменная используется. */
+  --cpx: calc(100cqw / 2400);
+  --frame-h: calc(1792 * var(--cpx));
+
+  /* ── точки перелома ── */
+  /* < 900 px — телефонная композиция; ≥ 900 px — сетка макета; ≥ 1024 px — номер рядом с «Записаться» */
+}

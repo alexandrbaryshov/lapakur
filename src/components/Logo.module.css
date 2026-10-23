@@ -1,0 +1,25 @@
+/* Контур логотипа — маска из файла logo.svg (viewBox 400 × 402,36), заливка — цвет текста */
+.logo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 400 / 402.36;
+  background-color: currentColor;
+  -webkit-mask: url("/media/logo.svg") center / 100% 100% no-repeat;
+  mask: url("/media/logo.svg") center / 100% 100% no-repeat;
+}
+
+/* только пудель: верхние 340 единиц из 402,36 */
+.mark {
+  aspect-ratio: 400 / 340;
+  -webkit-mask-position: top center;
+  mask-position: top center;
+  -webkit-mask-size: 100% auto;
+  mask-size: 100% auto;
+}
+
+@media (forced-colors: active) {
+  .logo {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+}

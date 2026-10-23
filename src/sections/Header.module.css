@@ -1,0 +1,209 @@
+/* ── телефон: логотип и звонок в строку, разделы — строкой ниже ── */
+.header {
+  position: relative;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "logo call"
+    "nav nav";
+  align-items: center;
+  row-gap: var(--space-2);
+  padding: var(--space-3) var(--gutter) 0;
+}
+
+.logo {
+  grid-area: logo;
+  display: block;
+  width: 72px;
+  color: var(--color-ink);
+}
+
+.logoSvg {
+  width: 100%;
+  height: auto;
+}
+
+.call {
+  grid-area: call;
+  justify-self: end;
+}
+
+.nav {
+  grid-area: nav;
+}
+
+/* пункты делят строку поровну: точка встаёт ровно посередине между словами */
+.menu {
+  display: flex;
+  align-items: center;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+/* средняя точка между разделами, как в макете */
+.item + .item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-ink);
+  transform: translate(-50%, -50%);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 0 0.1em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--color-brass);
+}
+
+/* зона нажатия не меньше 44 px и там, где буквы мельче (планшет в альбомной ориентации) */
+.link::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 50%;
+  height: max(100%, var(--target-min));
+  transform: translateY(-50%);
+}
+
+.link {
+  position: relative;
+}
+
+/* ── сетка макета 2400 × 1792: каждая область на своём месте (layout.css impeccable) ── */
+@media (min-width: 900px) {
+  .header {
+    position: absolute;
+    inset: 0 0 auto 0;
+    display: block;
+    height: calc(230 * var(--cpx));
+    padding: 0;
+  }
+
+  /*
+   * Знак как в макете: левый край надписи «Лапакюр» — на левом крае шапки ЛАПАКЮР (97 px),
+   * над помпоном — 30 px макета (≈ 18 px при 1440), линия земли — на 182 px, где начинается
+   * сквозная нить. Чернила знака в logo.svg (viewBox 400): от 5,8 до 394,6 по ширине, помпон на 5,2,
+   * линия земли на 335,5 (толщина 2,6) — масштаб 0,46.
+   */
+  .logo {
+    position: absolute;
+    left: calc(94.3 * var(--cpx));
+    top: calc(27.7 * var(--cpx));
+    width: calc(184 * var(--cpx));
+  }
+
+  /*
+   * Линия земли продолжается тем же волоском до начала нити (298, 182 px макета): знак от «Л»
+   * до нити — ≈ 200 px макета (≈ 120 px при 1440), а нить по-прежнему выходит из линии земли.
+   */
+  .logo::after {
+    content: "";
+    position: absolute;
+    left: calc(180.5 * var(--cpx));
+    top: calc(153.7 * var(--cpx));
+    width: calc(24 * var(--cpx));
+    height: max(1px, calc(1.2 * var(--cpx)));
+    background: currentColor;
+  }
+
+  /* слова — с левых краёв макета (831, 994, 1178, 1397), точки — между ними (965, 1150, 1368) */
+  .nav {
+    position: absolute;
+    left: calc(828 * var(--cpx));
+    top: calc(79.5 * var(--cpx));
+    width: calc(744 * var(--cpx));
+    height: calc(52 * var(--cpx));
+  }
+
+  .menu {
+    position: relative;
+    display: block;
+    height: 100%;
+  }
+
+  .item {
+    position: absolute;
+    top: 0;
+    display: block;
+  }
+
+  .item:nth-child(2) {
+    left: calc(163 * var(--cpx));
+  }
+  .item:nth-child(3) {
+    left: calc(347 * var(--cpx));
+  }
+  .item:nth-child(4) {
+    left: calc(566 * var(--cpx));
+  }
+
+  .item + .item::before {
+    position: absolute;
+    top: calc(25.8 * var(--cpx));
+    left: calc(-28.5 * var(--cpx));
+    width: calc(3.4 * var(--cpx));
+    height: calc(3.4 * var(--cpx));
+    margin: 0;
+    transform: none;
+  }
+
+  .item:nth-child(3)::before {
+    left: calc(-27.5 * var(--cpx));
+  }
+
+  /* Jost 34: заглавная 24 px, базовая линия 117 */
+  .link {
+    display: block;
+    min-height: 0;
+    height: calc(52 * var(--cpx));
+    padding: 0;
+    font-size: calc(34 * var(--cpx));
+    line-height: calc(52 * var(--cpx));
+    letter-spacing: 0;
+  }
+
+  /* ширины слов макета: ПРАЙС 107, ВОПРОСЫ 162 px — чуть плотнее Jost */
+  .item:nth-child(1) .link {
+    letter-spacing: -0.03em;
+  }
+  .item:nth-child(3) .link {
+    letter-spacing: -0.02em;
+  }
+
+  .call {
+    position: absolute;
+    left: calc(1700 * var(--cpx));
+    top: calc(36 * var(--cpx));
+  }
+}
+
+/* высококонтрастный режим: продолжение линии земли — тем же системным цветом, что и знак */
+@media (min-width: 900px) and (forced-colors: active) {
+  .logo::after {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+}

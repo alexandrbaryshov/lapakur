@@ -1,0 +1,33 @@
+/*
+ * Сквозная нить лежит над полями секций (их фоном и полем прайса) и под пластиной обложки,
+ * шапкой ЛАПАКЮР и меню, как в макете. Слой — во всю страницу, 1 единица = 1 px страницы.
+ * Толщина — 4 px макета (2,4 px на 1440), но не тоньше 1,5 px на телефоне.
+ */
+.ink {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.path {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: max(1.5px, calc(4 * var(--cpx)));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* невидимая копия первого экрана — по ней меряется длина появления */
+.measure {
+  fill: none;
+  stroke: none;
+  visibility: hidden;
+}

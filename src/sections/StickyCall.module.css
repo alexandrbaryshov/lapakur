@@ -1,0 +1,51 @@
+/* Липкая кнопка-звонок: только телефон, снизу по центру, уезжает за край экрана, когда не нужна */
+.sticky {
+  position: fixed;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(calc(100% + var(--space-6)));
+  transition:
+    transform var(--duration-base) var(--ease-out-expo),
+    opacity var(--duration-base) var(--ease-out-expo),
+    visibility 0s linear var(--duration-base);
+}
+
+.sticky[data-visible] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    transform var(--duration-slow) var(--ease-out-expo),
+    opacity var(--duration-base) var(--ease-out-expo),
+    visibility 0s;
+}
+
+.button {
+  pointer-events: auto;
+  padding: var(--space-2) var(--space-5) var(--space-2) var(--space-4);
+  gap: var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky {
+    transform: none;
+    transition: opacity var(--duration-fast) linear, visibility 0s linear var(--duration-fast);
+  }
+
+  .sticky[data-visible] {
+    transition: opacity var(--duration-fast) linear, visibility 0s;
+  }
+}
+
+@media (min-width: 768px) {
+  .sticky {
+    display: none;
+  }
+}

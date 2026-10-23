@@ -1,0 +1,87 @@
+/* Подвал: логотип слева, контакты строкой; на телефоне — столбиком под логотипом */
+.footer {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--gutter) calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
+}
+
+.logo {
+  display: block;
+  width: 96px;
+  color: var(--color-ink);
+}
+
+.logoMark {
+  width: 100%;
+}
+
+.contacts {
+  display: grid;
+  gap: var(--space-2);
+  font-style: normal;
+}
+
+.phone {
+  font-family: var(--font-didone);
+  font-size: var(--text-lg);
+  font-variant-numeric: lining-nums;
+  text-decoration: none;
+}
+
+.phone,
+.address {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+}
+
+.address {
+  font-size: var(--text-sm);
+  text-decoration-color: var(--color-brass);
+}
+
+.phone:hover,
+.address:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--color-ink);
+}
+
+.hours {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+@media (min-width: 900px) {
+  .footer {
+    grid-template-columns: auto 1fr;
+    align-items: end;
+    column-gap: calc(120 * var(--cpx));
+    padding: calc(60 * var(--cpx)) calc(99 * var(--cpx)) calc(120 * var(--cpx));
+  }
+
+  .logo {
+    width: clamp(96px, calc(188 * var(--cpx)), 150px);
+  }
+
+  .contacts {
+    justify-self: end;
+    grid-auto-flow: column;
+    align-items: baseline;
+    column-gap: calc(90 * var(--cpx));
+  }
+
+  .phone {
+    font-size: clamp(1.25rem, calc(44 * var(--cpx)), 2rem);
+  }
+
+  .address {
+    font-size: clamp(0.9375rem, calc(28 * var(--cpx)), 1.125rem);
+  }
+
+  .hours {
+    font-size: clamp(0.75rem, calc(24 * var(--cpx)), 0.9375rem);
+  }
+}

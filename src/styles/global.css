@@ -1,0 +1,178 @@
+@import "./tokens.css";
+@import "./fonts.css";
+
+/* ── основа ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--color-porcelain);
+  color: var(--color-ink);
+  scrollbar-color: var(--color-brass) var(--color-porcelain);
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--color-porcelain);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.55;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  caret-color: var(--color-ink);
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+picture,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: var(--hairline);
+  text-underline-offset: 0.28em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* ── поверхности браузера в цветах мира ── */
+::selection {
+  background: var(--color-selection);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 4px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-porcelain);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brass);
+  border: 3px solid var(--color-porcelain);
+  border-radius: 10px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Страница — контейнер ширины: сетка макета считается в cqw, без полосы прокрутки */
+.page {
+  position: relative;
+  container-type: inline-size;
+  overflow-x: clip;
+}
+
+/*
+ * Шторка до гидрации. Встроенный скрипт в App ставит <html data-curtain="pending">,
+ * если шторку покажут; до загрузки JS здесь рисуется тот же атлас на латунном карнизе,
+ * чтобы обложка не мелькнула перед шторкой. Без JS атрибута нет — и шторки нет.
+ * Если панель шторки так и не смонтировалась, тот же скрипт через CURTAIN_COVER_TIMEOUT_MS (12 с,
+ * Curtain.tsx) ставит data-curtain="expired" — покров растворяется, а Curtain шторку уже не показывает
+ * (или снимает, если чанк панели ещё в пути). Таймер один — в скрипте; здесь только рисунок.
+ * Файлы — из конвейера медиа (curtain-480/800, curtain-rod-800/1600; tests/hero.test.tsx следит, что они есть).
+ * Телефону — плитка атласа 480w (11 КБ): мягкие складки на высоте экрана не отличить от 800w, а первый
+ * экран на медленной сети легче (бюджет «критичного» — scripts/budget.mjs).
+ * Прокрутку здесь не запираем: если JS не придёт, страница после ухода покрова должна листаться.
+ */
+html[data-curtain] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: var(--color-satin);
+  background-image: url("/media/curtain-rod-800.webp"), url("/media/curtain-480.webp");
+  background-image:
+    image-set(url("/media/curtain-rod-800.avif") type("image/avif"), url("/media/curtain-rod-800.webp") type("image/webp")),
+    image-set(url("/media/curtain-480.avif") type("image/avif"), url("/media/curtain-480.webp") type("image/webp"));
+  background-repeat: no-repeat, repeat-x;
+  background-position:
+    top center,
+    0 0;
+  background-size:
+    100% auto,
+    auto 100%;
+}
+
+html[data-curtain="expired"] body::before {
+  animation: curtain-cover-release 0.4s forwards;
+}
+
+@media (min-width: 600px) {
+  html[data-curtain] body::before {
+    background-image: url("/media/curtain-rod-800.webp"), url("/media/curtain-800.webp");
+    background-image:
+      image-set(url("/media/curtain-rod-800.avif") type("image/avif"), url("/media/curtain-rod-800.webp") type("image/webp")),
+      image-set(url("/media/curtain-800.avif") type("image/avif"), url("/media/curtain-800.webp") type("image/webp"));
+  }
+}
+
+@media (min-width: 900px) {
+  html[data-curtain] body::before {
+    background-image: url("/media/curtain-rod-1600.webp"), url("/media/curtain-800.webp");
+    background-image:
+      image-set(url("/media/curtain-rod-1600.avif") type("image/avif"), url("/media/curtain-rod-1600.webp") type("image/webp")),
+      image-set(url("/media/curtain-800.avif") type("image/avif"), url("/media/curtain-800.webp") type("image/webp"));
+  }
+}
+
+@keyframes curtain-cover-release {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

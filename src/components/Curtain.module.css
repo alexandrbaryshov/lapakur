@@ -1,0 +1,179 @@
+/*
+ * Шторка: розовый атлас (плитка curtain, повтор по горизонтали) на латунном карнизе.
+ * Сдвиг --p (0…1) задаёт Motion. Ткань уезжает вправо и сжимается к краю — складки
+ * собираются; карниз гаснет в самом конце. Тот же вид рисует покров до гидрации (global.css).
+ */
+
+.root {
+  --p: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.root[data-phase="dragging"] {
+  cursor: grabbing;
+}
+
+.root[data-phase="opening"] {
+  pointer-events: none;
+}
+
+.fabric {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  transform: translateX(calc(var(--p) * 100%)) scaleX(calc(1 - var(--p) * 0.88));
+  background-color: var(--color-satin);
+  /* телефону — плитка 480w, как у покрова до гидрации (global.css) */
+  background-image: url("/media/curtain-480.webp");
+  background-image: image-set(url("/media/curtain-480.avif") type("image/avif"), url("/media/curtain-480.webp") type("image/webp"));
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: auto 100%;
+  will-change: transform;
+}
+
+@media (min-width: 600px) {
+  .fabric {
+    background-image: url("/media/curtain-800.webp");
+    background-image: image-set(url("/media/curtain-800.avif") type("image/avif"), url("/media/curtain-800.webp") type("image/webp"));
+  }
+}
+
+/* 0.88: у края ткань сжимается до 12 % ширины, уходя за него. Складки темнеют, когда собираются */
+.fabric::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(var(--color-shadow) / 0.42), rgb(var(--color-shadow) / 0) 22%);
+  opacity: min(1, calc(var(--p) * 5));
+}
+
+/* тень ведущего края на обложке */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 64px;
+  transform: translateX(calc(var(--p) * 100vw - 100%));
+  background: linear-gradient(90deg, rgb(var(--color-shadow) / 0), rgb(var(--color-shadow) / 0.22));
+  opacity: min(1, calc(var(--p) * 24));
+  pointer-events: none;
+}
+
+.rod {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  opacity: clamp(0, calc((1 - var(--p)) * 6), 1);
+}
+
+.rodImg {
+  width: 100%;
+  height: auto;
+}
+
+/* ярлык ателье, пришитый к атласу: надпись и стрелка */
+.label {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: min(100vw - 2 * var(--gutter), 36rem);
+  padding: clamp(1.75rem, 1rem + 3vw, 3rem) clamp(1.25rem, 0.75rem + 2.5vw, 3rem) clamp(1rem, 0.5rem + 1.5vw, 1.75rem);
+  /* ярлык едет с серединой ткани: её центр смещается на 0,56 ширины при полном сдвиге */
+  transform: translate(-50%, -50%) translateX(calc(var(--p) * 56vw));
+  background: var(--color-porcelain);
+  box-shadow: 0 22px 44px -22px rgb(var(--color-shadow) / 0.55);
+  text-align: center;
+  opacity: clamp(0, calc(1 - var(--p) * 1.4), 1);
+}
+
+.label::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: var(--hairline) solid var(--color-brass);
+  pointer-events: none;
+}
+
+.title {
+  font-family: var(--font-didone);
+  font-size: clamp(1.75rem, 1.15rem + 2.6vw, 3rem);
+  line-height: 1.12;
+  text-wrap: balance;
+  color: var(--color-ink);
+}
+
+.open {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 9rem;
+  min-height: 3.25rem;
+  margin-top: var(--space-4);
+  padding: 0 var(--space-4);
+  border: 0;
+  background: none;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.arrow {
+  width: 7.5rem;
+  height: 1.5rem;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: nudge 2.6s var(--ease-in-out) 1.2s infinite;
+}
+
+.open:hover .arrow,
+.open:focus-visible .arrow {
+  animation-play-state: paused;
+  transform: translateX(8px);
+}
+
+@keyframes nudge {
+  0%,
+  55%,
+  100% {
+    transform: translateX(0);
+  }
+  27% {
+    transform: translateX(12px);
+  }
+}
+
+.root[data-reduced] .fabric,
+.root[data-reduced] .label,
+.root[data-reduced] .edge {
+  transform: none;
+}
+
+.root[data-reduced] .label {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+.root[data-reduced] .rod {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow {
+    animation: none;
+  }
+}
