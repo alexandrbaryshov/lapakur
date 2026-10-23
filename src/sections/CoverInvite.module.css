@@ -1,0 +1,166 @@
+/*
+ * Рамка-приглашение: выкройка обложки на тёплой бумаге в рамке-намётке (как кадры эссе), окно
+ * питомца — фарфор с пунктиром намётки, в нём фотоаппарат линиями. Рядом (на телефоне — ниже)
+ * подпись: метка капителями, заголовок дидоном, абзац и призыв с волоском, который темнеет при наведении.
+ */
+
+.invite {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-6);
+  margin: var(--key-gap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transform-origin: 30% 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.invite:focus-visible {
+  outline-offset: calc(var(--key-gap) + 4px);
+}
+
+.cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  background: var(--color-paper);
+}
+
+/* рамка: волосяная линия на отступе, как у кадров работ */
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--key-gap));
+  border: var(--hairline) solid var(--color-ink);
+  pointer-events: none;
+}
+
+.pattern {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.window {
+  fill: var(--color-porcelain);
+}
+
+.basting {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.25;
+  stroke-dasharray: 6 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.mast,
+.line,
+.star {
+  font-family: var(--font-didone);
+  fill: var(--color-ink);
+}
+
+.line {
+  font-size: 48px;
+}
+
+.star {
+  font-size: 92px;
+}
+
+.caps {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  fill: var(--color-ink-soft);
+}
+
+.camera {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.copy {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.kicker {
+  font-size: 0.75rem;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+.heading {
+  max-width: 14ch;
+  font-family: var(--font-didone);
+  font-size: var(--text-xl);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.lead {
+  max-width: 40ch;
+  font-size: var(--text-md);
+  line-height: 1.55;
+  color: var(--color-ink-soft);
+}
+
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  margin-top: var(--space-2);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: var(--hairline);
+  background: var(--color-dove);
+  transition: background-color var(--duration-base) var(--ease-out-expo);
+}
+
+.invite:hover .cta::after,
+.invite:focus-visible .cta::after {
+  background: var(--color-ink);
+}
+
+@media (min-width: 900px) {
+  .invite {
+    grid-column: 2 / 12;
+    grid-row: 4;
+    grid-template-columns: 4fr 5fr;
+    align-items: center;
+    gap: calc(120 * var(--cpx));
+    margin-top: calc(200 * var(--cpx));
+  }
+
+  .heading {
+    font-size: clamp(2rem, calc(92 * var(--cpx)), 4.5rem);
+  }
+
+  .lead {
+    font-size: clamp(1rem, calc(32 * var(--cpx)), 1.25rem);
+  }
+}

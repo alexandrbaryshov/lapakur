@@ -73,7 +73,8 @@ function readLayout(page: HTMLElement): (ThreadLayout & { height: number }) | nu
     sheets: all("#price section"),
     priceBottom: price ? price.y + price.h : undefined,
     worksTitle: text(page.querySelector("#works h2")),
-    works: all("#works figure"),
+    // кадры эссе и рамка-приглашение на обложку
+    works: all("#works figure, #works [data-cover-invite]"),
     faqTitle: text(page.querySelector("#faq h2")),
     faqList: block(page.querySelector("#faq ul")),
     contactsTitle: text(page.querySelector("#contacts h2")),

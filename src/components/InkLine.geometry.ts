@@ -314,10 +314,12 @@ function phoneThread(l: ThreadLayout): Thread {
   const { plate } = l;
   pts.push(pt(plate.x + plate.w * 0.25, plate.y + plate.h * 0.35));
 
-  // 3. из-под обложки влево — петля в полосе слева от неё, затем под обложкой на правое поле
-  const sizeB = clamp(plate.x * 0.62, 12, 46);
-  const dirB = pt(-0.25, 1);
-  const startB = pt(plate.x - 6, plate.y + plate.h * 0.5);
+  // 3. из-под обложки влево — петля в полосе слева от неё, затем под обложкой на правое поле;
+  //    когда пластина во всю колонку и полоса — одно поле страницы, петля мельче, у самого края и без наклона
+  const roomy = clamp((plate.x - 24) / 24, 0, 1);
+  const sizeB = clamp(plate.x * 0.62, 8, 46);
+  const dirB = pt(-0.25 * roomy, 1);
+  const startB = pt(plate.x - 2 - 4 * roomy, plate.y + plate.h * 0.5);
   const under = l.tagline ? (bottom(plate) + l.tagline.y) / 2 : bottom(plate) + 12;
   pts.push(pt(plate.x + 6, startB.y - 26), ...curl(startB, dirB, sizeB, pt(-1, 0)));
   pts.push(pt(plate.x - 12, bottom(plate) - 30), pt(plate.x + plate.w * 0.14, under), pt(right(plate) + 8, under));

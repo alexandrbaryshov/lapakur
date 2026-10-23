@@ -38,10 +38,11 @@ export const MOBILE_MAX_WIDTH = 800;
 export const FIRST_SCREEN = { width: 390, dpr: 3 };
 
 /**
- * Ленивые чанки не первого экрана: просмотр фото грузится по нажатию (Works), сквозная нить —
- * после события load (InkLine). Остальные ленивые чанки входного скрипта считаются первым экраном.
+ * Ленивые чанки не первого экрана: просмотр фото и обложка с камерой грузятся по нажатию (Works),
+ * сквозная нить — после события load (InkLine). Остальные ленивые чанки входного скрипта считаются
+ * первым экраном.
  */
-export const ON_DEMAND_CHUNKS = [/^Lightbox-/, /^InkLine\.thread-/];
+export const ON_DEMAND_CHUNKS = [/^Lightbox-/, /^CoverStudio-/, /^InkLine\.thread-/];
 
 const IMAGE_EXT = new Set([".avif", ".webp", ".jpg", ".jpeg", ".png", ".gif", ".svg"]);
 const VIDEO_EXT = new Set([".mp4", ".webm", ".mov", ".m4v"]);

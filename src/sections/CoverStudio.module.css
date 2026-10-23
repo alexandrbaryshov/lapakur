@@ -1,0 +1,375 @@
+/*
+ * Окно обложки: фарфоровая стена во весь экран, по центру — кадр 3:4 в рамке-намётке (чернильный
+ * волосок на отступе). На шагах камеры и подгонки поверх кадра — рамка-подсказка: дымка чернил вокруг
+ * силуэта сидящей собаки, пунктир намётки по силуэту и шапка ЛАПАКЮР на её месте на обложке.
+ * Кнопки — подписи с волоском или в волосяной рамке; спуск — кольцо, как у камеры.
+ */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: grid;
+  background: var(--color-porcelain);
+  overscroll-behavior: contain;
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(100%, 40rem);
+  height: 100vh;
+  height: 100dvh;
+  margin-inline: auto;
+  color: var(--color-ink);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--target-min);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) calc(var(--gutter) - var(--space-2)) 0 var(--gutter);
+}
+
+.title {
+  font-family: var(--font-didone);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  line-height: 1.15;
+}
+
+/* ── кадр ── */
+.stageBox {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: var(--space-4) var(--gutter);
+  container-type: size;
+}
+
+.stage {
+  position: relative;
+  width: min(100cqw, 100cqh * 3 / 4);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--color-ink);
+  outline: var(--hairline) solid var(--color-ink);
+  outline-offset: 7px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stage[data-step="adjust"] {
+  cursor: grab;
+  touch-action: none;
+}
+
+/* фокус с клавиатуры — та же намётка, но линейкой 2 px */
+.stage:focus-visible {
+  outline-width: var(--rule);
+}
+
+.stage[data-step="adjust"]:active {
+  cursor: grabbing;
+}
+
+.video,
+.cover {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.video {
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out-expo);
+}
+
+.video[data-live] {
+  opacity: 1;
+}
+
+.video[data-mirror] {
+  transform: scaleX(-1);
+}
+
+.picked {
+  position: absolute;
+  max-width: none;
+  pointer-events: none;
+}
+
+/* ── рамка-подсказка ── */
+.guide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.veil {
+  fill: var(--color-ink);
+  fill-opacity: 0.58;
+}
+
+.outline {
+  fill: none;
+  stroke: var(--color-porcelain);
+  stroke-width: 1.5;
+  stroke-dasharray: 7 6;
+  vector-effect: non-scaling-stroke;
+}
+
+.mast {
+  font-family: var(--font-didone);
+  fill: var(--color-porcelain);
+  fill-opacity: 0.92;
+}
+
+.hint {
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: var(--space-4);
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--color-porcelain);
+  text-shadow: 0 1px 8px rgb(var(--color-shadow) / 0.6);
+  pointer-events: none;
+}
+
+.blocked {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-5);
+  background: var(--color-paper);
+  text-align: center;
+}
+
+.blockedText {
+  max-width: 26ch;
+  font-family: var(--font-didone);
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+/* ── управление ── */
+.controls {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--gutter) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+}
+
+.cameraRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  width: min(100%, 28rem);
+}
+
+.cameraRow > :first-child {
+  justify-self: start;
+}
+
+.cameraRow > :last-child {
+  justify-self: end;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-1) var(--space-5);
+}
+
+/* подпись-кнопка: капители с латунным волоском, при наведении волосок темнеет */
+.side {
+  min-height: var(--target-min);
+  padding: 0 var(--space-1);
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: var(--color-brass);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.45em;
+  cursor: pointer;
+  transition: text-decoration-color var(--duration-base) var(--ease-out-expo);
+}
+
+.side:hover,
+.side:focus-visible {
+  text-decoration-color: var(--color-ink);
+}
+
+span.side {
+  visibility: hidden;
+}
+
+/* главное действие: капители в волосяной рамке */
+.action {
+  min-height: var(--target-min);
+  padding: 0 var(--space-5);
+  border: var(--hairline) solid var(--color-ink);
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-weight: 500;
+  font-size: var(--text-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--duration-base) var(--ease-out-expo);
+}
+
+.action:hover,
+.action:focus-visible {
+  background: color-mix(in srgb, var(--color-ink) 6%, transparent);
+}
+
+.action:disabled,
+.side:disabled,
+.shutter:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* спуск: чернильное кольцо и диск внутри */
+.shutter {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: var(--rule) solid var(--color-ink);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.shutter::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--color-ink);
+  transition: transform var(--duration-fast) var(--ease-out-expo);
+}
+
+.shutter:active::after {
+  transform: scale(0.92);
+}
+
+.field,
+.zoomLabel {
+  display: grid;
+  gap: var(--space-1);
+  width: min(100%, 22rem);
+}
+
+.fieldName {
+  font-size: 0.75rem;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+.input {
+  min-height: var(--target-min);
+  padding: 0 0 var(--space-1);
+  border: 0;
+  border-bottom: var(--hairline) solid var(--color-ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-didone);
+  font-size: var(--text-lg);
+}
+
+.input::placeholder {
+  color: var(--color-ink-soft);
+  opacity: 0.6;
+}
+
+.input:focus-visible {
+  outline: none;
+  border-bottom-width: var(--rule);
+}
+
+.range {
+  width: 100%;
+  min-height: var(--target-min);
+  accent-color: var(--color-ink);
+}
+
+.status {
+  min-height: 1.35em;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--color-ink-soft);
+  text-align: center;
+}
+
+/* крестик — две волосяные линии, цель нажатия 44 px */
+.close {
+  display: grid;
+  place-items: center;
+  width: var(--target-min);
+  height: var(--target-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.cross {
+  position: relative;
+  width: 26px;
+  height: 26px;
+}
+
+.cross::before,
+.cross::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 1.5px;
+  background: currentColor;
+}
+
+.cross::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cross::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@media (min-width: 900px) {
+  .head {
+    padding-top: var(--space-4);
+  }
+}

@@ -20,7 +20,8 @@
   /* телефон: ширина колонки, кегль шапки, ширина пластины — общие для пластины, шапки и маски */
   --hero-col: calc(100cqw - 2 * var(--gutter));
   --hero-mast: calc(var(--hero-col) / 5.72);
-  --hero-plate-w: min(calc(var(--hero-col) * 0.72), 420px);
+  /* пластина — ровно по ширине букв ЛАПАКЮР, как обложка журнала: краска слова в Prata — 5,635 кегля */
+  --hero-plate-w: calc(var(--hero-mast) * 5.635);
   --hero-plate-top: calc(var(--hero-mast) * 0.42);
   /*
    * Шапка опущена на тюрбан: верх тюрбана — 0,2225 W от верха пластины; буквы сдвинуты так, чтобы он
@@ -36,7 +37,8 @@
   z-index: 2;
   grid-row: 1 / span 2;
   grid-column: 1;
-  justify-self: center;
+  /* левый край — от края колонки, как первая буква шапки */
+  justify-self: start;
   width: var(--hero-plate-w);
   aspect-ratio: 4 / 5;
   margin-top: var(--hero-plate-top);
@@ -95,11 +97,11 @@
   user-select: none;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  /* пластина по центру колонки, кадр маски — тоже; верх кадра — верх пластины минус поле */
+  /* пластина от левого края колонки; кадр маски — на поле левее и выше её верха */
   -webkit-mask-size: calc(var(--hero-plate-w) * 1216 / 1200) auto;
   mask-size: calc(var(--hero-plate-w) * 1216 / 1200) auto;
-  -webkit-mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
-  mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
+  -webkit-mask-position: calc(var(--hero-plate-w) * -8 / 1200) calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
+  mask-position: calc(var(--hero-plate-w) * -8 / 1200) calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
 }
 
 .tagline {

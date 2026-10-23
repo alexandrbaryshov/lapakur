@@ -14,6 +14,7 @@
 - `src/App.tsx` — порядок экранов и якоря `#top #price #works #faq #contacts`; шторка и `StickyCall` стоят вне `.page`.
 - `src/sections/` — крупные блоки страницы, у каждого свой CSS-модуль рядом.
 - `src/components/` — переиспользуемое: `Picture`, `Logo`, `CallButton`, `Curtain` (чистая логика в `curtain/state.ts`), `InkLine`, `PriceChapters`, `MotionProvider`.
+- Обложка питомца (ADR 0007): `src/components/cover/` — `layout.ts` (геометрия кадра 1080 × 1440, общая для рамки-подсказки и canvas; едет в первом экране с рамкой-приглашением), `view.ts` (подгонка кадра, дата номера), `render.ts` (цветокоррекция и отрисовка на canvas), `segment.ts` (маска питомца MediaPipe; wasm из пакета через `?url`, модель — `public/models/`). Рамка-приглашение — `src/sections/CoverInvite.tsx` в эссе Works, окно — `src/sections/CoverStudio.tsx` (ленивый чанк). Тексты — `src/data/cover.ts` (строки о студии из `studio.ts`/`services.ts`) и `src/data/sensations.ts` (только в чанке окна).
 - `src/styles/tokens.css` — единственный источник цветов, шрифтов, отступов; в секциях сырых цветов нет.
 - Тесты в `tests/` (vitest + jsdom); чистые функции (`curtainReducer`, `shouldShowCurtain`) тестируются без DOM.
 

@@ -4,13 +4,16 @@ import { Picture } from "../components/Picture";
 import { useZoom } from "../components/zoom";
 import { WORKS, type Work } from "../data/works";
 import type { MediaKey } from "../media";
+import { CoverInvite } from "./CoverInvite";
 import styles from "./Works.module.css";
 
 // «Наши довольные питомцы» — фотоэссе из шести настоящих работ студии (spec.md, истории 20–21):
 // рамки разного размера вразбежку, подпись породы, почти без текста. Нажатие открывает фото
-// крупнее (Lightbox — отдельным чанком, грузится при первом открытии).
+// крупнее (Lightbox — отдельным чанком, грузится при первом открытии). Последней в эссе стоит
+// рамка-приглашение: сфотографировать своего питомца на обложку журнала (CoverStudio — тоже чанком).
 
 const Lightbox = lazy(() => import("./Lightbox").then((module) => ({ default: module.Lightbox })));
+const CoverStudio = lazy(() => import("./CoverStudio").then((module) => ({ default: module.CoverStudio })));
 
 /**
  * Порядок и место кадров в эссе. На компьютере у каждого кадра своя клетка сетки
@@ -71,6 +74,20 @@ export function Works() {
     trigger.current?.focus({ preventScroll: true });
   }, []);
 
+  const [coverOpen, setCoverOpen] = useState(false);
+  const [coverRequested, setCoverRequested] = useState(false);
+
+  const openCover = useCallback((el: HTMLButtonElement) => {
+    trigger.current = el;
+    setCoverRequested(true);
+    setCoverOpen(true);
+  }, []);
+
+  const closeCover = useCallback(() => {
+    setCoverOpen(false);
+    trigger.current?.focus({ preventScroll: true });
+  }, []);
+
   return (
     <section id="works" aria-labelledby="works-title" className={styles.section}>
       <div className={styles.essay}>
@@ -91,10 +108,16 @@ export function Works() {
             />
           );
         })}
+        <CoverInvite onOpen={openCover} />
       </div>
       {requested && (
         <Suspense fallback={null}>
           <Lightbox work={active} onClose={close} />
+        </Suspense>
+      )}
+      {coverRequested && (
+        <Suspense fallback={null}>
+          <CoverStudio open={coverOpen} onClose={closeCover} />
         </Suspense>
       )}
     </section>

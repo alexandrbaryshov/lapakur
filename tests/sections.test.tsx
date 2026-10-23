@@ -208,6 +208,27 @@ describe("Наши довольные питомцы (#works, R19)", () => {
     fireEvent.click(dialog);
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
   });
+
+  it("рамка-приглашение открывает обложку; без камеры — выбор фото из галереи; Esc закрывает, фокус возвращается", async () => {
+    renderPage();
+    const works = section("works");
+    const invite = within(works).getByRole("button", { name: /Сфотографировать питомца/ });
+    expect(invite.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(flat(invite.textContent)).toContain("Ваш питомец — на обложке");
+    // шесть кадров эссе — по-прежнему фотографии работ, приглашение — не кадр
+    expect(works.querySelectorAll("figure")).toHaveLength(6);
+
+    fireEvent.click(invite);
+    const dialog = await screen.findByRole("dialog", { name: "Обложка «Лапакюр»" });
+    // в jsdom камеры нет — окно сразу предлагает фото из галереи
+    expect(await within(dialog).findByText(/Камера недоступна/)).toBeTruthy();
+    expect(within(dialog).getByRole("button", { name: "Выбрать фото" })).toBeTruthy();
+    expect(dialog.querySelector('input[type="file"][accept="image/*"]')).not.toBeNull();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
+    expect(document.activeElement).toBe(invite);
+  });
 });
 
 // ───────────────────────── вопросы ─────────────────────────
