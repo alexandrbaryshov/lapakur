@@ -6,8 +6,8 @@ import { REVIEWS } from "../data/reviews";
 import { STUDIO } from "../data/studio";
 import styles from "./Visit.module.css";
 
-// Визит — финал страницы (spec.md, истории 23–26): крупный телефон, адрес и часы, Яндекс Карта
-// с точкой студии и пять настоящих отзывов дословно. Виджет карты подключается, только когда
+// Визит — финал страницы (spec.md, истории 23–26): крупный телефон, адрес и часы, маршрут в Яндекс Картах
+// от места, где сейчас посетитель, Яндекс Карта с точкой студии и пять настоящих отзывов дословно. Виджет карты подключается, только когда
 // секция близко; не загрузился — остаётся заглушка в стиле страницы с адресом и ссылкой.
 
 const LL = `${STUDIO.geo.lon},${STUDIO.geo.lat}`;
@@ -131,6 +131,9 @@ export function Visit() {
             </a>
           </p>
           <p className={styles.hours}>{STUDIO.hours}</p>
+          <m.a href={STUDIO.yandexRouteUrl} className={styles.route} {...EXTERNAL} {...zoom}>
+            Построить маршрут<span className="visually-hidden"> в&nbsp;Яндекс Картах</span>
+          </m.a>
         </div>
 
         <YandexMap />

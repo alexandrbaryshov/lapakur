@@ -33,6 +33,17 @@ const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([t
 const GUIDE_PATH = guidePath();
 /** Маска считается найденным питомцем, если он занимает хотя бы 2 % кадра. */
 const PET_MIN_COVERAGE = 0.02;
+/** Сколько летит снятая обложка. */
+const SNAP_MS = 1300;
+/**
+ * Меню «Поделиться» — после вспышки, когда обложка уже пошла вниз. Дольше тянуть нельзя:
+ * iPhone открывает меню только в пределах секунды после нажатия.
+ */
+const SHARE_DELAY_MS = 450;
+/** Загрузка файла — когда обложка ушла за низ экрана. */
+const DOWNLOAD_DELAY_MS = 1000;
+/** Поле бумажной рамки снятой обложки, px. */
+const SNAP_PAD = 8;
 
 export function CoverStudio({ open, onClose }: CoverStudioProps) {
   return createPortal(<AnimatePresence>{open && <Studio key="cover-studio" onClose={onClose} />}</AnimatePresence>, document.body);
@@ -335,40 +346,90 @@ function Studio({ onClose }: { onClose: () => void }) {
 
   const fileName = "lapakur-oblozhka.jpg";
   const [saveHint, setSaveHint] = useState("");
-  const download = () => {
-    if (!cover) return;
+  // Файл берётся из блоба на момент нажатия: пока обложка летит, её могут перерисовать, а прежний адрес — отозвать.
+  const download = (blob: Blob) => {
     const link = document.createElement("a");
-    link.href = cover.url;
+    link.href = URL.createObjectURL(blob);
     link.download = fileName;
     document.body.append(link);
     link.click();
     link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(link.href), 4000);
   };
   /** Меню «Поделиться» с одной картинкой; true — меню открылось (на iPhone в нём «Сохранить изображение»). */
-  const shareImage = async () => {
-    if (!cover) return false;
+  const shareImage = async (blob: Blob) => {
     try {
       // только файл, без текста: с подписью iPhone прячет «Сохранить изображение»
-      await navigator.share({ files: [new File([cover.blob], fileName, { type: "image/jpeg" })] });
+      await navigator.share({ files: [new File([blob], fileName, { type: "image/jpeg" })] });
       return true;
     } catch (error) {
       return error instanceof DOMException && error.name === "AbortError";
     }
   };
+  const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, reduceMotion ? 0 : ms));
+
+  /** Обложка «снята»: вспышка над кадром, а её отпечаток в бумажной рамке наклоняется, уходит вниз экрана и тает. */
+  const snap = (url: string) => {
+    const stage = stageRef.current;
+    if (reduceMotion || !stage || typeof stage.animate !== "function") return;
+    const flash = document.createElement("div");
+    flash.className = styles.flash;
+    stage.append(flash);
+    flash.animate([{ opacity: 0 }, { opacity: 0.9, offset: 0.12 }, { opacity: 0 }], { duration: 600, easing: "ease-out" }).onfinish = () =>
+      flash.remove();
+
+    const r = stage.getBoundingClientRect();
+    const print = document.createElement("div");
+    print.className = styles.snap;
+    print.setAttribute("aria-hidden", "true");
+    Object.assign(print.style, {
+      left: `${r.left - SNAP_PAD}px`,
+      top: `${r.top - SNAP_PAD}px`,
+      width: `${r.width + 2 * SNAP_PAD}px`,
+      padding: `${SNAP_PAD}px`,
+    });
+    const image = document.createElement("img");
+    image.src = url;
+    image.alt = "";
+    print.append(image);
+    document.body.append(print);
+    // до низа экрана — с запасом на наклон и тень
+    const drop = window.innerHeight - r.top + r.height * 0.15;
+    print.animate(
+      [
+        { opacity: 0, transform: "translateY(0px) scale(1.04) rotate(0deg)" },
+        { opacity: 1, transform: "translateY(0px) scale(0.94) rotate(0deg)", offset: 0.14 },
+        { opacity: 1, transform: `translateY(${r.height * 0.03}px) scale(0.9) rotate(-4deg)`, offset: 0.4 },
+        { opacity: 0, transform: `translateY(${drop}px) scale(0.72) rotate(-12deg)` },
+      ],
+      { duration: SNAP_MS, easing: "cubic-bezier(0.45, 0, 0.25, 1)", fill: "forwards" },
+    ).onfinish = () => print.remove();
+  };
+
   /**
    * В галерею: на iPhone загрузка уходит в «Файлы», а в «Фото» картинку кладёт пункт «Сохранить изображение»
    * меню «Поделиться». На Android загруженная картинка сама появляется в галерее (альбом «Download»).
    */
   const saveToGallery = async () => {
+    if (!cover) return;
+    const { blob } = cover;
+    snap(cover.url);
     if (saveViaShare) {
       setSaveHint("В меню выберите «Сохранить изображение» — обложка попадёт в «Фото».");
-      if (await shareImage()) return;
+      await wait(SHARE_DELAY_MS);
+      if (await shareImage(blob)) return;
+    } else {
+      await wait(DOWNLOAD_DELAY_MS);
     }
-    download();
+    download(blob);
     setSaveHint(touch ? "Обложка сохранена — она в галерее, в альбоме «Download»." : "");
   };
   const share = async () => {
-    if (!(await shareImage())) download();
+    if (!cover) return;
+    const { blob } = cover;
+    snap(cover.url);
+    await wait(SHARE_DELAY_MS);
+    if (!(await shareImage(blob))) download(blob);
   };
 
   const retake = () => {

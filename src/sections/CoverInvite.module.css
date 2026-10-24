@@ -1,7 +1,7 @@
 /*
- * Рамка-приглашение: выкройка обложки на тёплой бумаге в рамке-намётке (как кадры эссе), окно
- * питомца — фарфор с пунктиром намётки, в нём фотоаппарат линиями. Рядом (на телефоне — ниже)
- * подпись: метка капителями, заголовок дидоном, абзац и призыв с волоском, который темнеет при наведении.
+ * Рамка-приглашение: над выкройкой — метка капителями и заголовок дидоном; выкройка обложки на тёплой
+ * бумаге в рамке-намётке (как кадры эссе), окно питомца — фарфор с пунктиром намётки, в нём фотоаппарат
+ * линиями. Рядом (на телефоне — ниже) — абзац и призыв с волоском, который темнеет при наведении.
  */
 
 .invite {
@@ -89,11 +89,15 @@
   vector-effect: non-scaling-stroke;
 }
 
+.top,
 .copy {
   display: grid;
-  align-content: center;
   justify-items: start;
   gap: var(--space-3);
+}
+
+.copy {
+  align-content: center;
 }
 
 .kicker {
@@ -104,7 +108,7 @@
 }
 
 .heading {
-  max-width: 14ch;
+  max-width: 18ch;
   font-family: var(--font-didone);
   font-size: var(--text-xl);
   line-height: 1.1;
@@ -152,11 +156,17 @@
     grid-row: 4;
     grid-template-columns: 4fr 5fr;
     align-items: center;
-    gap: calc(120 * var(--cpx));
+    gap: calc(70 * var(--cpx)) calc(120 * var(--cpx));
     margin-top: calc(200 * var(--cpx));
   }
 
+  /* заголовок — строкой над выкройкой и подписью */
+  .top {
+    grid-column: 1 / -1;
+  }
+
   .heading {
+    max-width: none;
     font-size: clamp(2rem, calc(92 * var(--cpx)), 4.5rem);
   }
 

@@ -166,11 +166,11 @@ describe("Прайс (#price, R16–R18)", () => {
 
 // ───────────────────────── работы ─────────────────────────
 
-describe("Наши довольные питомцы (#works, R19)", () => {
+describe("Ваши довольные питомцы (#works, R19)", () => {
   it("6 настоящих фото в рамках с подписью породы", () => {
     renderPage();
     const works = section("works");
-    expect(within(works).getByRole("heading", { level: 2, name: "Наши довольные питомцы" })).toBeTruthy();
+    expect(within(works).getByRole("heading", { level: 2, name: "Ваши довольные питомцы" })).toBeTruthy();
     const figures = works.querySelectorAll("figure");
     expect(figures).toHaveLength(6);
     const captions = [...figures].map((f) => flat(f.querySelector("figcaption")?.textContent)).sort();
@@ -214,7 +214,11 @@ describe("Наши довольные питомцы (#works, R19)", () => {
     const works = section("works");
     const invite = within(works).getByRole("button", { name: /Сфотографировать питомца/ });
     expect(invite.getAttribute("aria-haspopup")).toBe("dialog");
-    expect(flat(invite.textContent)).toContain("Ваш питомец — на обложке");
+    // заголовок — над выкройкой обложки, под ней — абзац и призыв
+    const heading = within(invite).getByText("Ваш питомец на обложке журнала");
+    const cover = invite.querySelector("svg")!;
+    expect(heading.compareDocumentPosition(cover) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(flat(invite.textContent)).not.toContain("Ваш питомец — на обложке");
     // шесть кадров эссе — по-прежнему фотографии работ, приглашение — не кадр
     expect(works.querySelectorAll("figure")).toHaveLength(6);
 
@@ -364,6 +368,14 @@ describe("Визит (#contacts, R21–R23)", () => {
       .find((a) => a.getAttribute("href") === ORG_URL && flat(a.textContent) === ADDRESS);
     expect(address).toBeDefined();
     expect(flat(contacts.textContent)).toContain(HOURS);
+  });
+
+  it("«Построить маршрут» — Яндекс Карты, маршрут от места посетителя до студии", () => {
+    renderPage();
+    const route = within(section("contacts")).getByRole("link", { name: /^Построить маршрут/ });
+    // начало маршрута пустое (rtext=~…) — Яндекс Карты ведут от текущего местоположения
+    expect(route.getAttribute("href")).toBe("https://yandex.ru/maps/?rtext=~56.097437,47.280633&rtt=auto");
+    expect(route.getAttribute("target")).toBe("_blank");
   });
 });
 

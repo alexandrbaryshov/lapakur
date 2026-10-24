@@ -98,7 +98,7 @@ export type ThreadLayout = {
   pricePhotos?: Box;
   sheets: Box[];
   priceBottom?: number;
-  /** Кадры «Наших довольных питомцев» с подписями и заголовок секции. */
+  /** Кадры «Ваших довольных питомцев» с подписями и заголовок секции. */
   worksTitle?: Box;
   works: Box[];
   /** «Вопросы»: заголовок (текст) и список. */
@@ -349,7 +349,7 @@ function phoneThread(l: ThreadLayout): Thread {
   const ledgerEnd = l.sheets.length ? bottom(l.sheets[l.sheets.length - 1]) : (l.priceBottom ?? afterHero + 200);
   pts.push(pt(gr, ledgerEnd + 16));
 
-  // 5. переход на левое поле перед «Нашими довольными питомцами», по пути — петля
+  // 5. переход на левое поле перед «Вашими довольными питомцами», по пути — петля
   if (l.worksTitle) {
     const band = l.worksTitle.y - ledgerEnd;
     const size = clamp(band * 0.14, 14, 30);

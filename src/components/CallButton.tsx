@@ -18,7 +18,7 @@ export type CallButtonProps = {
 export const PHONE_SHORT = STUDIO.phoneDisplay.replace(/[()]/g, "");
 
 const DOG_SIZES: Record<CallButtonProps["variant"], string> = {
-  hero: "(min-width: 900px) 6vw, 48px",
+  hero: "(min-width: 900px) 5vw, 40px",
   compact: "44px",
   inline: "32px",
 };

@@ -7,7 +7,7 @@ import type { MediaKey } from "../media";
 import { CoverInvite } from "./CoverInvite";
 import styles from "./Works.module.css";
 
-// «Наши довольные питомцы» — фотоэссе из шести настоящих работ студии (spec.md, истории 20–21):
+// «Ваши довольные питомцы» — фотоэссе из шести настоящих работ студии (spec.md, истории 20–21):
 // рамки разного размера вразбежку, подпись породы, почти без текста. Нажатие открывает фото
 // крупнее (Lightbox — отдельным чанком, грузится при первом открытии). Последней в эссе стоит
 // рамка-приглашение: сфотографировать своего питомца на обложку журнала (CoverStudio — тоже чанком).
@@ -92,7 +92,7 @@ export function Works() {
     <section id="works" aria-labelledby="works-title" className={styles.section}>
       <div className={styles.essay}>
         <h2 id="works-title" className={styles.title}>
-          Наши довольные питомцы
+          Ваши довольные питомцы
         </h2>
         {ESSAY.map(({ media, slot, wide, desktopVw }) => {
           const work = WORKS.find((w) => w.media === media);

@@ -111,6 +111,34 @@
   pointer-events: none;
 }
 
+/* «снято»: вспышка над кадром, отпечаток обложки в бумажной рамке уходит вниз экрана (CoverStudio.tsx, snap) */
+.flash {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--color-porcelain);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.snap {
+  position: fixed;
+  z-index: 950;
+  background: var(--color-porcelain);
+  box-shadow:
+    0 30px 60px -20px rgb(var(--color-shadow) / 0.55),
+    0 0 0 var(--hairline) rgb(var(--color-shadow) / 0.12);
+  pointer-events: none;
+}
+
+.snap img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
 /* ── рамка-подсказка ── */
 .guide {
   position: absolute;

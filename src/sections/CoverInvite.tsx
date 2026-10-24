@@ -7,8 +7,9 @@ import { pickSensation } from "../data/sensations";
 import { STUDIO } from "../data/studio";
 import styles from "./CoverInvite.module.css";
 
-// Рамка-приглашение в «Наших довольных питомцах»: выкройка обложки журнала «Лапакюр» — шапка,
-// строки обложки и пунктир намётки силуэтом пуделя там, где встанет питомец, — и призыв сфотографировать питомца.
+// Рамка-приглашение в «Ваших довольных питомцах»: над ней заголовок «Ваш питомец на обложке журнала»,
+// выкройка обложки журнала «Лапакюр» — шапка, строки обложки и пунктир намётки силуэтом пуделя там,
+// где встанет питомец, — а под ней призыв сфотографировать питомца.
 // Нажатие открывает камеру (CoverStudio). Разметка пререндерится с сенсацией-примером, а в браузере
 // сенсация сменяется случайной из списка (после гидрации, чтобы разметки сервера и клиента совпали).
 
@@ -29,6 +30,10 @@ export function CoverInvite({ onOpen }: { onOpen: (el: HTMLButtonElement) => voi
       onClick={(event) => onOpen(event.currentTarget)}
       {...zoom}
     >
+      <span className={styles.top}>
+        <span className={styles.kicker}>Новый номер</span>
+        <span className={styles.heading}>Ваш питомец на&nbsp;обложке журнала</span>
+      </span>
       <span className={styles.cover}>
         <svg className={styles.pattern} viewBox={`0 0 ${COVER_W} ${COVER_H}`} aria-hidden="true">
           <path className={styles.window} d={GUIDE_PATH} />
@@ -63,8 +68,6 @@ export function CoverInvite({ onOpen }: { onOpen: (el: HTMLButtonElement) => voi
         </svg>
       </span>
       <span className={styles.copy}>
-        <span className={styles.kicker}>Новый номер</span>
-        <span className={styles.heading}>Ваш питомец&nbsp;— на обложке</span>
         <span className={styles.lead}>
           Сфотографируйте питомца&nbsp;— соберём обложку журнала «{STUDIO.name}» с&nbsp;его именем и сенсацией номера. Фото
           остаётся у&nbsp;вас в&nbsp;телефоне.
