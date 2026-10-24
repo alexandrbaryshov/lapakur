@@ -189,8 +189,10 @@ describe("шторка в браузере", () => {
     const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByText(CURTAIN_TEXT)).toBeTruthy();
     expect(within(dialog).getByRole("button", { name: "Открыть шторку" })).toBeTruthy();
-    expect(document.documentElement.style.overflow).toBe("hidden");
-    expect(container.querySelector(".page")?.hasAttribute("inert")).toBe(true);
+    // замок прокрутки и inert ставят эффекты: панель шторки — ленивый чанк, её эффекты могут отработать
+    // на шаг позже, чем она появилась в разметке
+    await waitFor(() => expect(document.documentElement.style.overflow).toBe("hidden"));
+    await waitFor(() => expect(container.querySelector(".page")?.hasAttribute("inert")).toBe(true));
   });
 
   it("кнопка со стрелкой открывает, после открытия страница листается", async () => {
@@ -198,7 +200,8 @@ describe("шторка в браузере", () => {
     const dialog = await screen.findByRole("dialog");
     fireEvent.click(within(dialog).getByRole("button", { name: "Открыть шторку" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
-    expect(document.documentElement.style.overflow).not.toBe("hidden");
+    // замок снимает очистка эффекта панели — она тоже может отработать после ухода шторки из разметки
+    await waitFor(() => expect(document.documentElement.style.overflow).not.toBe("hidden"));
   });
 
   it("после открытия фокус — на заголовке ЛАПАКЮР (без прокрутки), страница уже не inert", async () => {
