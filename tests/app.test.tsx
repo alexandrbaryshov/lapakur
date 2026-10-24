@@ -1,9 +1,9 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import App from "../src/App";
+import App, { HEAD_SCRIPT } from "../src/App";
 
 afterEach(cleanup);
 
@@ -34,6 +34,38 @@ describe("App — одна страница с якорной навигацие
   it("рендерится на сервере (пререндер для первой отрисовки и работы без JS)", () => {
     const html = renderToString(<App />);
     for (const id of ANCHORS) expect(html).toContain(`id="${id}"`);
+  });
+});
+
+// Медленная сеть на iPhone: встроенный скрипт внутри разметки ждёт таблицу стилей, и пока разбор стоит,
+// WebKit заранее грузит картинки дальше по разметке — и ленивые <picture> ниже первого экрана тоже
+// (под шторкой они отнимали полосу у первого экрана и видео обложки). Флаги <html> ставит HEAD_SCRIPT в <head>.
+describe("встроенные скрипты — только в <head>", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    document.documentElement.removeAttribute("data-curtain");
+    document.documentElement.removeAttribute("data-sheets");
+  });
+
+  it("в разметке страницы нет исполняемых скриптов (JSON-LD — не скрипт)", () => {
+    const doc = document.implementation.createHTMLDocument("ssr");
+    doc.body.innerHTML = renderToString(<App />);
+    const scripts = [...doc.querySelectorAll("script")].filter((s) => s.type !== "application/ld+json");
+    expect(scripts).toHaveLength(0);
+  });
+
+  it("HEAD_SCRIPT при первом заходе прячет листы прайса и ставит покров шторки", () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    sessionStorage.clear(); // App выше уже показывал шторку в этой «вкладке»
+    new Function(HEAD_SCRIPT)();
+    expect(document.documentElement.hasAttribute("data-sheets")).toBe(true);
+    expect(document.documentElement.getAttribute("data-curtain")).toBe("pending");
+  });
+
+  it("в index.html метка скрипта стоит в <head>", () => {
+    const html = readFileSync(join(process.cwd(), "index.html"), "utf8");
+    const head = /<head>([\s\S]*)<\/head>/.exec(html)?.[1] ?? "";
+    expect(head).toContain("<!--head-script-->");
   });
 });
 

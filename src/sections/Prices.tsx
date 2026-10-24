@@ -14,7 +14,7 @@ import styles from "./Prices.module.css";
 // открывает окно листа с полной ведомостью (PriceSheetDialog — ленивый чанк, как просмотр фото).
 //
 // Без JS: карточки — ссылки на листы, а сами листы стоят в разметке под карточками и видны.
-// С JS: встроенный скрипт ещё при разборе пререндера ставит <html data-sheets> — листы в странице
+// С JS: встроенный скрипт в <head> ещё при разборе пререндера ставит <html data-sheets> — листы в странице
 // скрыты с первой отрисовки (без скачка вёрстки), а после гидрации карточки становятся кнопками окна.
 // Если скрипт страницы так и не пришёл, ссылка карточки показывает свой лист через :target.
 // Все 31 строка остаются в разметке (поиск, диктор через окно, тесты). Всё — из src/data/.
@@ -159,7 +159,7 @@ function PriceSheet({ group }: { group: PriceGroup }) {
   );
 }
 
-/** Ставится при разборе пререндера, до первой отрисовки: JS есть — листы в странице прячутся. */
+/** Ставится в <head> до первой отрисовки (HEAD_SCRIPT в App.tsx): JS есть — листы в странице прячутся. */
 export const SHEETS_FLAG_SCRIPT = 'document.documentElement.setAttribute("data-sheets","")';
 
 const loadDialog = () => import("../components/PriceSheetDialog");
@@ -206,8 +206,6 @@ export function Prices() {
             <SheetCard key={group.id} group={group} enhanced={enhanced} onOpen={open} onIntent={warm} />
           ))}
         </ul>
-        {/* скрипт выполняется браузером при разборе пререндера; на клиенте React его не создаёт */}
-        <div hidden dangerouslySetInnerHTML={{ __html: `<script>${SHEETS_FLAG_SCRIPT}</script>` }} />
         <div className={styles.sheets}>
           {PRICE_GROUPS.map((group) => (
             <PriceSheet key={group.id} group={group} />

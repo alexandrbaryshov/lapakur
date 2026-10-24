@@ -119,7 +119,7 @@ describe("обложка в пререндере (первая отрисовк�
     expect(frame!.nextElementSibling?.tagName).toBe("FIGURE");
   });
 
-  it("видео в пререндере нет — оно подключается после load", () => {
+  it("видео в пререндере нет — оно подключается после гидрации", () => {
     expect(ssrDocument().querySelector("video")).toBeNull();
   });
 
@@ -417,5 +417,39 @@ describe("видео обложки после load", () => {
     const list = await sources();
     expect(list.map((s) => s.getAttribute("type"))).toEqual(["video/mp4", "video/webm"]);
     for (const s of list) expect(s.getAttribute("src")).toMatch(/hero-video-desktop\./);
+  });
+});
+
+// Просьба пользователя: на медленной сети, пока шторку не отодвинули, грузятся первый экран и видео.
+// Под шторкой петля не ждёт load (его держит любая отставшая мелочь) — подключается сразу за постером.
+describe("видео обложки под шторкой — сразу за постером", () => {
+  beforeEach(() => {
+    vi.spyOn(document, "readyState", "get").mockReturnValue("loading");
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+    document.documentElement.removeAttribute("data-curtain");
+  });
+
+  it("шторка закрывает страницу — видео подключается, как только пришёл постер, до load", async () => {
+    document.documentElement.setAttribute("data-curtain", "pending");
+    const { container } = render(<Hero />);
+    await act(async () => {});
+    expect(container.querySelector("video")).toBeNull();
+    fireEvent.load(container.querySelector("#top img")!);
+    await waitFor(() => expect(container.querySelector("video")).not.toBeNull());
+  });
+
+  it("без шторки постер видео не подключает — оно ждёт load", async () => {
+    const { container } = render(<Hero />);
+    fireEvent.load(container.querySelector("#top img")!);
+    await act(async () => {});
+    expect(container.querySelector("video")).toBeNull();
+    act(() => {
+      window.dispatchEvent(new Event("load"));
+    });
+    await waitFor(() => expect(container.querySelector("video")).not.toBeNull());
   });
 });

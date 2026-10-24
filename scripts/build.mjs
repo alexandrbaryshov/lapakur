@@ -3,6 +3,7 @@
 // 2) SSR-сборка src/App.tsx и пререндер: готовая разметка App вставляется в dist/index.html
 //    на место <!--app-html-->. Первый экран рисуется до загрузки JS (медленная сеть, R36),
 //    без JS страница читается (R41i); в браузере main.tsx гидрирует эту разметку.
+//    Встроенный скрипт флагов <html> (HEAD_SCRIPT из App.tsx) встаёт в <head> на место <!--head-script-->.
 // Правило для компонентов: при рендере не трогать window/document/sessionStorage — только в эффектах.
 // 3) Если задан SITE_URL (в GitHub Actions его даёт actions/configure-pages), og:image становится
 //    абсолютным и добавляются canonical и og:url — соцсети и поисковики относительных адресов не берут.
@@ -14,6 +15,7 @@ import { build } from "vite";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const MARKER = "<!--app-html-->";
+const HEAD_MARKER = "<!--head-script-->";
 
 /** Абсолютные og:image, og:url и canonical для страницы по адресу `siteUrl` (с косой чертой в конце или без). */
 export function applySiteUrl(page, siteUrl) {
@@ -43,7 +45,7 @@ export async function buildSite({ root = ROOT, siteUrl = process.env.SITE_URL } 
     },
   });
 
-  const { default: App } = await import(`${pathToFileURL(join(ssrOut, "app.js")).href}?v=${Date.now()}`);
+  const { default: App, HEAD_SCRIPT } = await import(`${pathToFileURL(join(ssrOut, "app.js")).href}?v=${Date.now()}`);
   const { createElement } = await import("react");
   const { renderToString } = await import("react-dom/server");
   const html = renderToString(createElement(App));
@@ -52,7 +54,8 @@ export async function buildSite({ root = ROOT, siteUrl = process.env.SITE_URL } 
   const indexFile = join(root, "dist", "index.html");
   const page = readFileSync(indexFile, "utf8");
   if (!page.includes(MARKER)) throw new Error(`В dist/index.html нет метки ${MARKER} внутри #root`);
-  const rendered = page.replace(MARKER, html);
+  if (!page.includes(HEAD_MARKER)) throw new Error(`В dist/index.html нет метки ${HEAD_MARKER} в <head>`);
+  const rendered = page.replace(HEAD_MARKER, () => `<script>${HEAD_SCRIPT}</script>`).replace(MARKER, () => html);
   writeFileSync(indexFile, siteUrl ? applySiteUrl(rendered, siteUrl) : rendered);
   console.log(`Пререндер: ${(Buffer.byteLength(html) / 1000).toFixed(1)} КБ разметки App в dist/index.html`);
   if (siteUrl) console.log(`Адрес сайта: ${siteUrl}`);

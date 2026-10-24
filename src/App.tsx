@@ -9,7 +9,7 @@ import { Faq } from "./sections/Faq";
 import { Footer } from "./sections/Footer";
 import { Header } from "./sections/Header";
 import { Hero } from "./sections/Hero";
-import { Prices } from "./sections/Prices";
+import { Prices, SHEETS_FLAG_SCRIPT } from "./sections/Prices";
 import { StickyCall } from "./sections/StickyCall";
 import { Visit } from "./sections/Visit";
 import { Works } from "./sections/Works";
@@ -25,6 +25,16 @@ import "./styles/global.css";
 /** На сборке путь шрифта абсолютный («/assets/…»), страница же открывается с base "./". */
 const PRATA_HREF = prataCyrillic.startsWith("/") ? `.${prataCyrillic}` : prataCyrillic;
 
+/**
+ * Встроенный скрипт для <head> (scripts/build.mjs ставит его на место <!--head-script--> в index.html):
+ * флаги <html> до первой отрисовки — листы прайса прячутся, покров шторки встаёт.
+ * Только в <head> до стилей: там он выполняется сразу. Внутри разметки страницы встроенный скрипт ждёт
+ * таблицу стилей, и пока разбор стоит, Safari (WebKit) заранее запрашивает картинки дальше по разметке —
+ * и ленивые <picture> ниже первого экрана тоже: на iPhone они грузились под шторкой и отнимали полосу
+ * у первого экрана и видео обложки.
+ */
+export const HEAD_SCRIPT = `${SHEETS_FLAG_SCRIPT};${CURTAIN_BOOT_SCRIPT}`;
+
 export default function App() {
   // Шрифт шапки — первым (R36): кириллица Prata, ~13 КБ.
   preload(PRATA_HREF, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
@@ -35,8 +45,6 @@ export default function App() {
 
   return (
     <MotionProvider>
-      {/* скрипт выполняется браузером при разборе пререндера; на клиенте React его не создаёт */}
-      <div hidden dangerouslySetInnerHTML={{ __html: `<script>${CURTAIN_BOOT_SCRIPT}</script>` }} />
       <StudioJsonLd />
       <div className="page" inert={covered || undefined}>
         <InkLine />

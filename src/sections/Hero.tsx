@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 import { Picture } from "../components/Picture";
 import { SERVICES } from "../data/services";
 import { STUDIO } from "../data/studio";
@@ -7,8 +7,9 @@ import styles from "./Hero.module.css";
 
 // Обложка журнала по утверждённому макету «Ателье одной линии»: шапка ЛАПАКЮР дидоном,
 // по центру — вертикальная пластина 4:5 с петлёй «собака в спа», слева подзаголовок.
-// Постер (hero-poster) грузится с первым экраном; видео подключается после события load
-// и только без Save-Data и reduced-motion (spec.md, истории 4–6, 32).
+// Постер (hero-poster) грузится с первым экраном; видео подключается после события load, а под шторкой
+// первого захода — сразу за постером (useVideoTime), и только без Save-Data и reduced-motion
+// (spec.md, истории 4–6, 32).
 //
 // Голова в тюрбане — впереди шапки, как в макете (G02): шапка в два слоя. Заголовок h1 лежит под
 // пластиной (виден вне её), копия для глаза — над пластиной с маской hero-mask: маска непрозрачна
@@ -54,18 +55,34 @@ function videoSize(): VideoSize {
   return window.matchMedia?.("(max-width: 767px)").matches ? "mobile" : "desktop";
 }
 
-function useAfterLoad() {
-  const [loaded, setLoaded] = useState(false);
+/**
+ * Когда подключать петлю. Обычно — после load: первый экран получает всю полосу (spec.md, история 32).
+ * Первый заход со шторкой (покров <html data-curtain="pending"> ставит скрипт в <head>): обложка под
+ * шторкой не видна, а посетитель ещё смотрит на шторку — эти секунды отдаём петле. Она грузится, как
+ * только страница ожила и пришёл постер, не дожидаясь load: его на медленной сети держит любая отставшая
+ * мелочь (картинка карниза, шрифт). Картинки ниже первого экрана под шторкой не грузятся вовсе
+ * (Prices, PriceChapters, Works — *.module.css), полосу делят только чанки шторки и видео.
+ */
+function useVideoTime(plate: RefObject<HTMLElement | null>) {
+  const [time, setTime] = useState(false);
   useEffect(() => {
-    if (document.readyState === "complete") {
-      const id = window.setTimeout(() => setLoaded(true), 0);
+    const go = () => setTime(true);
+    const poster =
+      document.documentElement.getAttribute("data-curtain") === "pending" ? plate.current?.querySelector("img") : null;
+    if (document.readyState === "complete" || poster?.complete) {
+      const id = window.setTimeout(go, 0);
       return () => window.clearTimeout(id);
     }
-    const onLoad = () => setLoaded(true);
-    window.addEventListener("load", onLoad, { once: true });
-    return () => window.removeEventListener("load", onLoad);
-  }, []);
-  return loaded;
+    window.addEventListener("load", go, { once: true });
+    poster?.addEventListener("load", go, { once: true });
+    poster?.addEventListener("error", go, { once: true });
+    return () => {
+      window.removeEventListener("load", go);
+      poster?.removeEventListener("load", go);
+      poster?.removeEventListener("error", go);
+    };
+  }, [plate]);
+  return time;
 }
 
 function HeroVideo({ size }: { size: VideoSize }) {
@@ -108,17 +125,18 @@ function HeroVideo({ size }: { size: VideoSize }) {
 }
 
 export function Hero() {
-  const loaded = useAfterLoad();
+  const plate = useRef<HTMLElement>(null);
+  const time = useVideoTime(plate);
   const [video, setVideo] = useState<VideoSize | null>(null);
 
   useEffect(() => {
-    if (loaded && canPlayVideo()) setVideo(videoSize());
-  }, [loaded]);
+    if (time && canPlayVideo()) setVideo(videoSize());
+  }, [time]);
 
   return (
     <section id="top" className={styles.hero} aria-labelledby="top-title">
       <div className={styles.frame} data-plate-frame aria-hidden="true" />
-      <figure className={styles.plate}>
+      <figure ref={plate} className={styles.plate}>
         <Picture media="hero-poster" priority sizes={POSTER_SIZES} alt={POSTER_ALT} imgClassName={styles.poster} />
         {video && <HeroVideo size={video} />}
       </figure>
