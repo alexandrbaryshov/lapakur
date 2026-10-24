@@ -14,9 +14,10 @@ import styles from "./Hero.module.css";
 // пластиной (виден вне её), копия для глаза — над пластиной с маской hero-mask: маска непрозрачна
 // над плиткой и прозрачна на тюрбане и голове, а за краем пластины копии нет. Тюрбан в полосе букв
 // за всю петлю сдвигается не больше чем на 0,5 % ширины пластины, поэтому маска одна, статичная —
-// эффект есть и на постере, и без JS, и при reduced-motion. На телефоне пластина наклонена на 15° против
-// часовой стрелки: копия шапки поворачивается вместе с ней (маска совпадает с тюрбаном), а текст внутри
-// копии — обратно, и буквы остаются ровными (Hero.module.css, --hero-tilt).
+// эффект есть и на постере, и без JS, и при reduced-motion.
+//
+// Пластина — в рамке-намётке, как кадры «Наших довольных питомцев»: волосок чернилами на отступе,
+// в полосе букв шапки рамка разорвана и названия не пересекает (Hero.module.css, .frame).
 
 /** Маска верхнего слоя шапки — PNG из конвейера медиа (альфа; в манифесте — srcset «url 608w»). */
 const MASTHEAD_MASK = `url(${getImage("hero-mask").fallback.split(/\s+/)[0]})`;
@@ -105,6 +106,7 @@ export function Hero() {
 
   return (
     <section id="top" className={styles.hero} aria-labelledby="top-title">
+      <div className={styles.frame} data-plate-frame aria-hidden="true" />
       <figure className={styles.plate}>
         <Picture media="hero-poster" priority sizes={POSTER_SIZES} alt={POSTER_ALT} imgClassName={styles.poster} />
         {video && <HeroVideo />}
@@ -114,7 +116,7 @@ export function Hero() {
         {STUDIO.name}
       </h1>
       <div className={`${styles.masthead} ${styles.front}`} data-masthead="front" aria-hidden="true" style={FRONT_MASK_STYLE}>
-        <span className={styles.frontText}>{STUDIO.name}</span>
+        {STUDIO.name}
       </div>
 
       <p className={styles.tagline}>

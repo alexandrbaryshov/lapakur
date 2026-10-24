@@ -53,7 +53,8 @@ function readLayout(page: HTMLElement): (ThreadLayout & { height: number }) | nu
 
   const logo = block(page.querySelector('header a[href="#top"]'));
   const masthead = block(page.querySelector("#top h1"));
-  const plate = block(page.querySelector("#top figure"));
+  // пластина вместе с рамкой-намёткой: петли нити — снаружи волоска
+  const plate = block(page.querySelector("#top [data-plate-frame]") ?? page.querySelector("#top figure"));
   const phone = text(page.querySelector('#contacts a[href^="tel:"]'));
   if (!logo || !masthead || !plate || !phone) return null;
   const price = block(page.querySelector("#price"));

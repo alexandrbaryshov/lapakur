@@ -2,7 +2,7 @@
  * Обложка. Телефон — своя вертикальная композиция; от 900 px — сетка утверждённого макета
  * 2400 × 1792 (области и высоты заглавных — .impeccable/build/scaffold/layout.css,
  * базовые линии сняты с макета). 1 единица = var(--cpx) = 1 px макета в ширине страницы.
- * Слои: поле прайса < линия < шапка (h1) < пластина < копия шапки с маской тюрбана < меню.
+ * Слои: поле прайса < линия < шапка (h1) < рамка < пластина < копия шапки с маской тюрбана < меню.
  *
  * Голова в тюрбане впереди шапки (G02, как в макете): h1 лежит под пластиной, его копия .front —
  * над ней, с маской hero-mask (Hero.tsx). Кадр маски — пластина шириной W с полем MASK_FIELD = 8/1200 W
@@ -14,26 +14,26 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  padding: var(--space-5) var(--gutter) var(--space-7);
+  /* обложка поднята к меню: на телефоне первый экран целиком, до строки услуг (390 × 664, iPhone 13) */
+  padding: var(--space-2) var(--gutter) var(--space-7);
   /* переход на #top (логотип, адрес с якорем) показывает и шапку над обложкой */
   scroll-margin-top: 12rem;
   /* телефон: ширина колонки, кегль шапки, ширина пластины — общие для пластины, шапки и маски */
   --hero-col: calc(100cqw - 2 * var(--gutter));
   --hero-mast: calc(var(--hero-col) / 5.72);
   --hero-plate-w: min(calc(var(--hero-col) * 0.72), 420px);
-  --hero-plate-top: calc(var(--hero-mast) * 0.42);
+  --hero-plate-top: calc(var(--hero-mast) * 0.3);
   /*
-   * Шапка опущена на тюрбан: верх тюрбана — 0,2225 W от верха пластины; буквы сдвинуты так, чтобы он
-   * пришёлся на 40 % высоты заглавных (на компьютере — 31 %, как в макете), а пластина и всё ниже
-   * остались на месте.
+   * Шапка опущена на тюрбан: верх тюрбана — 0,2225 W от верха пластины, верх заглавных — 0,02 кегля
+   * от верха строки; буквы стоят так, чтобы тюрбан пришёлся на 40 % высоты заглавных (на компьютере —
+   * 31 %, как в макете).
    */
-  --hero-mast-shift: calc(var(--hero-plate-w) * 0.2225 + var(--hero-mast) * 0.08);
-  /*
-   * Пластина на телефоне наклонена против часовой стрелки, буквы шапки — нет. Наклон — вокруг центра
-   * пластины; копия шапки с маской тюрбана поворачивается вокруг той же точки, текст в ней — обратно.
-   */
-  --hero-tilt: -15deg;
-  --hero-plate-center-y: calc(var(--hero-plate-top) + var(--hero-plate-w) * 0.625 - var(--hero-mast-shift));
+  --hero-mast-shift: calc(var(--hero-plate-top) + var(--hero-plate-w) * 0.2225 - var(--hero-mast) * 0.34);
+  /* рамка-намётка: волосок на отступе от пластины, как у кадров работ (Works.module.css, --key-gap) */
+  --hero-frame-gap: 7px;
+  /* верх строки шапки — от верха пластины; разрыв рамки — от заглавных до волоска */
+  --hero-mast-from-plate: calc(var(--hero-mast-shift) - var(--hero-plate-top));
+  --hero-frame-break: calc(var(--hero-mast) * 0.12);
 }
 
 /* ── пластина 4:5: постер, поверх — петля видео ── */
@@ -46,11 +46,32 @@
   width: var(--hero-plate-w);
   aspect-ratio: 4 / 5;
   margin-top: var(--hero-plate-top);
-  /* нижний угол наклонённой пластины уходит на 0,11 W ниже её рамки — подзаголовок не задевает */
-  margin-bottom: calc(var(--hero-plate-w) * 0.11);
   overflow: hidden;
   background: var(--color-blush);
-  transform: rotate(var(--hero-tilt));
+}
+
+/*
+ * Рамка под пластиной: чернильный волосок на отступе, отступ прозрачный (у нижнего края на компьютере
+ * под ним уже бумага прайса). В полосе заглавных ЛАПАКЮР — от их верха до базовой линии с запасом
+ * --hero-frame-break — рамки нет: волосок обрывается у букв и продолжается под ними, название не перечёркнуто.
+ * На раскладку не влияет: отрицательный нижний отступ возвращает выступ рамки под пластиной.
+ */
+.frame {
+  position: relative;
+  z-index: 2;
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  justify-self: center;
+  align-self: start;
+  width: calc(var(--hero-plate-w) + 2 * var(--hero-frame-gap));
+  height: calc(var(--hero-plate-w) * 1.25 + 2 * var(--hero-frame-gap));
+  margin: calc(var(--hero-plate-top) - var(--hero-frame-gap)) 0 calc(-1 * var(--hero-frame-gap));
+  border: var(--hairline) solid var(--color-ink);
+  pointer-events: none;
+  --break-top: calc(var(--hero-mast-from-plate) + var(--hero-frame-gap) + var(--hero-mast) * 0.02 - var(--hero-frame-break));
+  --break-bottom: calc(var(--hero-mast-from-plate) + var(--hero-frame-gap) + var(--hero-mast) * 0.815 + var(--hero-frame-break));
+  -webkit-mask-image: linear-gradient(#000 var(--break-top), transparent var(--break-top), transparent var(--break-bottom), #000 var(--break-bottom));
+  mask-image: linear-gradient(#000 var(--break-top), transparent var(--break-top), transparent var(--break-bottom), #000 var(--break-bottom));
 }
 
 .plate picture,
@@ -107,25 +128,8 @@
   /* пластина по центру колонки, кадр маски — тоже; верх кадра — верх пластины минус поле */
   -webkit-mask-size: calc(var(--hero-plate-w) * 1216 / 1200) auto;
   mask-size: calc(var(--hero-plate-w) * 1216 / 1200) auto;
-  /*
-   * Маска режет всё за рамкой элемента, а выпрямленные буквы в наклонённом слое выходят за неё на ~0,7 кегля:
-   * у слоя поля --front-pad, а отрицательные отступы возвращают буквы точно на место шапки под пластиной.
-   */
-  --front-pad-y: var(--hero-mast);
-  --front-pad-x: calc(var(--hero-mast) * 0.3);
-  padding: var(--front-pad-y) var(--front-pad-x);
-  margin: calc(var(--hero-mast-shift) - var(--front-pad-y)) calc(-1 * var(--front-pad-x)) calc(-1 * var(--front-pad-y));
-  -webkit-mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200 + var(--front-pad-y));
-  mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200 + var(--front-pad-y));
-  /* маска наклонена вместе с пластиной (вокруг её центра), а буквы внутри (.frontText) — выпрямлены */
-  transform: rotate(var(--hero-tilt));
-  transform-origin: 50% calc(var(--hero-plate-center-y) + var(--front-pad-y));
-}
-
-.frontText {
-  display: block;
-  transform: rotate(calc(-1 * var(--hero-tilt)));
-  transform-origin: 50% var(--hero-plate-center-y);
+  -webkit-mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
+  mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
 }
 
 .tagline {
@@ -163,8 +167,9 @@
     display: block;
     height: calc(1263 * var(--cpx));
     padding: 0;
-    /* на компьютере пластина стоит прямо, как в макете */
-    --hero-tilt: 0deg;
+    --hero-mast: calc(395 * var(--cpx));
+    --hero-mast-from-plate: calc((307 - 215) * var(--cpx));
+    --hero-frame-gap: clamp(8px, calc(16 * var(--cpx)), 14px);
   }
 
   .plate {
@@ -177,19 +182,27 @@
     aspect-ratio: auto;
   }
 
+  .frame {
+    position: absolute;
+    left: calc(756 * var(--cpx) - var(--hero-frame-gap));
+    top: calc(215 * var(--cpx) - var(--hero-frame-gap));
+    width: calc(888 * var(--cpx) + 2 * var(--hero-frame-gap));
+    height: calc(1102 * var(--cpx) + 2 * var(--hero-frame-gap));
+    margin: 0;
+  }
+
   /* кегль 395: заглавная 314 px (макет — 315…629), базовая линия на 629; штрихи букв — по макету */
   .masthead {
     position: absolute;
     left: calc(99 * var(--cpx));
     top: calc(307 * var(--cpx));
     margin: 0;
-    font-size: calc(395 * var(--cpx));
+    font-size: var(--hero-mast);
     letter-spacing: -0.01em;
   }
 
   /* пластина 756/215, 888 × 1102 — относительно шапки (99/307): кадр маски с полем 888 · 8/1200 */
   .front {
-    padding: 0;
     -webkit-mask-size: calc(888 * 1216 / 1200 * var(--cpx)) auto;
     mask-size: calc(888 * 1216 / 1200 * var(--cpx)) auto;
     -webkit-mask-position: calc((756 - 99 - 888 * 8 / 1200) * var(--cpx)) calc((215 - 307 - 888 * 8 / 1200) * var(--cpx));

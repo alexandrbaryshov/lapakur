@@ -107,6 +107,17 @@ describe("обложка в пререндере (первая отрисовк�
     expect(statSync(file).size).toBeLessThanOrEqual(15_000);
   });
 
+  // Просьба пользователя: видео в рамке, как в «Наших довольных питомцах», рамка не пересекает название
+  // (разрыв в полосе букв — маска в Hero.module.css). Рамка — только картинка, рядом с пластиной.
+  it("пластина в рамке-намётке: рамка — отдельный слой без текста, скрытый от чтения с экрана", () => {
+    const top = ssrDocument().getElementById("top")!;
+    const frame = top.querySelector<HTMLElement>("[data-plate-frame]");
+    expect(frame).not.toBeNull();
+    expect(frame!.getAttribute("aria-hidden")).toBe("true");
+    expect(frame!.textContent).toBe("");
+    expect(frame!.nextElementSibling?.tagName).toBe("FIGURE");
+  });
+
   it("видео в пререндере нет — оно подключается после load", () => {
     expect(ssrDocument().querySelector("video")).toBeNull();
   });

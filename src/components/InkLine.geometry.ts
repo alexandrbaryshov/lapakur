@@ -3,7 +3,7 @@
 // На компьютере (≥ 900 px) первый экран — контур утверждённого макета (HERO_INK_PATH): он уходит
 // за правый край у верха страницы, как в макете, и нить возвращается из-за края под первым экраном
 // (за краем она не видна — как намётка, ушедшая под ткань). На телефоне линия своя: петля в шапке,
-// через точку меню, за шапкой и обложкой, петля слева от обложки и под ней — и дальше по полям.
+// через точку меню, за шапкой и обложкой, петля слева от обложки, из-под её правого края — и дальше по полям.
 // Путь проходит только по пустым полям и промежуткам между блоками: текст и цели нажатия он не пересекает
 // (за шапкой ЛАПАКЮР и пластиной обложки нить уходит под них, как в макете).
 
@@ -314,15 +314,17 @@ function phoneThread(l: ThreadLayout): Thread {
   const { plate } = l;
   pts.push(pt(plate.x + plate.w * 0.25, plate.y + plate.h * 0.35));
 
-  // 3. из-под обложки влево — петля в полосе слева от неё, затем под обложкой на правое поле;
+  // 3. из-под обложки влево — петля в полосе слева от неё, затем снова под обложку и из-под её правого края
+  //    на правое поле (не по просвету под рамкой: там нить легла бы вдоль волоска);
   //    когда пластина во всю колонку и полоса — одно поле страницы, петля мельче, у самого края и без наклона
   const roomy = clamp((plate.x - 24) / 24, 0, 1);
   const sizeB = clamp(plate.x * 0.62, 8, 46);
   const dirB = pt(-0.25 * roomy, 1);
   const startB = pt(plate.x - 2 - 4 * roomy, plate.y + plate.h * 0.5);
   const under = l.tagline ? (bottom(plate) + l.tagline.y) / 2 : bottom(plate) + 12;
+  const exitY = bottom(plate) - plate.h * 0.14;
   pts.push(pt(plate.x + 6, startB.y - 26), ...curl(startB, dirB, sizeB, pt(-1, 0)));
-  pts.push(pt(plate.x - 12, bottom(plate) - 30), pt(plate.x + plate.w * 0.14, under), pt(right(plate) + 8, under));
+  pts.push(pt(plate.x + 10, startB.y + plate.h * 0.2), pt(right(plate) - 10, exitY - 16), pt(Math.min(right(plate) + 14, gr - 4), exitY + 6));
   const afterHero = l.services ? bottom(l.services) : l.tagline ? bottom(l.tagline) : under + 60;
   pts.push(pt(gr - 3, under + 20), pt(gr, afterHero));
   const heroPoints = pts.length;
