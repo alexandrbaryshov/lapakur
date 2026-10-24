@@ -17,6 +17,7 @@ export default tseslint.config(
       "prices/**",
       "dogs-foto-live/**",
       "coverage/**",
+      "lapakur-github/**",
     ],
   },
   js.configs.recommended,

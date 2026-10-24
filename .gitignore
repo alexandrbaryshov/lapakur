@@ -8,6 +8,9 @@ __pycache__/
 *.log
 .autopilot/serve.*
 
+# публичная копия для GitHub — отдельный git-репозиторий (scripts/export-public.mjs)
+/lapakur-github/
+
 # исходники пользователя (AGENTS.md → «Где что») — в публичный репозиторий не выкладываются
 /product.md
 /лого студии.jpg

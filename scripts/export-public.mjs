@@ -1,4 +1,5 @@
-// Публичная копия без истории для GitHub: `node scripts/export-public.mjs [папка]` (по умолчанию ../lapakur-github).
+// Публичная копия без истории для GitHub: `node scripts/export-public.mjs [папка]` (по умолчанию lapakur-github
+// внутри проекта; в .gitignore, у неё свой git-репозиторий).
 // Копирует файлы последнего коммита, кроме рабочих материалов автопилота и impeccable (isPublic),
 // и коммитит их в отдельный git-репозиторий в этой папке (ветка master, создаётся при первом запуске).
 // Публикуется он: push в его master → GitHub Pages (.github/workflows/pages.yml).
@@ -51,4 +52,4 @@ export function exportPublic(target) {
 }
 
 const isCli = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
-if (isCli) exportPublic(resolve(ROOT, process.argv[2] ?? "../lapakur-github"));
+if (isCli) exportPublic(resolve(ROOT, process.argv[2] ?? "lapakur-github"));
