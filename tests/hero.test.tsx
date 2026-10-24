@@ -7,6 +7,7 @@ import App from "../src/App";
 import CurtainPanel from "../src/components/curtain/CurtainPanel";
 import { Curtain, CURTAIN_BOOT_SCRIPT, CURTAIN_COVER_TIMEOUT_MS } from "../src/components/Curtain";
 import { MotionProvider } from "../src/components/MotionProvider";
+import { Hero } from "../src/sections/Hero";
 
 // Ожидания — из spec.md (истории 3–15, 32), тикета 03 и interfaces.md:
 // пять услуг на главном, шапка-дидон с названием, подзаголовок макета дословно,
@@ -361,5 +362,60 @@ describe("шторка: отпускание после паузы", () => {
   it("отпустил на ходу (резкое смахивание) — открывается, хотя сдвиг меньше порога", () => {
     const { dialog } = dragAndRelease(1060);
     expect(dialog.getAttribute("data-phase")).toBe("opening");
+  });
+});
+
+// На iPhone петля не играла: WebKit пропускает <source media>, пока у вставленного видео нет рендерера,
+// и брал компьютерный WebM. Версию выбирает скрипт, MP4 (H.264) — первым.
+describe("видео обложки после load", () => {
+  let small = true;
+
+  beforeEach(() => {
+    vi.stubGlobal(
+      "matchMedia",
+      (query: string) =>
+        ({
+          matches: query.includes("max-width: 767px") ? small : false,
+          media: query,
+          onchange: null,
+          addListener: () => {},
+          removeListener: () => {},
+          addEventListener: () => {},
+          removeEventListener: () => {},
+          dispatchEvent: () => false,
+        }) as MediaQueryList,
+    );
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllGlobals();
+  });
+
+  async function sources() {
+    const { container } = render(<Hero />);
+    const video = await waitFor(() => {
+      const el = container.querySelector("video");
+      expect(el).not.toBeNull();
+      return el!;
+    });
+    return [...video.querySelectorAll("source")];
+  }
+
+  it("на телефоне — телефонная версия, MP4 первым, без атрибута media", async () => {
+    small = true;
+    const list = await sources();
+    expect(list.map((s) => s.getAttribute("type"))).toEqual(["video/mp4", "video/webm"]);
+    for (const s of list) {
+      expect(s.hasAttribute("media")).toBe(false);
+      expect(s.getAttribute("src")).toMatch(/hero-video-mobile\./);
+    }
+  });
+
+  it("на компьютере — компьютерная версия", async () => {
+    small = false;
+    const list = await sources();
+    expect(list.map((s) => s.getAttribute("type"))).toEqual(["video/mp4", "video/webm"]);
+    for (const s of list) expect(s.getAttribute("src")).toMatch(/hero-video-desktop\./);
   });
 });

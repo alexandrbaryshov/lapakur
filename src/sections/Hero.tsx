@@ -36,10 +36,22 @@ const POSTER_SIZES =
 
 type Connection = Navigator & { connection?: { saveData?: boolean } };
 
+/** Какую версию петли грузить: телефонную (480p) или компьютерную (720p). */
+type VideoSize = "mobile" | "desktop";
+
 function canPlayVideo() {
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
   const saveData = (navigator as Connection).connection?.saveData ?? false;
   return !reduced && !saveData;
+}
+
+/**
+ * Версия петли выбирается здесь, а не атрибутом media у <source>: WebKit (Safari, все браузеры iPhone)
+ * пропускает <source media>, пока у вставленного видео нет рендерера, — телефон получал компьютерный WebM,
+ * который мог и не заиграть.
+ */
+function videoSize(): VideoSize {
+  return window.matchMedia?.("(max-width: 767px)").matches ? "mobile" : "desktop";
 }
 
 function useAfterLoad() {
@@ -56,8 +68,8 @@ function useAfterLoad() {
   return loaded;
 }
 
-function HeroVideo() {
-  const video = getVideo("hero-video");
+function HeroVideo({ size }: { size: VideoSize }) {
+  const files = getVideo("hero-video")[size];
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
 
@@ -88,20 +100,19 @@ function HeroVideo() {
       disablePictureInPicture
       onPlaying={() => setPlaying(true)}
     >
-      <source media="(max-width: 767px)" src={video.mobile.webm} type="video/webm" />
-      <source media="(max-width: 767px)" src={video.mobile.mp4} type="video/mp4" />
-      <source src={video.desktop.webm} type="video/webm" />
-      <source src={video.desktop.mp4} type="video/mp4" />
+      {/* MP4 (H.264) первым: его играют все браузеры и он легче WebM; WebM — запасной */}
+      <source src={files.mp4} type="video/mp4" />
+      <source src={files.webm} type="video/webm" />
     </video>
   );
 }
 
 export function Hero() {
   const loaded = useAfterLoad();
-  const [video, setVideo] = useState(false);
+  const [video, setVideo] = useState<VideoSize | null>(null);
 
   useEffect(() => {
-    if (loaded && canPlayVideo()) setVideo(true);
+    if (loaded && canPlayVideo()) setVideo(videoSize());
   }, [loaded]);
 
   return (
@@ -109,7 +120,7 @@ export function Hero() {
       <div className={styles.frame} data-plate-frame aria-hidden="true" />
       <figure className={styles.plate}>
         <Picture media="hero-poster" priority sizes={POSTER_SIZES} alt={POSTER_ALT} imgClassName={styles.poster} />
-        {video && <HeroVideo />}
+        {video && <HeroVideo size={video} />}
       </figure>
 
       <h1 id="top-title" className={styles.masthead} data-masthead="back" tabIndex={-1}>
