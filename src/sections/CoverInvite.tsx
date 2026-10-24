@@ -1,13 +1,16 @@
 import { m } from "motion/react";
+import { useEffect, useState } from "react";
 import { COVER_BLOCKS, COVER_H, COVER_W, GUIDE, MASTHEAD, guidePath } from "../components/cover/layout";
 import { useZoom } from "../components/zoom";
 import { COVER_CITY, COVER_LINES, COVER_SAMPLE_SENSATION } from "../data/cover";
+import { pickSensation } from "../data/sensations";
 import { STUDIO } from "../data/studio";
 import styles from "./CoverInvite.module.css";
 
 // Рамка-приглашение в «Наших довольных питомцах»: выкройка обложки журнала «Лапакюр» — шапка,
-// строки обложки и пунктир намётки силуэтом собаки там, где встанет питомец, — и призыв сфотографировать питомца.
-// Нажатие открывает камеру (CoverStudio). Разметка статичная, пререндерится вместе со страницей.
+// строки обложки и пунктир намётки силуэтом пуделя там, где встанет питомец, — и призыв сфотографировать питомца.
+// Нажатие открывает камеру (CoverStudio). Разметка пререндерится с сенсацией-примером, а в браузере
+// сенсация сменяется случайной из списка (после гидрации, чтобы разметки сервера и клиента совпали).
 
 const GUIDE_PATH = guidePath();
 const upper = (s: string) => s.toLocaleUpperCase("ru");
@@ -15,6 +18,8 @@ const { services, address } = COVER_BLOCKS;
 
 export function CoverInvite({ onOpen }: { onOpen: (el: HTMLButtonElement) => void }) {
   const zoom = useZoom(1.015);
+  const [sensation, setSensation] = useState(COVER_SAMPLE_SENSATION);
+  useEffect(() => setSensation(pickSensation(COVER_SAMPLE_SENSATION)), []);
   return (
     <m.button
       type="button"
@@ -47,10 +52,10 @@ export function CoverInvite({ onOpen }: { onOpen: (el: HTMLButtonElement) => voi
             ВАШ ПИТОМЕЦ
           </text>
           <text className={styles.caps} x={COVER_BLOCKS.star.x} y={1262}>
-            {upper(COVER_SAMPLE_SENSATION)}
+            {upper(sensation)}
           </text>
           {/* фотоаппарат линиями — в окне головы */}
-          <g className={styles.camera} transform={`translate(${GUIDE.cx} ${GUIDE.top + 200})`}>
+          <g className={styles.camera} transform={`translate(${GUIDE.head.x} ${GUIDE.head.y})`}>
             <path d="M-78 -38H-34L-22 -58H22L34 -38H78V52H-78Z" />
             <circle r="30" cy="6" />
           </g>

@@ -20,8 +20,7 @@
   /* телефон: ширина колонки, кегль шапки, ширина пластины — общие для пластины, шапки и маски */
   --hero-col: calc(100cqw - 2 * var(--gutter));
   --hero-mast: calc(var(--hero-col) / 5.72);
-  /* пластина — ровно по ширине букв ЛАПАКЮР, как обложка журнала: краска слова в Prata — 5,635 кегля */
-  --hero-plate-w: calc(var(--hero-mast) * 5.635);
+  --hero-plate-w: min(calc(var(--hero-col) * 0.72), 420px);
   --hero-plate-top: calc(var(--hero-mast) * 0.42);
   /*
    * Шапка опущена на тюрбан: верх тюрбана — 0,2225 W от верха пластины; буквы сдвинуты так, чтобы он
@@ -29,6 +28,12 @@
    * остались на месте.
    */
   --hero-mast-shift: calc(var(--hero-plate-w) * 0.2225 + var(--hero-mast) * 0.08);
+  /*
+   * Пластина на телефоне наклонена против часовой стрелки, буквы шапки — нет. Наклон — вокруг центра
+   * пластины; копия шапки с маской тюрбана поворачивается вокруг той же точки, текст в ней — обратно.
+   */
+  --hero-tilt: -15deg;
+  --hero-plate-center-y: calc(var(--hero-plate-top) + var(--hero-plate-w) * 0.625 - var(--hero-mast-shift));
 }
 
 /* ── пластина 4:5: постер, поверх — петля видео ── */
@@ -37,13 +42,15 @@
   z-index: 2;
   grid-row: 1 / span 2;
   grid-column: 1;
-  /* левый край — от края колонки, как первая буква шапки */
-  justify-self: start;
+  justify-self: center;
   width: var(--hero-plate-w);
   aspect-ratio: 4 / 5;
   margin-top: var(--hero-plate-top);
+  /* нижний угол наклонённой пластины уходит на 0,11 W ниже её рамки — подзаголовок не задевает */
+  margin-bottom: calc(var(--hero-plate-w) * 0.11);
   overflow: hidden;
   background: var(--color-blush);
+  transform: rotate(var(--hero-tilt));
 }
 
 .plate picture,
@@ -97,11 +104,28 @@
   user-select: none;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  /* пластина от левого края колонки; кадр маски — на поле левее и выше её верха */
+  /* пластина по центру колонки, кадр маски — тоже; верх кадра — верх пластины минус поле */
   -webkit-mask-size: calc(var(--hero-plate-w) * 1216 / 1200) auto;
   mask-size: calc(var(--hero-plate-w) * 1216 / 1200) auto;
-  -webkit-mask-position: calc(var(--hero-plate-w) * -8 / 1200) calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
-  mask-position: calc(var(--hero-plate-w) * -8 / 1200) calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200);
+  /*
+   * Маска режет всё за рамкой элемента, а выпрямленные буквы в наклонённом слое выходят за неё на ~0,7 кегля:
+   * у слоя поля --front-pad, а отрицательные отступы возвращают буквы точно на место шапки под пластиной.
+   */
+  --front-pad-y: var(--hero-mast);
+  --front-pad-x: calc(var(--hero-mast) * 0.3);
+  padding: var(--front-pad-y) var(--front-pad-x);
+  margin: calc(var(--hero-mast-shift) - var(--front-pad-y)) calc(-1 * var(--front-pad-x)) calc(-1 * var(--front-pad-y));
+  -webkit-mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200 + var(--front-pad-y));
+  mask-position: center calc(var(--hero-plate-top) - var(--hero-mast-shift) - var(--hero-plate-w) * 8 / 1200 + var(--front-pad-y));
+  /* маска наклонена вместе с пластиной (вокруг её центра), а буквы внутри (.frontText) — выпрямлены */
+  transform: rotate(var(--hero-tilt));
+  transform-origin: 50% calc(var(--hero-plate-center-y) + var(--front-pad-y));
+}
+
+.frontText {
+  display: block;
+  transform: rotate(calc(-1 * var(--hero-tilt)));
+  transform-origin: 50% var(--hero-plate-center-y);
 }
 
 .tagline {
@@ -139,6 +163,8 @@
     display: block;
     height: calc(1263 * var(--cpx));
     padding: 0;
+    /* на компьютере пластина стоит прямо, как в макете */
+    --hero-tilt: 0deg;
   }
 
   .plate {
@@ -163,6 +189,7 @@
 
   /* пластина 756/215, 888 × 1102 — относительно шапки (99/307): кадр маски с полем 888 · 8/1200 */
   .front {
+    padding: 0;
     -webkit-mask-size: calc(888 * 1216 / 1200 * var(--cpx)) auto;
     mask-size: calc(888 * 1216 / 1200 * var(--cpx)) auto;
     -webkit-mask-position: calc((756 - 99 - 888 * 8 / 1200) * var(--cpx)) calc((215 - 307 - 888 * 8 / 1200) * var(--cpx));

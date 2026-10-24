@@ -35,44 +35,46 @@ describe("строки обложки о студии", () => {
 });
 
 describe("геометрия обложки", () => {
-  it("голова в рамке-подсказке чуть заходит на шапку, но не выше линии, до которой она может закрыть буквы", () => {
-    expect(GUIDE.top).toBeGreaterThan(OCCLUSION_TOP);
-    expect(GUIDE.top).toBeLessThan(MASTHEAD.baseline);
+  /** Точки контура рамки (концы и опоры кривых): только M и C — пары x y. */
+  const guidePoints = () => {
+    const numbers = (guidePath().match(/-?\d+(\.\d+)?/g) ?? []).map(Number);
+    return numbers.flatMap((n, i) => (i % 2 ? [[numbers[i - 1], n] as const] : []));
+  };
+
+  it("помпон пуделя в рамке-подсказке чуть заходит на шапку, но не выше линии, до которой голова может закрыть буквы", () => {
+    const top = Math.min(...guidePoints().map(([, y]) => y));
+    expect(top).toBeGreaterThan(OCCLUSION_TOP);
+    expect(top).toBeLessThan(MASTHEAD.baseline);
+    expect(GUIDE.head.y).toBeGreaterThan(MASTHEAD.baseline);
     // верхние 45 % заглавных не закрываются никогда
     expect(OCCLUSION_TOP).toBeCloseTo(MASTHEAD.capTop + MASTHEAD.capHeight * 0.45, 5);
     expect(OCCLUSION_TOP + OCCLUSION_FADE).toBeLessThan(MASTHEAD.baseline);
   });
 
-  it("контур рамки — силуэт собаки внутри кадра 3:4: симметричный, макушка вверху, лапы на нижнем крае", () => {
+  it("контур рамки — пудель внутри кадра 3:4, низ одной линией по нижнему краю, без отдельных лап", () => {
     const path = guidePath();
-    const numbers = (path.match(/-?\d+(\.\d+)?/g) ?? []).map(Number);
-    const points = numbers.flatMap((n, i) => (i % 2 ? [[numbers[i - 1], n] as const] : []));
+    const points = guidePoints();
     for (const [x, y] of points) {
       expect(x).toBeGreaterThanOrEqual(0);
       expect(x).toBeLessThanOrEqual(COVER_W);
       expect(y).toBeLessThanOrEqual(COVER_H);
-      // каждой точке слева есть зеркальная справа
-      expect(points.some(([mx, my]) => Math.abs(mx - (COVER_W - x)) < 0.11 && Math.abs(my - y) < 0.11)).toBe(true);
     }
-    expect(Math.min(...points.map(([, y]) => y))).toBeCloseTo(GUIDE.top, 0);
     expect(COVER_W / COVER_H).toBeCloseTo(3 / 4, 5);
-    expect(GUIDE.cx).toBe(COVER_W / 2);
-    // контур замкнут: начинается и кончается в щели между передними лапами, посередине
-    const [, startX, startY] = /^M(\S+) (\S+)/.exec(path) ?? [];
-    const [, endX, endY] = /(\S+) (\S+) Z$/.exec(path) ?? [];
-    expect(Number(startX)).toBe(GUIDE.cx);
-    expect([Number(endX), Number(endY)]).toEqual([Number(startX), Number(startY)]);
-    // передние и задние лапы стоят на нижнем крае по обе стороны
-    const feet = points.filter(([, y]) => y === COVER_H);
-    expect(feet.filter(([x]) => x < GUIDE.cx).length).toBeGreaterThanOrEqual(4);
-    expect(feet.filter(([x]) => x > GUIDE.cx).length).toBeGreaterThanOrEqual(4);
+    // на нижнем крае — только начало контура и его последняя точка: замыкание Z идёт по низу одной линией
+    const floor = points.filter(([, y]) => y === COVER_H);
+    expect(floor).toHaveLength(2);
+    expect(/^M\S+ 1440 /.test(path)).toBe(true);
+    expect(/ \S+ 1440 Z$/.test(path)).toBe(true);
   });
 
-  it("строки обложки по бокам не заходят на голову с ушами в рамке", () => {
-    const headLeft = GUIDE.cx - GUIDE.headHalf;
-    const headRight = GUIDE.cx + GUIDE.headHalf;
-    expect(COVER_BLOCKS.services.x + COVER_BLOCKS.services.width).toBeLessThanOrEqual(headLeft);
-    expect(COVER_BLOCKS.address.x - COVER_BLOCKS.address.width).toBeGreaterThanOrEqual(headRight);
+  it("строки обложки по бокам не заходят на голову пуделя в рамке", () => {
+    const head = guidePoints().filter(([, y]) => y >= COVER_BLOCKS.services.top && y <= 560);
+    const left = COVER_BLOCKS.services.x + COVER_BLOCKS.services.width;
+    const right = COVER_BLOCKS.address.x - COVER_BLOCKS.address.width;
+    for (const [x] of head) {
+      expect(x).toBeGreaterThan(left);
+      expect(x).toBeLessThan(right);
+    }
   });
 
   it("шапка — от поля до поля по краске Prata", () => {

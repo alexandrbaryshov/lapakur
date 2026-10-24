@@ -54,7 +54,6 @@ function Studio({ onClose }: { onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const coverRef = useRef<HTMLCanvasElement>(null);
   const segmenter = useRef<Promise<PetSegmenter | null> | null>(null);
 
   const [step, setStep] = useState<Step>("camera");
@@ -77,6 +76,13 @@ function Studio({ onClose }: { onClose: () => void }) {
       return false;
     }
   }, []);
+  /** Телефон или планшет: кнопка сохраняет «в галерею», на компьютере — скачивает файл. */
+  const touch = useMemo(() => window.matchMedia?.("(pointer: coarse)").matches ?? false, []);
+  /** iPhone и iPad: сохранить в «Фото» можно только через меню «Поделиться». */
+  const saveViaShare = useMemo(
+    () => canShare && (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.userAgent.includes("Macintosh") && navigator.maxTouchPoints > 1)),
+    [canShare],
+  );
 
   // окно: страница не прокручивается, фокус внутри, Esc закрывает
   useEffect(() => {
@@ -181,6 +187,10 @@ function Studio({ onClose }: { onClose: () => void }) {
     const id = ++shotId.current;
     setShot({ id, graded: gradePhoto(frame) });
     setMask(null);
+    // каждому кадру — своя случайная сенсация (не та же, что на прошлой обложке)
+    if (id > 1) setSensation((current) => pickSensation(current));
+    setCover(null);
+    setSaveHint("");
     setStep("result");
     const pending = segmenter.current;
     if (!pending) {
@@ -300,35 +310,65 @@ function Studio({ onClose }: { onClose: () => void }) {
     if (picked) finish(framePhoto(picked.image, view));
   };
 
-  // ── готовая обложка ──
+  // ── готовая обложка: рисуется на canvas вне страницы, показывается картинкой JPEG ──
+  // Картинку можно удержать пальцем и сохранить в «Фото» / галерею — canvas телефон так не сохраняет.
+  const coverCanvas = useRef<HTMLCanvasElement | null>(null);
+  const [cover, setCover] = useState<{ blob: Blob; url: string } | null>(null);
   useEffect(() => {
-    const target = coverRef.current;
-    if (step !== "result" || !shot || !target || !fontsReady) return;
+    if (step !== "result" || !shot || !fontsReady) return;
+    const target = (coverCanvas.current ??= document.createElement("canvas"));
     renderCover(target, { graded: shot.graded, mask, name, sensation, date: new Date() });
+    let alive = true;
+    const timer = window.setTimeout(() => {
+      coverBlob(target)
+        .then((blob) => alive && setCover({ blob, url: URL.createObjectURL(blob) }))
+        .catch(() => {});
+    }, 80);
+    return () => {
+      alive = false;
+      window.clearTimeout(timer);
+    };
   }, [step, shot, mask, name, sensation, fontsReady]);
+  useEffect(() => () => {
+    if (cover) URL.revokeObjectURL(cover.url);
+  }, [cover]);
 
   const fileName = "lapakur-oblozhka.jpg";
-  const save = async () => {
-    const target = coverRef.current;
-    if (!target) return;
-    const url = URL.createObjectURL(await coverBlob(target));
+  const [saveHint, setSaveHint] = useState("");
+  const download = () => {
+    if (!cover) return;
     const link = document.createElement("a");
-    link.href = url;
+    link.href = cover.url;
     link.download = fileName;
     document.body.append(link);
     link.click();
     link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  };
+  /** Меню «Поделиться» с одной картинкой; true — меню открылось (на iPhone в нём «Сохранить изображение»). */
+  const shareImage = async () => {
+    if (!cover) return false;
+    try {
+      // только файл, без текста: с подписью iPhone прячет «Сохранить изображение»
+      await navigator.share({ files: [new File([cover.blob], fileName, { type: "image/jpeg" })] });
+      return true;
+    } catch (error) {
+      return error instanceof DOMException && error.name === "AbortError";
+    }
+  };
+  /**
+   * В галерею: на iPhone загрузка уходит в «Файлы», а в «Фото» картинку кладёт пункт «Сохранить изображение»
+   * меню «Поделиться». На Android загруженная картинка сама появляется в галерее (альбом «Download»).
+   */
+  const saveToGallery = async () => {
+    if (saveViaShare) {
+      setSaveHint("В меню выберите «Сохранить изображение» — обложка попадёт в «Фото».");
+      if (await shareImage()) return;
+    }
+    download();
+    setSaveHint(touch ? "Обложка сохранена — она в галерее, в альбоме «Download»." : "");
   };
   const share = async () => {
-    const target = coverRef.current;
-    if (!target) return;
-    const file = new File([await coverBlob(target)], fileName, { type: "image/jpeg" });
-    try {
-      await navigator.share({ files: [file], title: `Обложка «${STUDIO.name}»` });
-    } catch (error) {
-      if (!(error instanceof DOMException && error.name === "AbortError")) await save();
-    }
+    if (!(await shareImage())) download();
   };
 
   const retake = () => {
@@ -414,8 +454,13 @@ function Studio({ onClose }: { onClose: () => void }) {
                 }}
               />
             )}
-            {step === "result" && (
-              <canvas ref={coverRef} className={styles.cover} role="img" aria-label={`Обложка журнала «${STUDIO.name}»${name.trim() ? ` с питомцем по имени ${name.trim()}` : ""}`} />
+            {step === "result" && cover && (
+              <img
+                className={styles.cover}
+                src={cover.url}
+                alt={`Обложка журнала «${STUDIO.name}»${name.trim() ? ` с питомцем по имени ${name.trim()}` : ""}`}
+                data-cover-image
+              />
             )}
 
             {showGuide && !cameraBlocked && (
@@ -525,18 +570,20 @@ function Studio({ onClose }: { onClose: () => void }) {
                 </button>
               </div>
               <div className={styles.row}>
-                <button type="button" className={styles.action} onClick={save} disabled={!shot}>
-                  Сохранить обложку
+                <button type="button" className={styles.action} onClick={saveToGallery} disabled={!cover}>
+                  {touch ? "Сохранить в галерею" : "Скачать обложку"}
                 </button>
                 {canShare && (
-                  <button type="button" className={styles.action} onClick={share} disabled={!shot}>
+                  <button type="button" className={styles.action} onClick={share} disabled={!cover}>
                     Поделиться
                   </button>
                 )}
               </div>
               <p className={styles.status} aria-live="polite">
-                {head === "working" ? "Ставим питомца перед названием…" : head === "none" ? "Питомца в кадре не нашли — название поверх фото" : ""}
+                {saveHint ||
+                  (head === "working" ? "Ставим питомца перед названием…" : head === "none" ? "Питомца в кадре не нашли — название поверх фото" : "")}
               </p>
+              {touch && <p className={styles.status}>Или удерживайте палец на обложке — телефон предложит сохранить её в галерею.</p>}
             </>
           )}
         </div>

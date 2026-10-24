@@ -14,7 +14,9 @@ import styles from "./Hero.module.css";
 // пластиной (виден вне её), копия для глаза — над пластиной с маской hero-mask: маска непрозрачна
 // над плиткой и прозрачна на тюрбане и голове, а за краем пластины копии нет. Тюрбан в полосе букв
 // за всю петлю сдвигается не больше чем на 0,5 % ширины пластины, поэтому маска одна, статичная —
-// эффект есть и на постере, и без JS, и при reduced-motion.
+// эффект есть и на постере, и без JS, и при reduced-motion. На телефоне пластина наклонена на 15° против
+// часовой стрелки: копия шапки поворачивается вместе с ней (маска совпадает с тюрбаном), а текст внутри
+// копии — обратно, и буквы остаются ровными (Hero.module.css, --hero-tilt).
 
 /** Маска верхнего слоя шапки — PNG из конвейера медиа (альфа; в манифесте — srcset «url 608w»). */
 const MASTHEAD_MASK = `url(${getImage("hero-mask").fallback.split(/\s+/)[0]})`;
@@ -25,12 +27,11 @@ const POSTER_ALT =
   "читает книгу «Лапакюр», рядом бокал розового вина";
 
 /**
- * Пластина — 37 % ширины на компьютере; на телефоне — по ширине шапки (~91 % ширины), но при DPR ≥ 2,5 —
- * 266 px, чтобы телефону доставалось не шире 800w (бюджет первого экрана): постер виден до старта петли,
- * а её мобильная версия — 480 px, так что 800w ей не уступает.
+ * Пластина — 37 % ширины на компьютере; на телефоне ~70 % ширины, но при DPR ≥ 2,5 — 266 px,
+ * чтобы телефону доставалось не шире 800w (бюджет первого экрана).
  */
 const POSTER_SIZES =
-  "(max-width: 899px) and (min-resolution: 2.5dppx) 266px, (max-width: 899px) 91vw, 37vw";
+  "(max-width: 899px) and (min-resolution: 2.5dppx) 266px, (max-width: 899px) 70vw, 37vw";
 
 type Connection = Navigator & { connection?: { saveData?: boolean } };
 
@@ -113,7 +114,7 @@ export function Hero() {
         {STUDIO.name}
       </h1>
       <div className={`${styles.masthead} ${styles.front}`} data-masthead="front" aria-hidden="true" style={FRONT_MASK_STYLE}>
-        {STUDIO.name}
+        <span className={styles.frontText}>{STUDIO.name}</span>
       </div>
 
       <p className={styles.tagline}>
