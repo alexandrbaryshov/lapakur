@@ -112,8 +112,11 @@ describe("Окно листа", () => {
         if (row.hourly) expect(flat(rows[j].textContent)).toContain(`${row.hourly} ₽ — 1 час работы`);
       });
       for (const note of group.footnotes) expect(flat(dialog.textContent)).toContain(flat(note));
-      const call = within(dialog).getAllByRole("link").find((a) => a.getAttribute("href") === PHONE_HREF);
-      expect(call && flat(call.textContent)).toContain("Записаться");
+      fireEvent.click(within(dialog).getByRole("button", { name: /Записаться/ }));
+      expect(within(dialog).getByRole("link", { name: "Записаться по телефону" }).getAttribute("href")).toBe(PHONE_HREF);
+      expect(within(dialog).getByRole("link", { name: "Записаться онлайн" }).getAttribute("href")).toBe("https://dikidi.ru/1933719");
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(screen.getByRole("dialog")).toBeTruthy();
 
       expect(dialog.contains(document.activeElement)).toBe(true);
       expect(document.documentElement.style.overflow).toBe("hidden");
@@ -150,7 +153,7 @@ describe("Окно листа", () => {
     renderPage();
     fireEvent.click(cards()[0]);
     const dialog = await screen.findByRole("dialog");
-    const focusables = [...dialog.querySelectorAll<HTMLElement>("a[href], button")];
+    const focusables = [...dialog.querySelectorAll<HTMLElement>("a[href], button")].filter((item) => !item.closest("[hidden]"));
     expect(focusables.length).toBeGreaterThan(1);
     focusables[focusables.length - 1].focus();
     fireEvent.keyDown(document, { key: "Tab" });

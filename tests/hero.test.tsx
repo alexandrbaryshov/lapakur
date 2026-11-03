@@ -129,13 +129,16 @@ describe("обложка в пререндере (первая отрисовк�
     expect(doc.querySelector('[role="dialog"]')).toBeNull();
   });
 
-  it("«Записаться» — ссылка на телефон студии с собакой у телефона и номером", () => {
+  it("«Записаться» открывает выбор телефона или онлайн-записи", () => {
     const doc = ssrDocument();
-    const link = [...doc.querySelectorAll<HTMLAnchorElement>("header a")].find((a) => flat(a.textContent).startsWith("Записаться"));
-    expect(link).toBeDefined();
-    expect(link!.getAttribute("href")).toBe(PHONE_HREF);
-    expect(flat(link!.textContent)).toContain(PHONE_SHORT);
-    expect(link!.querySelector("img")?.getAttribute("srcset")).toContain("call-dog");
+    const button = doc.querySelector<HTMLButtonElement>("header button[data-call=hero]")!;
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    expect(flat(button.textContent)).toContain(PHONE_SHORT);
+    expect(button.querySelector("img")?.getAttribute("srcset")).toContain("call-dog");
+    const menu = doc.getElementById(button.getAttribute("aria-controls")!)!;
+    expect(menu.hasAttribute("hidden")).toBe(true);
+    expect(menu.querySelector(`a[href="${PHONE_HREF}"]`)).not.toBeNull();
+    expect(menu.querySelector('a[href="https://dikidi.ru/1933719"]')).not.toBeNull();
   });
 
   it("в шапке есть логотип студии", () => {

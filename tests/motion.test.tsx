@@ -69,7 +69,7 @@ describe("приближение по наведению и нажатию (R30,
         <CallButton variant="hero" />
       </MotionProvider>,
     );
-    const link = container.querySelector("a")!;
+    const link = container.querySelector("button")!;
     const dog = link.querySelector("img")!.closest("span")!;
     await settle(50);
     fireEvent.pointerDown(link, { pointerType: "mouse", button: 0, isPrimary: true });
@@ -86,7 +86,7 @@ describe("приближение по наведению и нажатию (R30,
         <CallButton variant="hero" />
       </MotionProvider>,
     );
-    const link = container.querySelector("a")!;
+    const link = container.querySelector("button")!;
     const dog = link.querySelector("img")!.closest("span")!;
     await settle(50);
     fireEvent.pointerEnter(link, { pointerType: "mouse" });
@@ -188,7 +188,7 @@ describe("приближение по наведению и нажатию (R30,
         <CallButton variant="hero" />
       </MotionProvider>,
     );
-    const link = container.querySelector("a")!;
+    const link = container.querySelector("button")!;
     const dog = link.querySelector("img")!.closest("span")!;
     await settle(50);
     fireEvent.pointerEnter(link, { pointerType: "mouse" });

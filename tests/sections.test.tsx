@@ -412,7 +412,8 @@ describe("Липкая кнопка-звонок (история 16)", () => {
 
     intersect(section("top"), false, -2000);
     expect(hidden()).toBe(false);
-    expect(within(sticky).getByRole("link").getAttribute("href")).toBe(PHONE_HREF);
+    fireEvent.click(within(sticky).getByRole("button", { name: /Записаться/ }));
+    expect(within(sticky).getByRole("link", { name: "Записаться по телефону" }).getAttribute("href")).toBe(PHONE_HREF);
 
     intersect(screen.getByRole("contentinfo"), true);
     expect(hidden()).toBe(true);

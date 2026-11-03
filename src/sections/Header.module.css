@@ -6,7 +6,6 @@
   grid-template-columns: auto 1fr;
   grid-template-areas:
     "logo call"
-    "online online"
     "nav nav";
   align-items: center;
   row-gap: var(--space-2);
@@ -209,5 +208,3 @@
   }
 }
 
-.online { grid-area: online; display: inline-flex; align-items: center; min-height: 44px; justify-self: end; font-size: var(--text-sm); text-decoration-color: var(--color-brass); text-underline-offset: 0.3em; }
-@media (min-width: 900px) { .online { position: absolute; left: calc(1700 * var(--cpx)); top: calc(145 * var(--cpx)); font-size: max(0.75rem, calc(28 * var(--cpx))); } }

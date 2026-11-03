@@ -1,10 +1,10 @@
 import { m, useReducedMotion, type Variants } from "motion/react";
+import { useEffect, useId, useRef, useState } from "react";
 import { STUDIO } from "../data/studio";
 import { Picture } from "./Picture";
 import styles from "./CallButton.module.css";
 
-// Ссылка на звонок —
-// ссылка tel: с однолинейной собакой у дискового телефона (пластина call-dog).
+// Единая кнопка записи открывает выбор способа связи.
 
 export type CallButtonProps = {
   /** hero — в шапке обложки; compact — липкая кнопка на телефоне; inline — внутри текста. */
@@ -31,18 +31,49 @@ const dogMotion: Variants = {
 };
 
 export function CallButton({ variant, showNumber = false, className }: CallButtonProps) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuId = useId();
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown, true);
+    };
+  }, [open]);
   const gestures = reduceMotion ? {} : { initial: "rest", animate: "rest", whileHover: "hover", whileTap: "tap" };
 
   return (
-    <m.a
-      href={STUDIO.phoneHref}
-      className={[styles.call, styles[variant], className].filter(Boolean).join(" ")}
+    <div ref={rootRef} className={[styles.root, styles[`root_${variant}`], className].filter(Boolean).join(" ")} onBlur={(event) => {
+      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
+    }}>
+    <m.button
+      ref={buttonRef}
+      type="button"
+      aria-expanded={open}
+      aria-controls={menuId}
+      onClick={() => setOpen((value) => !value)}
+      className={[styles.call, styles[variant]].join(" ")}
       data-call={variant}
       {...gestures}
     >
       <span className={styles.label}>Записаться</span>
-      <span className="visually-hidden"> по телефону </span>
+
       <m.span
         className={styles.dog}
         variants={reduceMotion ? undefined : dogMotion}
@@ -52,6 +83,11 @@ export function CallButton({ variant, showNumber = false, className }: CallButto
         <Picture media="call-dog" sizes={DOG_SIZES[variant]} alt="" imgClassName={styles.dogImg} />
       </m.span>
       <span className={showNumber ? styles.number : "visually-hidden"}>{PHONE_SHORT}</span>
-    </m.a>
+    </m.button>
+    <div id={menuId} className={styles.menu} hidden={!open}>
+      <a href={STUDIO.phoneHref} onClick={() => setOpen(false)}>Записаться по телефону</a>
+      <a href={STUDIO.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Записаться онлайн</a>
+    </div>
+    </div>
   );
 }

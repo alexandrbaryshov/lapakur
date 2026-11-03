@@ -31,7 +31,6 @@ export function Header() {
         </ul>
       </nav>
       <CallButton variant="hero" showNumber className={styles.call} />
-      <a href={STUDIO.bookingUrl} target="_blank" rel="noopener noreferrer" className={styles.online}>Записаться онлайн</a>
     </header>
   );
 }
