@@ -14,6 +14,12 @@ describe("Выбор способа записи", () => {
     const menu = document.getElementById(button.getAttribute("aria-controls")!)!;
     expect(within(menu).getByRole("link", { name: "Записаться по телефону" }).getAttribute("href")).toBe("tel:+79033581161");
     expect(within(menu).getByRole("link", { name: "Записаться онлайн" }).getAttribute("href")).toBe("https://dikidi.ru/1933719");
+    const phone = within(menu).getByRole("link", { name: "Записаться по телефону" });
+    const online = within(menu).getByRole("link", { name: "Записаться онлайн" });
+    expect(fireEvent.click(phone, { button: 0 })).toBe(true);
+    expect(menu.hasAttribute("hidden")).toBe(false);
+    expect(fireEvent.click(online, { button: 0 })).toBe(true);
+    expect(menu.hasAttribute("hidden")).toBe(false);
     fireEvent.keyDown(document, { key: "Escape" });
     expect(button.getAttribute("aria-expanded")).toBe("false");
     expect(document.activeElement).toBe(button);

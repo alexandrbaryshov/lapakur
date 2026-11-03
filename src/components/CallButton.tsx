@@ -59,9 +59,7 @@ export function CallButton({ variant, showNumber = false, className }: CallButto
   const gestures = reduceMotion ? {} : { initial: "rest", animate: "rest", whileHover: "hover", whileTap: "tap" };
 
   return (
-    <div ref={rootRef} className={[styles.root, styles[`root_${variant}`], className].filter(Boolean).join(" ")} onBlur={(event) => {
-      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
-    }}>
+    <div ref={rootRef} className={[styles.root, styles[`root_${variant}`], className].filter(Boolean).join(" ")}>
     <m.button
       ref={buttonRef}
       type="button"
@@ -85,8 +83,8 @@ export function CallButton({ variant, showNumber = false, className }: CallButto
       <span className={showNumber ? styles.number : "visually-hidden"}>{PHONE_SHORT}</span>
     </m.button>
     <div id={menuId} className={styles.menu} hidden={!open}>
-      <a href={STUDIO.phoneHref} onClick={() => setOpen(false)}>Записаться по телефону</a>
-      <a href={STUDIO.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Записаться онлайн</a>
+      <a href={STUDIO.phoneHref}>Записаться по телефону</a>
+      <a href={STUDIO.bookingUrl} target="_blank" rel="noopener noreferrer">Записаться онлайн</a>
     </div>
     </div>
   );
