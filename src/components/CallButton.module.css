@@ -2,7 +2,7 @@
 .call { border: 0; padding: 0; background: transparent; cursor: pointer; }
 .menu { position: absolute; z-index: 100; top: 100%; left: 0; width: max-content; max-width: min(90vw, 20rem); padding: var(--space-2) var(--space-4); background: var(--color-porcelain); border: var(--hairline) solid var(--color-ink); box-shadow: var(--shadow-soft); }
 .menu[hidden] { display: none; }
-.menu a { display: flex; align-items: center; min-height: var(--target-min); padding: var(--space-2) 0; color: var(--color-ink); font: 400 var(--text-sm)/1.3 var(--font-sans); text-decoration: none; }
+.menu a { -webkit-tap-highlight-color: transparent; display: flex; align-items: center; min-height: var(--target-min); padding: var(--space-2) 0; color: var(--color-ink); font: 400 var(--text-sm)/1.3 var(--font-sans); text-decoration: none; }
 .menu a + a { border-top: var(--hairline) solid var(--color-brass); }
 .menu a:hover, .menu a:focus-visible { text-decoration: underline; text-decoration-color: var(--color-brass); text-underline-offset: 0.25em; }
 .root_compact .menu, .root_inline .menu { top: auto; bottom: 100%; }
