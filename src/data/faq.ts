@@ -62,7 +62,7 @@ export const FAQ: readonly FaqItem[] = [
   {
     id: "booking",
     q: "Как записаться?",
-    a: `Только по телефону: ${STUDIO.phoneDisplay}. Студия работает ${STUDIO.hours}.`,
+    a: `По телефону ${STUDIO.phoneDisplay} или онлайн через Dikidi. Студия работает ${STUDIO.hours}.`,
   },
   {
     id: "location",

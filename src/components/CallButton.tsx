@@ -3,7 +3,7 @@ import { STUDIO } from "../data/studio";
 import { Picture } from "./Picture";
 import styles from "./CallButton.module.css";
 
-// «Записаться» — это звонок: записаться можно только по телефону (бриф), поэтому кнопка —
+// Ссылка на звонок —
 // ссылка tel: с однолинейной собакой у дискового телефона (пластина call-dog).
 
 export type CallButtonProps = {

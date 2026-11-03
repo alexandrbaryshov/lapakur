@@ -3,6 +3,7 @@ import { useEffect, useRef, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
 import type { PriceGroup } from "../data/prices";
 import { CallButton } from "./CallButton";
+import { STUDIO } from "../data/studio";
 import { PriceTable } from "./PriceTable";
 import { useZoom } from "./zoom";
 import styles from "./PriceSheetDialog.module.css";
@@ -125,6 +126,7 @@ export function PriceSheetDialog({ group, onClose }: PriceSheetDialogProps) {
             </div>
             <footer className={styles.foot}>
               <CallButton variant="inline" showNumber className={styles.call} />
+              <a href={STUDIO.bookingUrl} target="_blank" rel="noopener noreferrer" className={styles.call}>Записаться онлайн</a>
             </footer>
           </m.div>
         </m.div>

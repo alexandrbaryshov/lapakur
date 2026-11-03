@@ -125,6 +125,7 @@ export function Visit() {
             {STUDIO.phoneDisplay}
           </m.a>
           <CallButton variant="inline" className={styles.call} />
+          <a href={STUDIO.bookingUrl} className={styles.route} {...EXTERNAL}>Записаться онлайн</a>
           <p className={styles.addressLine}>
             <a href={STUDIO.yandexOrgUrl} className={styles.address} {...EXTERNAL}>
               {STUDIO.address}

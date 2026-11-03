@@ -1,5 +1,5 @@
 // Контакты студии — дословно из facts.md (Яндекс Карты, организация 199810306793).
-// Сайтов и соцсетей у студии нет; запись — только по телефону.
+// Контакты и способы записи студии.
 
 const YANDEX_ORG_URL = "https://yandex.ru/maps/org/lapakyur/199810306793/";
 const GEO = { lat: 56.097437, lon: 47.280633 } as const;
@@ -9,6 +9,7 @@ export const STUDIO = {
   city: "Чебоксары",
   phoneDisplay: "+7 (903) 358-11-61",
   phoneHref: "tel:+79033581161",
+  bookingUrl: "https://dikidi.ru/1933719",
   address: "просп. 9-й Пятилетки, 15, Чебоксары",
   hours: "ежедневно, 10:00–18:00",
   geo: GEO,
