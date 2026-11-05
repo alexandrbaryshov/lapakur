@@ -399,3 +399,13 @@
     font-size: clamp(0.75rem, calc(23 * var(--cpx)), 0.875rem);
   }
 }
+
+.reviewControls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: var(--text-sm); }
+.reviewControls div { display: flex; gap: .5rem; }
+.reviewControls button { width: 44px; height: 44px; border: 1px solid var(--color-ink); background: transparent; color: var(--color-ink); cursor: pointer; font-size: 1.25rem; }
+.reviewControls button:hover { background: var(--color-ink); color: var(--color-porcelain); }
+.quotes { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding: 0 0 1rem; }
+.quoteItem, .quoteItem:not([data-lead]) { flex: 0 0 min(85%, 390px); min-width: 0; scroll-snap-align: start; padding: 0; border: 0; }
+.reviewPhotos { display: flex; gap: 4px; aspect-ratio: 4 / 5; overflow: hidden; margin-bottom: var(--space-4); background: var(--color-paper); }
+.reviewPhotos img { width: 0; flex: 1; min-width: 0; height: 100%; object-fit: cover; }
+@media (min-width: 900px) { .quotes { display: flex; gap: 24px; } }

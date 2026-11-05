@@ -112,6 +112,12 @@ function YandexMap() {
 }
 
 export function Visit() {
+  const reviewsRef = useRef<HTMLUListElement>(null);
+  const moveReviews = (direction: number) => {
+    const list = reviewsRef.current;
+    const card = list?.querySelector("li");
+    if (list && card) list.scrollBy({ left: direction * (card.getBoundingClientRect().width + 24), behavior: "smooth" });
+  };
   const zoom = useZoom(1.03);
   return (
     <section id="contacts" aria-labelledby="contacts-title" className={styles.section}>
@@ -145,9 +151,15 @@ export function Visit() {
               Все отзывы на Яндекс Картах
             </m.a>
           </div>
-          <ul className={styles.quotes}>
+          <div className={styles.reviewControls}><span>Листайте, чтобы увидеть больше</span><div><button type="button" onClick={() => moveReviews(-1)} aria-label="Предыдущий отзыв">←</button><button type="button" onClick={() => moveReviews(1)} aria-label="Следующий отзыв">→</button></div></div>
+          <ul ref={reviewsRef} className={styles.quotes} aria-label="Отзывы клиентов">
             {REVIEWS.map((review, i) => (
-              <li key={`${review.author}-${review.date}`} className={styles.quoteItem} data-lead={i === 0 || undefined}>
+              <li key={`${review.author}-${review.date}`} className={styles.quoteItem}>
+                <div className={styles.reviewPhotos}>
+                  {(i < 3 ? [i * 2 + 1, i * 2 + 2] : [i + 4]).map((photo) => (
+                    <img key={photo} src={`${import.meta.env.BASE_URL}media/reviews/review-${photo}.jpg`} alt="Работа студии Лапакюр: стрижка собаки" loading="lazy" />
+                  ))}
+                </div>
                 <figure className={styles.quote}>
                   <blockquote className={styles.quoteText}>
                     <p>{review.text}</p>
