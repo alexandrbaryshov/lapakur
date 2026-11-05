@@ -413,3 +413,13 @@
 .follow p { font-family:var(--font-didone); font-size:clamp(1.4rem, 3vw, 2.5rem); line-height:1.2; max-width:28ch; }
 @media (min-width:900px) { .follow { grid-column:1 / -1; } }
 
+
+.mapGroup { min-width: 0; }
+.parking { margin: 1.5rem 0 0; }
+.parking button { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; width: 100%; }
+.parking img { display: block; width: 100%; max-height: 300px; object-fit: cover; }
+.parking figcaption { margin-top: .75rem; line-height: 1.5; }
+.parkingDialog { max-width: min(95vw, 1100px); max-height: 95vh; padding: 1rem; border: 0; background: #fff; }
+.parkingDialog::backdrop { background: rgb(0 0 0 / .8); }
+.parkingDialog img { display: block; max-width: 100%; max-height: 82vh; object-fit: contain; }
+.parkingDialog button { display: block; margin: 0 0 .5rem auto; font-size: 2rem; border: 0; background: transparent; cursor: pointer; }

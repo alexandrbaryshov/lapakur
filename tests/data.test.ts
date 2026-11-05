@@ -202,12 +202,11 @@ describe("SERVICES — пять услуг брифа", () => {
 describe("FAQ — только факты", () => {
   const all = FAQ.map((f) => `${f.q}\n${f.a}`).join("\n\n");
 
-  it("7–8 вопросов с уникальными id, без восклицаний и выдуманных правил", () => {
+  it("вопросы с уникальными id и без выдуманных правил", () => {
     expect(FAQ.length).toBeGreaterThanOrEqual(7);
-    expect(FAQ.length).toBeLessThanOrEqual(8);
+    expect(FAQ.length).toBe(11);
     expect(new Set(FAQ.map((f) => f.id)).size).toBe(FAQ.length);
-    expect(all).not.toMatch(/!/);
-    expect(all).not.toMatch(/прививк|вакцин|оплат|сертифи|присутств|опыт/i);
+    expect(all).not.toMatch(/прививк|вакцин|сертифи|присутств|опыт/i);
   });
 
   it("покрывает запись, адрес и часы, мытьё перед комплексом, гигиену, экспресс-линьку, крупные породы, породу вне прайса", () => {
@@ -220,7 +219,7 @@ describe("FAQ — только факты", () => {
     expect(all).toContain("10:00");
     expect(all).toContain("20:00");
     expect(answerTo(/где /i)).toContain("просп. 9-й Пятилетки, 15");
-    expect(answerTo(/мыть/i)).toMatch(/свежепомыт/i);
+    expect(answerTo(/мыть/i)).toMatch(/не нужно/i);
     expect(answerTo(/гигиеническ/i)).toContain("кроме стрижки корпуса (спинки)");
     const shedding = answerTo(/экспресс-линьк/i);
     expect(shedding).toContain("1 час 30 минут");

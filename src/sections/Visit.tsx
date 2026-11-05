@@ -114,6 +114,7 @@ function YandexMap() {
 }
 
 export function Visit() {
+  const parkingDialog = useRef<HTMLDialogElement>(null);
   const reviewsRef = useRef<HTMLUListElement>(null);
   const moveReviews = (direction: number) => {
     const list = reviewsRef.current;
@@ -144,7 +145,17 @@ export function Visit() {
           </m.a>
         </div>
 
-        <YandexMap />
+        <div className={styles.mapGroup}>
+          <YandexMap />
+          <figure className={styles.parking}>
+            <button type="button" onClick={() => parkingDialog.current?.showModal()} aria-label="Увеличить фото парковки"><img src={`${import.meta.env.BASE_URL}parking.webp`} alt="Место для парковки рядом со студией" loading="lazy" /></button>
+            <figcaption>Припарковаться можно от знака, запрещающего остановку, до выезда со двора на протяжении 40 метров.</figcaption>
+          </figure>
+          <dialog ref={parkingDialog} className={styles.parkingDialog} onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }}>
+            <button type="button" onClick={() => parkingDialog.current?.close()} aria-label="Закрыть фото">×</button>
+            <img src={`${import.meta.env.BASE_URL}parking.webp`} alt="Место для парковки рядом со студией" loading="lazy" />
+          </dialog>
+        </div>
 
         <div className={styles.reviews}>
           <div className={styles.reviewsHead}>

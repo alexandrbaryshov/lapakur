@@ -137,7 +137,7 @@ html[data-curtain] body::before {
   background-color: var(--color-satin);
   background-image: url("/media/curtain-rod-800.webp"), url("/media/curtain-480.webp");
   background-image:
-    image-set(url("/media/curtain-rod-800.avif") type("image/avif"), url("/media/curtain-rod-800.webp") type("image/webp")),
+    image-set(url("/curtain-rod-optimized.avif") type("image/avif"), url("/media/curtain-rod-800.webp") type("image/webp")),
     image-set(url("/media/curtain-480.avif") type("image/avif"), url("/media/curtain-480.webp") type("image/webp"));
   background-repeat: no-repeat, repeat-x;
   background-position:
@@ -156,7 +156,7 @@ html[data-curtain="expired"] body::before {
   html[data-curtain] body::before {
     background-image: url("/media/curtain-rod-800.webp"), url("/media/curtain-800.webp");
     background-image:
-      image-set(url("/media/curtain-rod-800.avif") type("image/avif"), url("/media/curtain-rod-800.webp") type("image/webp")),
+      image-set(url("/curtain-rod-optimized.avif") type("image/avif"), url("/media/curtain-rod-800.webp") type("image/webp")),
       image-set(url("/media/curtain-800.avif") type("image/avif"), url("/media/curtain-800.webp") type("image/webp"));
   }
 }

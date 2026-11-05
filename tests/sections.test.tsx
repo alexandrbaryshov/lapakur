@@ -238,11 +238,11 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
 // ───────────────────────── вопросы ─────────────────────────
 
 describe("Вопросы (#faq, R20)", () => {
-  it("8 вопросов; ответы раскрываются по одному (aria-expanded)", () => {
+  it("11 вопросов; ответы раскрываются по одному (aria-expanded)", () => {
     renderPage();
     const faq = section("faq");
     const buttons = within(faq).getAllByRole("button");
-    expect(buttons).toHaveLength(8);
+    expect(buttons).toHaveLength(11);
     buttons.forEach((b, i) => {
       expect(b.tagName).toBe("BUTTON");
       expect(flat(b.textContent)).toBe(FAQ[i].q);
