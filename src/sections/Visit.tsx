@@ -148,12 +148,12 @@ export function Visit() {
         <div className={styles.mapGroup}>
           <YandexMap />
           <figure className={styles.parking}>
-            <button type="button" onClick={() => parkingDialog.current?.showModal()} aria-label="Увеличить фото парковки"><img src={`${import.meta.env.BASE_URL}parking.webp`} alt="Место для парковки рядом со студией" loading="lazy" /></button>
+            <button type="button" onClick={() => parkingDialog.current?.showModal()} aria-label="Увеличить фото парковки"><img src={"./parking-2026.jpg"} alt="Место для парковки рядом со студией" loading="lazy" /></button>
             <figcaption>Припарковаться можно от знака, запрещающего остановку, до выезда со двора на протяжении 40 метров.</figcaption>
           </figure>
           <dialog ref={parkingDialog} className={styles.parkingDialog} onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }}>
             <button type="button" onClick={() => parkingDialog.current?.close()} aria-label="Закрыть фото">×</button>
-            <img src={`${import.meta.env.BASE_URL}parking.webp`} alt="Место для парковки рядом со студией" loading="lazy" />
+            <img src={"./parking-2026.jpg"} alt="Место для парковки рядом со студией" loading="lazy" />
           </dialog>
         </div>
 
