@@ -1,0 +1,6 @@
+.links { display:flex; flex-wrap:wrap; gap:1.5rem; align-items:center; }
+.link { display:inline-flex; align-items:center; gap:.55rem; min-height:48px; color:var(--color-ink); font-size:var(--text-xs); letter-spacing:var(--tracking-caps); text-transform:uppercase; text-decoration:none; }
+.link svg { width:48px; height:48px; fill:none; stroke:currentColor; stroke-width:1.15; stroke-linecap:round; stroke-linejoin:round; transition:transform .2s ease; }
+.link:hover svg { transform:scale(1.08); }
+.pending { opacity:.55; }
+@media (prefers-reduced-motion: reduce) { .link svg { transition:none; } }

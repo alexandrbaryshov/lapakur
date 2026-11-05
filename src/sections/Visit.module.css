@@ -409,3 +409,7 @@
 .reviewPhotos { display: flex; gap: 4px; aspect-ratio: 4 / 5; overflow: hidden; margin-bottom: var(--space-4); background: var(--color-paper); }
 .reviewPhotos img { width: 0; flex: 1; min-width: 0; height: 100%; object-fit: cover; }
 @media (min-width: 900px) { .quotes { display: flex; gap: 24px; } }
+.follow { display:grid; gap:1rem; padding-top:var(--space-5); border-top:1px solid var(--color-brass); }
+.follow p { font-family:var(--font-didone); font-size:clamp(1.4rem, 3vw, 2.5rem); line-height:1.2; max-width:28ch; }
+@media (min-width:900px) { .follow { grid-column:1 / -1; } }
+

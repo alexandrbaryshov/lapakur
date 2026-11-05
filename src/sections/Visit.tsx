@@ -1,3 +1,4 @@
+import { SocialLinks } from "../components/SocialLinks";
 import { m } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { CallButton } from "../components/CallButton";
@@ -173,7 +174,9 @@ export function Visit() {
             ))}
           </ul>
         </div>
+        <div className={styles.follow}><p>Подписывайтесь и следите за актуальными новостями</p><SocialLinks /></div>
       </div>
     </section>
   );
 }
+
