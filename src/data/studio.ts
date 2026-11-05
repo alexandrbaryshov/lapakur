@@ -11,7 +11,7 @@ export const STUDIO = {
   phoneHref: "tel:+79033581161",
   bookingUrl: "https://dikidi.ru/1933719",
   address: "просп. 9-й Пятилетки, 15, Чебоксары",
-  hours: "ежедневно, 10:00–18:00",
+  hours: "ежедневно, 10:00–20:00",
   geo: GEO,
   yandexOrgId: "199810306793",
   yandexOrgUrl: YANDEX_ORG_URL,

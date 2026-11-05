@@ -54,6 +54,14 @@
   color: var(--color-ink-soft);
 }
 
+.socials { display: flex; align-items: center; gap: 0.5rem; }
+.social { display: grid; place-items: center; width: 44px; height: 44px; }
+.socialImage { position: relative; display: block; width: 36px; height: 36px; overflow: hidden; mix-blend-mode: multiply; }
+.socialImage img { position: absolute; width: 200px; max-width: none; height: 200px; }
+.vk { left: -48px; top: -80px; }
+.instagram { left: -112px; top: -80px; }
+.placeholder { opacity: 0.55; cursor: default; }
+
 @media (min-width: 900px) {
   .footer {
     grid-template-columns: auto 1fr;
@@ -85,3 +93,4 @@
     font-size: clamp(0.75rem, calc(24 * var(--cpx)), 0.9375rem);
   }
 }
+

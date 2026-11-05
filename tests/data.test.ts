@@ -218,7 +218,7 @@ describe("FAQ — только факты", () => {
     };
     expect(answerTo(/записат/i)).toContain("+7 (903) 358-11-61");
     expect(all).toContain("10:00");
-    expect(all).toContain("18:00");
+    expect(all).toContain("20:00");
     expect(answerTo(/где /i)).toContain("просп. 9-й Пятилетки, 15");
     expect(answerTo(/мыть/i)).toMatch(/свежепомыт/i);
     expect(answerTo(/гигиеническ/i)).toContain("кроме стрижки корпуса (спинки)");

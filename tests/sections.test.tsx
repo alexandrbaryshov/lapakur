@@ -16,7 +16,7 @@ import { WORKS } from "../src/data/works";
 const PHONE_HREF = "tel:+79033581161";
 const PHONE_DISPLAY = "+7 (903) 358-11-61";
 const ADDRESS = "просп. 9-й Пятилетки, 15, Чебоксары";
-const HOURS = "ежедневно, 10:00–18:00";
+const HOURS = "ежедневно, 10:00–20:00";
 const ORG_URL = "https://yandex.ru/maps/org/lapakyur/199810306793/";
 const REVIEWS_URL = "https://yandex.ru/maps/org/lapakyur/199810306793/reviews/";
 
@@ -480,7 +480,7 @@ describe("Мета, Open Graph и JSON-LD (история 36)", () => {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         opens: "10:00",
-        closes: "18:00",
+        closes: "20:00",
       },
     ]);
     expect(data.hasMap).toBe(ORG_URL);

@@ -36,6 +36,9 @@ export function StickyCall() {
       inert={!visible || undefined}
     >
       <CallButton variant="compact" showNumber className={styles.button} />
+      <button type="button" className={styles.top} onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" })}>
+        ↑ Наверх
+      </button>
     </div>
   );
 }

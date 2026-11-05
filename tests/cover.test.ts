@@ -28,7 +28,7 @@ describe("сенсации номера", () => {
 describe("строки обложки о студии", () => {
   // литералы — из facts.md, а не из кода
   it("адрес, часы и телефон — дословно из фактов студии", () => {
-    expect(COVER_LINES.address.sub).toEqual(["просп. 9-й Пятилетки, 15", "ежедневно 10:00–18:00"]);
+    expect(COVER_LINES.address.sub).toEqual(["просп. 9-й Пятилетки, 15", "ежедневно 10:00–20:00"]);
     expect(COVER_LINES.booking.sub).toContain("+7 (903) 358-11-61");
     expect(COVER_LINES.services.sub[0]).toBe("Стрижка, мытьё, окраска, вычёсывание");
   });

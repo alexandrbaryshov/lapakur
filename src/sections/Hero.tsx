@@ -149,7 +149,7 @@ export function Hero() {
       </div>
 
       <p className={styles.tagline}>
-        Премиум-студия <br className={styles.break} />
+        Студия комфорт класса <br className={styles.break} />
         груминга в Чебоксарах
       </p>
 
