@@ -351,7 +351,7 @@ describe("Визит (#contacts, R21–R23)", () => {
     cards.forEach((card, i) => {
       const photos = card.querySelectorAll("img");
       expect(photos).toHaveLength(1);
-      expect(photos[0].getAttribute("src")).toBe(`./media/reviews/review-${[1, 3, 4, 6, 8][i]}.jpg`);
+      expect(photos[0].getAttribute("src")).toBe(`./media/reviews/review-${[1, 3, 4, 6, 8][i]}.webp`);
     });
     REVIEWS.forEach((review, i) => {
       expect(quotes[i].textContent).toBe(review.text);

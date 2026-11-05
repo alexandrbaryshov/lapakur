@@ -35,7 +35,7 @@ const POSTER_ALT =
 const POSTER_SIZES =
   "(max-width: 899px) and (min-resolution: 2.5dppx) 266px, (max-width: 899px) 70vw, 37vw";
 
-type Connection = Navigator & { connection?: { saveData?: boolean } };
+type Connection = Navigator & { connection?: { saveData?: boolean; effectiveType?: string } };
 
 /** Какую версию петли грузить: телефонную (480p) или компьютерную (720p). */
 type VideoSize = "mobile" | "desktop";
@@ -43,7 +43,9 @@ type VideoSize = "mobile" | "desktop";
 function canPlayVideo() {
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
   const saveData = (navigator as Connection).connection?.saveData ?? false;
-  return !reduced && !saveData;
+  const effectiveType = (navigator as Connection).connection?.effectiveType;
+  const slow = effectiveType === "slow-2g" || effectiveType === "2g" || effectiveType === "3g";
+  return !reduced && !saveData && !slow;
 }
 
 /**
