@@ -6,7 +6,7 @@
   bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
   z-index: 50;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: var(--space-2);
   pointer-events: none;
   opacity: 0;
@@ -54,3 +54,4 @@
 }
 
 .top { pointer-events: auto; border: 1px solid var(--color-dove); background: var(--color-porcelain); color: var(--color-ink); min-height: var(--target-min); padding: 0.75rem; font: inherit; cursor: pointer; }
+
