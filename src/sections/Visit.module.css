@@ -331,11 +331,11 @@
     font-size: clamp(0.8125rem, calc(26 * var(--cpx)), 1rem);
   }
 
-  .map {
+  .mapGroup {
     grid-column: 7 / 13;
     grid-row: 1 / span 2;
-    aspect-ratio: 5 / 4;
   }
+  .map { aspect-ratio: 5 / 4; }
 
   .legend {
     padding: calc(40 * var(--cpx)) calc(48 * var(--cpx)) calc(28 * var(--cpx));
