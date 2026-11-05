@@ -156,9 +156,7 @@ export function Visit() {
             {REVIEWS.map((review, i) => (
               <li key={`${review.author}-${review.date}`} className={styles.quoteItem}>
                 <div className={styles.reviewPhotos}>
-                  {(i < 3 ? [i * 2 + 1, i * 2 + 2] : [i + 4]).map((photo) => (
-                    <img key={photo} src={`${import.meta.env.BASE_URL}media/reviews/review-${photo}.jpg`} alt="Работа студии Лапакюр: стрижка собаки" loading="lazy" />
-                  ))}
+                  <img src={`./media/reviews/review-${i + 1}.jpg`} alt="Работа студии Лапакюр: стрижка собаки" loading="lazy" />
                 </div>
                 <figure className={styles.quote}>
                   <blockquote className={styles.quoteText}>

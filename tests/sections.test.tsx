@@ -346,6 +346,13 @@ describe("Визит (#contacts, R21–R23)", () => {
     const contacts = section("contacts");
     const quotes = contacts.querySelectorAll("blockquote");
     expect(quotes).toHaveLength(5);
+    const cards = contacts.querySelectorAll('ul[aria-label="Отзывы клиентов"] > li');
+    expect(cards).toHaveLength(5);
+    cards.forEach((card, i) => {
+      const photos = card.querySelectorAll("img");
+      expect(photos).toHaveLength(1);
+      expect(photos[0].getAttribute("src")).toBe(`./media/reviews/review-${i + 1}.jpg`);
+    });
     REVIEWS.forEach((review, i) => {
       expect(quotes[i].textContent).toBe(review.text);
       const caption = flat(quotes[i].closest("figure")?.querySelector("figcaption")?.textContent);
