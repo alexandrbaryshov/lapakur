@@ -63,12 +63,4 @@
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Знак рубля живёт в латинском расширении Jost; файл (6 КБ) грузится только ради «₽» */
-@font-face {
-  font-family: "Jost";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("../../node_modules/@fontsource/jost/files/jost-latin-ext-400-normal.woff2") format("woff2");
-  unicode-range: U+20BD;
-}
+
