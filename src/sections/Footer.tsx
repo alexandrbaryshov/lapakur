@@ -21,10 +21,10 @@ export function Footer() {
         <span className={styles.hours}>{STUDIO.hours}</span>
         <div className={styles.socials} aria-label="Социальные сети">
           <a href="https://vk.ru/lapakuir" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="Сообщество Лапакюр во ВКонтакте">
-            <span className={styles.socialImage} aria-hidden="true"><img className={styles.vk} src={`${import.meta.env.BASE_URL}social-icons.webp`} alt="" loading="lazy" /></span>
+            <span className={styles.socialImage} aria-hidden="true"><img className={styles.vk} src="./social-icons.webp" alt="" loading="lazy" /></span>
           </a>
           <span className={`${styles.social} ${styles.placeholder}`} aria-label="Instagram — ссылка появится позже" title="Ссылка появится позже">
-            <span className={styles.socialImage} aria-hidden="true"><img className={styles.instagram} src={`${import.meta.env.BASE_URL}social-icons.webp`} alt="" loading="lazy" /></span>
+            <span className={styles.socialImage} aria-hidden="true"><img className={styles.instagram} src="./social-icons.webp" alt="" loading="lazy" /></span>
           </span>
         </div>
       </address>

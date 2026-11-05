@@ -5,8 +5,8 @@
   right: var(--space-4);
   bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
   z-index: 50;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2);
   pointer-events: none;
   opacity: 0;
@@ -30,8 +30,11 @@
 
 .button {
   pointer-events: auto;
-
+  width: 100%;
 }
+
+.button :global([data-call="compact"]) { width: 100%; justify-content: center; }
+.button :global([data-call="compact"]) > span:last-child { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .sticky {
@@ -50,4 +53,4 @@
   }
 }
 
-.top { pointer-events: auto; border: 1px solid var(--color-dove); background: #f8f6f1; color: var(--color-ink); padding: 0.75rem; font: inherit; cursor: pointer; }
+.top { pointer-events: auto; border: 1px solid var(--color-dove); background: var(--color-porcelain); color: var(--color-ink); min-height: var(--target-min); padding: 0.75rem; font: inherit; cursor: pointer; }

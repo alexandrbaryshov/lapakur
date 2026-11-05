@@ -37,6 +37,7 @@ function probeMapHost(): Promise<boolean> {
 type MapState = "idle" | "loading" | "ready" | "failed";
 
 const EXTERNAL = { target: "_blank", rel: "noopener noreferrer" } as const;
+const REVIEW_PHOTOS = [1, 3, 4, 6, 8] as const;
 
 function YandexMap() {
   const ref = useRef<HTMLDivElement>(null);
@@ -156,7 +157,7 @@ export function Visit() {
             {REVIEWS.map((review, i) => (
               <li key={`${review.author}-${review.date}`} className={styles.quoteItem}>
                 <div className={styles.reviewPhotos}>
-                  <img src={`./media/reviews/review-${i + 1}.jpg`} alt="Работа студии Лапакюр: стрижка собаки" loading="lazy" />
+                  <img src={`./media/reviews/review-${REVIEW_PHOTOS[i]}.jpg`} alt="Работа студии Лапакюр: стрижка собаки" loading="lazy" />
                 </div>
                 <figure className={styles.quote}>
                   <blockquote className={styles.quoteText}>
