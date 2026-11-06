@@ -77,13 +77,13 @@ export function Lightbox({ work, onClose }: LightboxProps) {
             transition={fade}
           >
             <div className={styles.frame}>
-              <Picture
+              {work.src ? <img src={work.src} alt={work.breed} className={styles.img} /> : (<Picture
                 media={work.media}
                 sizes="(min-width: 900px) 600px, 92vw"
                 alt={`${work.breed} после груминга в студии`}
                 imgClassName={styles.img}
                 priority
-              />
+              />)}
             </div>
             <figcaption className={styles.caption}>{work.breed}</figcaption>
           </m.figure>

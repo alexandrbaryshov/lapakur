@@ -38,7 +38,7 @@ function probeMapHost(): Promise<boolean> {
 type MapState = "idle" | "loading" | "ready" | "failed";
 
 const EXTERNAL = { target: "_blank", rel: "noopener noreferrer" } as const;
-const REVIEW_PHOTOS = [1, 3, 4, 6, 8] as const;
+
 
 function YandexMap() {
   const ref = useRef<HTMLDivElement>(null);
@@ -166,11 +166,8 @@ export function Visit() {
           </div>
           <div className={styles.reviewControls}><span>Листайте, чтобы увидеть больше</span><div><button type="button" onClick={() => moveReviews(-1)} aria-label="Предыдущий отзыв">←</button><button type="button" onClick={() => moveReviews(1)} aria-label="Следующий отзыв">→</button></div></div>
           <ul ref={reviewsRef} className={styles.quotes} aria-label="Отзывы клиентов">
-            {REVIEWS.map((review, i) => (
+            {REVIEWS.map((review) => (
               <li key={`${review.author}-${review.date}`} className={styles.quoteItem}>
-                <div className={styles.reviewPhotos}>
-                  <img src={`./media/reviews/review-${REVIEW_PHOTOS[i]}.webp`} alt="Работа студии Лапакюр: стрижка собаки" loading="lazy" />
-                </div>
                 <figure className={styles.quote}>
                   <blockquote className={styles.quoteText}>
                     <p>{review.text}</p>

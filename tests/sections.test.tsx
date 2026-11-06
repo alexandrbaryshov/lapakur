@@ -7,7 +7,7 @@ import App from "../src/App";
 import { FAQ } from "../src/data/faq";
 import { PRICE_GROUPS, formatPrice } from "../src/data/prices";
 import { REVIEWS } from "../src/data/reviews";
-import { WORKS } from "../src/data/works";
+import { ALBUMS } from "../src/data/works";
 
 // Ожидания — из тикета 04, spec.md (истории 16–28, 33, 36) и facts.md.
 // Литералы (телефон, адрес, сноски, цены глав, строки прайса) взяты из facts.md, а не из кода.
@@ -167,29 +167,30 @@ describe("Прайс (#price, R16–R18)", () => {
 // ───────────────────────── работы ─────────────────────────
 
 describe("Ваши довольные питомцы (#works, R19)", () => {
-  it("6 настоящих фото в рамках с подписью породы", () => {
+  it("4 альбома с 11 фотографиями и подписями", () => {
     renderPage();
     const works = section("works");
     expect(within(works).getByRole("heading", { level: 2, name: "Ваши довольные питомцы" })).toBeTruthy();
     const figures = works.querySelectorAll("figure");
-    expect(figures).toHaveLength(6);
+    expect(figures).toHaveLength(11);
     const captions = [...figures].map((f) => flat(f.querySelector("figcaption")?.textContent)).sort();
-    expect(captions).toEqual(WORKS.map((w) => w.breed).sort());
+    expect(captions).toEqual(ALBUMS.flatMap(a => a.works).map((w) => w.breed).sort());
     const srcsets = [...works.querySelectorAll("img")].map((img) => img.getAttribute("srcset") ?? "");
-    for (const work of WORKS) expect(srcsets.some((s) => s.includes(`media/${work.media}-`)), work.media).toBe(true);
+    for (const work of ALBUMS.flatMap(a => a.works).filter(w => !w.src)) expect(srcsets.some((s) => s.includes(`media/${work.media}-`)), work.media).toBe(true);
   });
 
   it("нажатие открывает фото крупнее; закрывают Esc, крестик и нажатие вне фото; фокус возвращается", async () => {
     renderPage();
     const works = section("works");
-    const figure = [...works.querySelectorAll("figure")].find((f) => flat(f.querySelector("figcaption")?.textContent) === "Бишон-фризе");
+    const figure = [...works.querySelectorAll("figure")].find((f) => flat(f.querySelector("figcaption")?.textContent) === "Йорк-в Азиатском стиле 1");
+    figure!.closest("details")!.open = true;
     const trigger = within(figure!).getByRole("button");
 
     // Esc
     fireEvent.click(trigger);
     let dialog = await screen.findByRole("dialog");
-    expect(within(dialog).getByRole("img").getAttribute("srcset")).toContain("works-bichon");
-    expect(flat(dialog.textContent)).toContain("Бишон-фризе");
+    expect(within(dialog).getByRole("img").getAttribute("src")).toBe("./media/albums/yorkies/1.webp");
+    expect(flat(dialog.textContent)).toContain("Йорк-в Азиатском стиле 1");
     fireEvent.keyDown(document, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
     expect(document.activeElement).toBe(trigger);
@@ -220,7 +221,7 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
     expect(heading.compareDocumentPosition(cover) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(flat(invite.textContent)).not.toContain("Ваш питомец — на обложке");
     // шесть кадров эссе — по-прежнему фотографии работ, приглашение — не кадр
-    expect(works.querySelectorAll("figure")).toHaveLength(6);
+    expect(works.querySelectorAll("figure")).toHaveLength(11);
 
     fireEvent.click(invite);
     const dialog = await screen.findByRole("dialog", { name: "Обложка «Лапакюр»" });
@@ -348,11 +349,7 @@ describe("Визит (#contacts, R21–R23)", () => {
     expect(quotes).toHaveLength(5);
     const cards = contacts.querySelectorAll('ul[aria-label="Отзывы клиентов"] > li');
     expect(cards).toHaveLength(5);
-    cards.forEach((card, i) => {
-      const photos = card.querySelectorAll("img");
-      expect(photos).toHaveLength(1);
-      expect(photos[0].getAttribute("src")).toBe(`./media/reviews/review-${[1, 3, 4, 6, 8][i]}.webp`);
-    });
+    cards.forEach(card => expect(card.querySelectorAll("img")).toHaveLength(0));
     REVIEWS.forEach((review, i) => {
       expect(quotes[i].textContent).toBe(review.text);
       const caption = flat(quotes[i].closest("figure")?.querySelector("figcaption")?.textContent);
