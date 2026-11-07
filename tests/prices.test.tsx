@@ -81,10 +81,10 @@ describe("Карточки листов", () => {
     expect(buttons).toHaveLength(3);
     const names = buttons.map((b) => flat(b.textContent));
     expect(names[0]).toContain("Комплекс и гигиеническая стрижка");
-    expect(names[0]).toMatch(/Бишон/i);
-    expect(names[0]).toContain("8 пород");
-    expect(names[1]).toMatch(/йорки, шпицы, пудели/i);
-    expect(names[1]).toContain("3 породы");
+    expect(names[1]).toMatch(/Бишон/i);
+    expect(names[1]).toContain("8 пород");
+    expect(names[0]).toMatch(/йорки, шпицы, пудели/i);
+    expect(names[0]).toContain("3 породы");
     expect(names[2]).toContain("Экспресс-линька");
     expect(names[2]).toContain("14 пород");
     for (const b of buttons) {

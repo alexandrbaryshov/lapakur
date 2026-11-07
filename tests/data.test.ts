@@ -85,7 +85,7 @@ const complexB = section("Комплекс / гигиеническая стри
 
 describe("PRICE_GROUPS — прайс дословно по facts.md", () => {
   it("три листа в порядке страницы: комплекс ×2, экспресс-линька", () => {
-    expect(PRICE_GROUPS.map((g) => g.id)).toEqual(["complex-a", "complex-b", "express-shedding"]);
+    expect(PRICE_GROUPS.map((g) => g.id)).toEqual(["complex-b", "complex-a", "express-shedding"]);
   });
 
   it("31 строка, 44 непустые цены, сумма всех цен 100 000 ₽ (подсчитано вручную по листам)", () => {
