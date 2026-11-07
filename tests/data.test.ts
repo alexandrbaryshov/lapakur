@@ -139,8 +139,8 @@ describe("PRICE_GROUPS — прайс дословно по facts.md", () => {
     expect(
       PRICE_CHAPTERS.map((c) => [c.id, c.title, c.breed, c.column, c.price, c.photo, c.silhouette]),
     ).toEqual([
-      ["bichon", "Бишон", "Бишон", "Комплекс с мытьём", { amount: 2200 }, "price-bichon", "breed-bichon"],
       ["yorkie", "Йорк", "Йорк до 5 кг", "Комплекс с мытьём", { amount: 1700 }, "price-yorkie", "breed-yorkie"],
+      ["bichon", "Бишон", "Бишон", "Комплекс с мытьём", { amount: 2200 }, "price-bichon", "breed-bichon"],
       ["spitz", "Шпиц", "Шпиц до 5 кг с остевой шерстью", "Комплекс с мытьём", { amount: 1800 }, "price-spitz", "breed-spitz"],
       ["poodle", "Пудель", "Пудель до 28 см", "Комплекс с мытьём", { amount: 2200 }, "price-poodle", "breed-poodle"],
     ]);
@@ -245,14 +245,14 @@ describe("FAQ — только факты", () => {
 describe("WORKS — 6 настоящих фото", () => {
   it("ключи works-* из interfaces.md и подписи пород из имён файлов dogs-foto-live", () => {
     expect(WORKS.map((w) => w.media)).toEqual([
+      "works-yorkie",
       "works-cocker-black",
       "works-cocker",
       "works-bichon",
-      "works-yorkie",
       "works-spitz",
       "works-poodle",
     ]);
-    [/кокер-спаниель/i, /кокер-спаниель/i, /бишон/i, /йорк/i, /шпиц/i, /пудель/i].forEach((re, i) =>
+    [/йорк/i, /кокер-спаниель/i, /кокер-спаниель/i, /бишон/i, /шпиц/i, /пудель/i].forEach((re, i) =>
       expect(WORKS[i].breed).toMatch(re),
     );
   });

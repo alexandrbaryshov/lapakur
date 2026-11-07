@@ -7,10 +7,10 @@ import type { MediaKey } from "../media/manifest";
 export type Work = { media: MediaKey; breed: string; src?: string };
 
 export const WORKS: readonly Work[] = [
+  { media: "works-yorkie", breed: "Йоркширский терьер" },
   { media: "works-cocker-black", breed: "Английский кокер-спаниель" },
   { media: "works-cocker", breed: "Английский кокер-спаниель" },
   { media: "works-bichon", breed: "Бишон-фризе" },
-  { media: "works-yorkie", breed: "Йоркширский терьер" },
   { media: "works-spitz", breed: "Померанский шпиц" },
   { media: "works-poodle", breed: "Пудель" },
 ];

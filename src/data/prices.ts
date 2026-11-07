@@ -42,23 +42,6 @@ const none: PriceCell = null;
 
 export const PRICE_GROUPS: readonly PriceGroup[] = [
   {
-    id: "complex-a",
-    title: "Комплекс и гигиеническая стрижка",
-    columns: ["Комплекс без мытья", "Комплекс с мытьём", "Гигиеническая стрижка*"],
-    rows: [
-      { breed: "Ши-тцу", cells: [rub(1800), rub(2200), rub(2000)] },
-      { breed: "Пекинес", cells: [rub(1200), rub(1800), none] },
-      { breed: "Бишон", cells: [rub(1700), rub(2200), rub(1900)] },
-      { breed: "Мальтезе", cells: [rub(1400), rub(1700), none] },
-      { breed: "Русский спаниель", cells: [rub(1200), rub(1800), rub(1500)] },
-      { breed: "Американский спаниель", cells: [none, rub(2400), none] },
-      { breed: "Английский спаниель", cells: [none, rub(2200), none] },
-      { breed: "Длинношёрстная чихуа-хуа", cells: [none, rub(1700), none] },
-    ],
-    footnotes: ["* Всё что входит в комплекс, кроме стрижки корпуса (спинки)"],
-    photo: "price-bichon",
-  },
-  {
     id: "complex-b",
     title: "Комплекс и гигиеническая стрижка: йорки, шпицы, пудели",
     columns: ["Комплекс* без мытья", "Комплекс с мытьём", "Гигиеническая стрижка (всё кроме спинки)"],
@@ -77,6 +60,23 @@ export const PRICE_GROUPS: readonly PriceGroup[] = [
       "* Собака должна быть СВЕЖЕПОМЫТОЙ. Особенно тщательно мыть голову, уши, лапы. (От этого зависит качество стрижки)",
     ],
     photo: "price-poodle",
+  },
+  {
+    id: "complex-a",
+    title: "Комплекс и гигиеническая стрижка",
+    columns: ["Комплекс без мытья", "Комплекс с мытьём", "Гигиеническая стрижка*"],
+    rows: [
+      { breed: "Ши-тцу", cells: [rub(1800), rub(2200), rub(2000)] },
+      { breed: "Пекинес", cells: [rub(1200), rub(1800), none] },
+      { breed: "Бишон", cells: [rub(1700), rub(2200), rub(1900)] },
+      { breed: "Мальтезе", cells: [rub(1400), rub(1700), none] },
+      { breed: "Русский спаниель", cells: [rub(1200), rub(1800), rub(1500)] },
+      { breed: "Американский спаниель", cells: [none, rub(2400), none] },
+      { breed: "Английский спаниель", cells: [none, rub(2200), none] },
+      { breed: "Длинношёрстная чихуа-хуа", cells: [none, rub(1700), none] },
+    ],
+    footnotes: ["* Всё что входит в комплекс, кроме стрижки корпуса (спинки)"],
+    photo: "price-bichon",
   },
   {
     id: "express-shedding",
@@ -149,8 +149,8 @@ function chapter(
 const WITH_BATH = "Комплекс с мытьём";
 
 export const PRICE_CHAPTERS: readonly PriceChapter[] = [
-  chapter("bichon", "Бишон", "complex-a", "Бишон", WITH_BATH, "price-bichon", "breed-bichon"),
   chapter("yorkie", "Йорк", "complex-b", "Йорк до 5 кг", WITH_BATH, "price-yorkie", "breed-yorkie"),
+  chapter("bichon", "Бишон", "complex-a", "Бишон", WITH_BATH, "price-bichon", "breed-bichon"),
   chapter("spitz", "Шпиц", "complex-b", "Шпиц до 5 кг с остевой шерстью", WITH_BATH, "price-spitz", "breed-spitz"),
   chapter("poodle", "Пудель", "complex-b", "Пудель до 28 см", WITH_BATH, "price-poodle", "breed-poodle"),
 ];
