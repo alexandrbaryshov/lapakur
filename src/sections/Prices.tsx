@@ -5,7 +5,7 @@ import { PriceChapters } from "../components/PriceChapters";
 import { PriceTable } from "../components/PriceTable";
 import { useZoom } from "../components/zoom";
 import { PRICE_CHAPTERS, PRICE_GROUPS, type PriceChapterId, type PriceGroup, type PriceGroupId } from "../data/prices";
-import { SERVICES, type ServiceId } from "../data/services";
+
 import styles from "./Prices.module.css";
 
 // Прайс — ведомость ателье на тёплой бумаге, на одной странице (spec.md, истории 17–19, 38–39).
@@ -19,31 +19,12 @@ import styles from "./Prices.module.css";
 // Если скрипт страницы так и не пришёл, ссылка карточки показывает свой лист через :target.
 // Все 31 строка остаются в разметке (поиск, диктор через окно, тесты). Всё — из src/data/.
 
-const lower = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
-const service = (id: ServiceId) => SERVICES.find((s) => s.id === id)?.title ?? "";
-/** «Гигиеническая стрижка» — подпись колонки листа без маркера сноски. */
-const hygiene = (PRICE_GROUPS.find((g) => g.id === "complex-a")?.columns[2] ?? "").replace(/\*$/, "");
-
-/** Что показывает фото процедуры каждой главы: подпись из услуг/прайса и описание кадра. */
 const PROCEDURES: Record<PriceChapterId, { caption: string; alt: string }> = {
-  bichon: {
-    caption: service("grooming"),
-    alt: "Белый бишон на столе в розовой студии: мастер подравнивает шерсть ножницами",
-  },
-  yorkie: {
-    caption: hygiene,
-    alt: "Йоркширский терьер на столе: мастер делает гигиеническую стрижку",
-  },
-  spitz: {
-    caption: service("deshedding"),
-    alt: "Рыжий шпиц на столе: мастер вычёсывает подшёрсток щёткой",
-  },
-  poodle: {
-    caption: service("bath"),
-    alt: "Рыжий пудель в ванне: мастер моет его из лейки",
-  },
+  bichon: { caption: "внимание к деталям", alt: "Кошка во время ухода в студии" },
+  yorkie: { caption: "бережный уход", alt: "Йоркширский терьер во время ухода" },
+  spitz: { caption: "обработка инструмента после каждого клиента", alt: "Обработка груминг-инструмента" },
+  poodle: { caption: "премиальные итальянские средства для ухода", alt: "Профессиональные шампуни для ухода за питомцами" },
 };
-
 /** Колонка главы на компьютере — 506 из 2400 px макета; на телефоне — пол-экрана (не шире 800w при DPR 3). */
 const PHOTO_SIZES = "(min-width: 900px) 21vw, 44vw";
 
@@ -57,7 +38,7 @@ function ProcedurePhoto({ chapterId }: { chapterId: PriceChapterId }) {
         <Picture media={chapter.photo} sizes={PHOTO_SIZES} alt={procedure.alt} imgClassName={styles.plateImg} />
       </m.div>
       <figcaption className={styles.photoCaption}>
-        {chapter.title} · {lower(procedure.caption)}
+        {procedure.caption}
       </figcaption>
     </figure>
   );
