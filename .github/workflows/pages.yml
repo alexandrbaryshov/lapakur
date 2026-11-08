@@ -27,9 +27,12 @@ jobs:
           cache: npm
       - id: pages
         uses: actions/configure-pages@v6
-      # Hosted Ubuntu includes FFmpeg; avoid downloading another binary during npm ci.
+      # Use system FFmpeg to avoid a separate GitHub release download during npm ci.
       - name: Use runner FFmpeg
-        run: echo "FFMPEG_BIN=$(command -v ffmpeg)" >> "$GITHUB_ENV"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          echo "FFMPEG_BIN=/usr/bin/ffmpeg" >> "$GITHUB_ENV"
       - run: npm ci
       # check = типы, линтер, тесты, сборка с пререндером и бюджет размеров;
       # SITE_URL делает og:image, og:url и canonical абсолютными (scripts/build.mjs)
