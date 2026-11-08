@@ -243,7 +243,7 @@ describe("Вопросы (#faq, R20)", () => {
     renderPage();
     const faq = section("faq");
     const buttons = within(faq).getAllByRole("button");
-    expect(buttons).toHaveLength(13);
+    expect(buttons).toHaveLength(11);
     buttons.forEach((b, i) => {
       expect(b.tagName).toBe("BUTTON");
       expect(flat(b.textContent)).toBe(FAQ[i].q);

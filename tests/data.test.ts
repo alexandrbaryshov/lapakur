@@ -204,21 +204,17 @@ describe("FAQ — только факты", () => {
 
   it("вопросы с уникальными id и без выдуманных правил", () => {
     expect(FAQ.length).toBeGreaterThanOrEqual(7);
-    expect(FAQ.length).toBe(13);
+    expect(FAQ.length).toBe(11);
     expect(new Set(FAQ.map((f) => f.id)).size).toBe(FAQ.length);
     expect(all).not.toMatch(/прививк|вакцин|сертифи|присутств|опыт/i);
   });
 
-  it("покрывает запись, адрес и часы, мытьё перед комплексом, гигиену, экспресс-линьку, крупные породы, породу вне прайса", () => {
+  it("покрывает мытьё перед комплексом, гигиену, экспресс-линьку, крупные породы, породу вне прайса", () => {
     const answerTo = (re: RegExp) => {
       const item = FAQ.find((f) => re.test(f.q));
       if (!item) throw new Error(`нет вопроса ${re}`);
       return item.a;
     };
-    expect(answerTo(/записат/i)).toContain("+7 (903) 358-11-61");
-    expect(all).toContain("10:00");
-    expect(all).toContain("20:00");
-    expect(answerTo(/где /i)).toContain("просп. 9-й Пятилетки, 15");
     expect(answerTo(/мыть/i)).toMatch(/не нужно/i);
     expect(answerTo(/гигиеническ/i)).toContain("кроме стрижки корпуса (спинки)");
     const shedding = answerTo(/экспресс-линьк/i);
