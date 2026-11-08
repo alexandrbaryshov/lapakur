@@ -245,7 +245,8 @@
 .arrow {
   position: relative;
   display: block;
-  width: 26px;
+  width: 22px;
+  flex: none;
   height: 9px;
   transition: transform var(--duration-base) var(--ease-out-expo);
 }
@@ -260,6 +261,7 @@
 
 .arrow::before {
   left: 0;
+  right: 5px;
   height: 1.5px;
   margin-top: -0.75px;
   background: currentColor;

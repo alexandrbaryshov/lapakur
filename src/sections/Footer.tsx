@@ -20,6 +20,7 @@ export function Footer() {
         </a>
         <span className={styles.hours}>{STUDIO.hours}</span>
       </address>
+      <p className={styles.legal}>ИП Мишакова Р. В.<br />ИНН: 212701236641<br />ОГРНИП: 325210000065592 (действующая регистрация с 18.09.2025)</p>
     </footer>
   );
 }

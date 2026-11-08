@@ -1,7 +1,7 @@
 // Контакты студии — дословно из facts.md (Яндекс Карты, организация 199810306793).
 // Контакты и способы записи студии.
 
-const YANDEX_ORG_URL = "https://yandex.ru/maps/org/lapakyur/199810306793/";
+const YANDEX_ORG_URL = "https://yandex.ru/maps/-/CXvTJOi2";
 const GEO = { lat: 56.097437, lon: 47.280633 } as const;
 
 export const STUDIO = {
@@ -15,7 +15,7 @@ export const STUDIO = {
   geo: GEO,
   yandexOrgId: "199810306793",
   yandexOrgUrl: YANDEX_ORG_URL,
-  yandexReviewsUrl: `${YANDEX_ORG_URL}reviews/`,
+  yandexReviewsUrl: "https://yandex.ru/maps/org/lapakyur/199810306793/reviews/",
   /** Маршрут до студии на машине; начало маршрута не задано — Яндекс Карты ведут от того места, где сейчас посетитель. */
   yandexRouteUrl: `https://yandex.ru/maps/?rtext=~${GEO.lat},${GEO.lon}&rtt=auto`,
 } as const;

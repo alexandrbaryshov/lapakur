@@ -19,7 +19,7 @@ export type PriceRow = {
   note?: string;
 };
 
-export type PriceGroupId = "complex-a" | "complex-b" | "express-shedding";
+export type PriceGroupId = "complex-a" | "complex-b" | "express-shedding" | "cats";
 
 export type PriceGroup = {
   id: PriceGroupId;
@@ -44,21 +44,19 @@ export const PRICE_GROUPS: readonly PriceGroup[] = [
   {
     id: "complex-b",
     title: "Комплекс и гигиеническая стрижка: йорки, шпицы, пудели",
-    columns: ["Комплекс* без мытья", "Комплекс с мытьём", "Гигиеническая стрижка (всё кроме спинки)"],
+    columns: ["Комплекс без мытья", "Комплекс с мытьём", "Гигиеническая стрижка (всё кроме спинки)"],
     rows: [
-      { breed: "Йорк до 5 кг", cells: [rub(1400), rub(1700), rub(1500)] },
-      { breed: "Йорк от 5 кг или с густой пухлявой шерстью", cells: [rub(1500), rub(1800), rub(1600)] },
-      { breed: "Шпиц до 5 кг с остевой шерстью", cells: [rub(1500), rub(1800), none] },
-      { breed: "Шпиц от 5 кг или с густой набивной шерстью", cells: [none, rub(1900), none] },
-      { breed: "Шпиц 7–12 кг", cells: [none, rub(2000), none] },
-      { breed: "Пудель до 28 см", cells: [none, rub(2200), none] },
-      { breed: "Пудель до 28–35 см", cells: [none, rub(2400), none] },
-      { breed: "Пудель до 35–45 см", cells: [none, rub(2800), none] },
-      { breed: "Пудель от 45 см", cells: [none, rub(3500), none] },
+      { breed: "Йорк до 5 кг", cells: [rub(1600), rub(1900), rub(1700)] },
+      { breed: "Йорк от 5 кг или с густой пухлявой шерстью", cells: [rub(1700), rub(2000), rub(1800)] },
+      { breed: "Шпиц до 5 кг с остевой шерстью", cells: [rub(1700), rub(2000), none] },
+      { breed: "Шпиц от 5 кг или с густой набивной шерстью", cells: [none, rub(2100), none] },
+      { breed: "Шпиц 7–12 кг", cells: [none, rub(2200), none] },
+      { breed: "Пудель до 28 см", cells: [none, rub(2400), none] },
+      { breed: "Пудель до 28–35 см", cells: [none, rub(2600), none] },
+      { breed: "Пудель до 35–45 см", cells: [none, rub(3000), none] },
+      { breed: "Пудель от 45 см", cells: [none, rub(3700), none] },
     ],
-    footnotes: [
-      "* Собака должна быть СВЕЖЕПОМЫТОЙ. Особенно тщательно мыть голову, уши, лапы. (От этого зависит качество стрижки)",
-    ],
+    footnotes: [],
     photo: "price-poodle",
   },
   {
@@ -66,14 +64,14 @@ export const PRICE_GROUPS: readonly PriceGroup[] = [
     title: "Комплекс и гигиеническая стрижка",
     columns: ["Комплекс без мытья", "Комплекс с мытьём", "Гигиеническая стрижка*"],
     rows: [
-      { breed: "Ши-тцу", cells: [rub(1800), rub(2200), rub(2000)] },
-      { breed: "Пекинес", cells: [rub(1200), rub(1800), none] },
-      { breed: "Бишон", cells: [rub(1700), rub(2200), rub(1900)] },
-      { breed: "Мальтезе", cells: [rub(1400), rub(1700), none] },
-      { breed: "Русский спаниель", cells: [rub(1200), rub(1800), rub(1500)] },
-      { breed: "Американский спаниель", cells: [none, rub(2400), none] },
-      { breed: "Английский спаниель", cells: [none, rub(2200), none] },
-      { breed: "Длинношёрстная чихуа-хуа", cells: [none, rub(1700), none] },
+      { breed: "Ши-тцу", cells: [rub(2000), rub(2400), rub(2200)] },
+      { breed: "Пекинес", cells: [rub(1400), rub(2000), none] },
+      { breed: "Бишон", cells: [rub(1900), rub(2400), rub(2100)] },
+      { breed: "Мальтезе", cells: [rub(1600), rub(1900), none] },
+      { breed: "Русский спаниель", cells: [rub(1400), rub(2000), rub(1700)] },
+      { breed: "Американский спаниель", cells: [none, rub(2600), none] },
+      { breed: "Английский спаниель", cells: [none, rub(2400), none] },
+      { breed: "Длинношёрстная чихуа-хуа", cells: [none, rub(1900), none] },
     ],
     footnotes: ["* Всё что входит в комплекс, кроме стрижки корпуса (спинки)"],
     photo: "price-bichon",
@@ -102,6 +100,7 @@ export const PRICE_GROUPS: readonly PriceGroup[] = [
     footnotes: [],
     photo: "price-spitz",
   },
+  { id: "cats", title: "Комплекс кошки", columns: ["Цена, ₽"], rows: [{ breed: "Комплекс с мытьём", cells: [rub(2000)] }, { breed: "Стрижка под машинку", cells: [rub(1600)] }], footnotes: [], photo: "price-bichon" },
 ];
 
 // ── Главы пород над прайсом (раздел «Направление» спецификации) ──

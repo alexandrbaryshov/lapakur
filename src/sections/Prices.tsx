@@ -48,6 +48,7 @@ function ProcedurePhoto({ chapterId }: { chapterId: PriceChapterId }) {
 
 /** Что в листе — коротко, по строкам листа (порядок и породы — как в прайсе). */
 const CONTENTS: Record<PriceGroupId, string> = {
+  cats: "Комплекс с мытьём и стрижка под машинку",
   "complex-a": "Ши-тцу, пекинес, бишон, мальтезе, спаниели, чихуа-хуа",
   "complex-b": "Йорки, шпицы, пудели — по весу и росту",
   "express-shedding": "Бигль, корги, мопс, лабрадор, хаски и крупные породы",
@@ -65,6 +66,7 @@ function breedsLabel(n: number): string {
 
 /** Число пород листа (строки одной породы по весу и росту — одна порода) и позиций, если их больше. */
 function countLabel(group: PriceGroup): string {
+  if (group.id === "cats") return "2 позиции";
   const breeds = new Set(group.rows.map((row) => row.breed.split(" ")[0].toLowerCase())).size;
   const rows = group.rows.length;
   return breeds === rows ? breedsLabel(breeds) : `${breedsLabel(breeds)} · ${rows} позиций`;

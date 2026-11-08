@@ -47,8 +47,8 @@ describe("Прайс в пререндере (без JS)", () => {
   doc.body.innerHTML = renderToString(<App />);
   const section = doc.getElementById("price")!;
 
-  it("все 31 строка и каждая цена листов — в разметке #price", () => {
-    expect(section.querySelectorAll("tbody tr")).toHaveLength(31);
+  it("все 33 строка и каждая цена листов — в разметке #price", () => {
+    expect(section.querySelectorAll("tbody tr")).toHaveLength(33);
     const text = flat(section.textContent);
     for (const group of PRICE_GROUPS) {
       for (const row of group.rows) {
@@ -78,7 +78,7 @@ describe("Карточки листов", () => {
   it("три кнопки: название листа, состав и число пород", () => {
     renderPage();
     const buttons = cards();
-    expect(buttons).toHaveLength(3);
+    expect(buttons).toHaveLength(4);
     const names = buttons.map((b) => flat(b.textContent));
     expect(names[0]).toContain("Комплекс и гигиеническая стрижка");
     expect(names[1]).toMatch(/Бишон/i);
@@ -87,6 +87,7 @@ describe("Карточки листов", () => {
     expect(names[0]).toContain("3 породы");
     expect(names[2]).toContain("Экспресс-линька");
     expect(names[2]).toContain("14 пород");
+    expect(names[3]).toContain("2 позиции");
     for (const b of buttons) {
       expect(b.tagName).toBe("BUTTON");
       expect(b.getAttribute("aria-haspopup")).toBe("dialog");

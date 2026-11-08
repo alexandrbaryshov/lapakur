@@ -94,3 +94,5 @@
   }
 }
 
+
+.legal { grid-column: 1 / -1; font-size: 0.8125rem; line-height: 1.6; color: var(--color-ink-soft); }

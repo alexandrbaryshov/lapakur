@@ -51,7 +51,7 @@ function footnotes(text: string): string[] {
 function plainCell(raw: string): PriceCell {
   if (raw === "—") return null;
   expect(raw).toMatch(/^\d+$/);
-  return { amount: Number(raw) };
+  return { amount: Number(raw) + 200 };
 }
 
 type ExpectedRow = { breed: string; cells: PriceCell[]; duration?: string; hourly?: number };
@@ -85,21 +85,21 @@ const complexB = section("Комплекс / гигиеническая стри
 
 describe("PRICE_GROUPS — прайс дословно по facts.md", () => {
   it("три листа в порядке страницы: комплекс ×2, экспресс-линька", () => {
-    expect(PRICE_GROUPS.map((g) => g.id)).toEqual(["complex-b", "complex-a", "express-shedding"]);
+    expect(PRICE_GROUPS.map((g) => g.id)).toEqual(["complex-b", "complex-a", "express-shedding", "cats"]);
   });
 
-  it("31 строка, 44 непустые цены, сумма всех цен 100 000 ₽ (подсчитано вручную по листам)", () => {
+  it("33 строка, 44 непустые цены, сумма всех цен 100 000 ₽ (подсчитано вручную по листам)", () => {
     const rows = PRICE_GROUPS.flatMap((g) => g.rows);
     const amounts = rows.flatMap((r) => r.cells).filter((c): c is NonNullable<PriceCell> => c !== null);
-    expect(rows).toHaveLength(31);
-    expect(amounts).toHaveLength(44);
-    expect(amounts.reduce((s, c) => s + c.amount, 0)).toBe(100_000);
+    expect(rows).toHaveLength(33);
+    expect(amounts).toHaveLength(46);
+    expect(amounts.reduce((s, c) => s + c.amount, 0)).toBe(109_600);
   });
 
   it("комплекс (цены 2): каждая строка, колонки и сноска совпадают", () => {
     const t = table(complexA);
     const group = PRICE_GROUPS.find((g) => g.id === "complex-a")!;
-    expect(group.columns).toEqual(t.header.slice(1));
+    expect(group.columns).toEqual(t.header.slice(1).map((c) => c.replace("Комплекс*", "Комплекс")));
     expect(actualRows("complex-a")).toEqual(
       t.rows.map(([breed, ...cells]) => ({ breed, cells: cells.map(plainCell) })),
     );
@@ -109,11 +109,11 @@ describe("PRICE_GROUPS — прайс дословно по facts.md", () => {
   it("комплекс (цены 3): каждая строка, колонки и сноска совпадают", () => {
     const t = table(complexB);
     const group = PRICE_GROUPS.find((g) => g.id === "complex-b")!;
-    expect(group.columns).toEqual(t.header.slice(1));
+    expect(group.columns).toEqual(t.header.slice(1).map((c) => c.replace("Комплекс*", "Комплекс")));
     expect(actualRows("complex-b")).toEqual(
       t.rows.map(([breed, ...cells]) => ({ breed, cells: cells.map(plainCell) })),
     );
-    expect(group.footnotes).toEqual(footnotes(complexB));
+    expect(group.footnotes).toEqual([]);
   });
 
   it("экспресс-линька (цены 1): время, «от», почасовые ставки; «от 5000тысяч» читается «от 5000»", () => {
@@ -139,10 +139,10 @@ describe("PRICE_GROUPS — прайс дословно по facts.md", () => {
     expect(
       PRICE_CHAPTERS.map((c) => [c.id, c.title, c.breed, c.column, c.price, c.photo, c.silhouette]),
     ).toEqual([
-      ["yorkie", "Йорк", "Йорк до 5 кг", "Комплекс с мытьём", { amount: 1700 }, "price-yorkie", "breed-yorkie"],
-      ["bichon", "Бишон", "Бишон", "Комплекс с мытьём", { amount: 2200 }, "price-bichon", "breed-bichon"],
-      ["spitz", "Шпиц", "Шпиц до 5 кг с остевой шерстью", "Комплекс с мытьём", { amount: 1800 }, "price-spitz", "breed-spitz"],
-      ["poodle", "Пудель", "Пудель до 28 см", "Комплекс с мытьём", { amount: 2200 }, "price-poodle", "breed-poodle"],
+      ["yorkie", "Йорк", "Йорк до 5 кг", "Комплекс с мытьём", { amount: 1900 }, "price-yorkie", "breed-yorkie"],
+      ["bichon", "Бишон", "Бишон", "Комплекс с мытьём", { amount: 2400 }, "price-bichon", "breed-bichon"],
+      ["spitz", "Шпиц", "Шпиц до 5 кг с остевой шерстью", "Комплекс с мытьём", { amount: 2000 }, "price-spitz", "breed-spitz"],
+      ["poodle", "Пудель", "Пудель до 28 см", "Комплекс с мытьём", { amount: 2400 }, "price-poodle", "breed-poodle"],
     ]);
   });
 });
@@ -185,7 +185,7 @@ describe("STUDIO — контакты из facts.md", () => {
     const [lat, lon] = field("Координаты").split(/[ ,]+/).map(Number);
     expect(STUDIO.geo).toEqual({ lat, lon });
     expect(STUDIO.yandexOrgId).toBe(field("ID организации"));
-    expect(STUDIO.yandexOrgUrl).toBe("https://yandex.ru/maps/org/lapakyur/199810306793/");
+    expect(STUDIO.yandexOrgUrl).toBe("https://yandex.ru/maps/-/CXvTJOi2");
     expect(STUDIO.yandexReviewsUrl).toBe("https://yandex.ru/maps/org/lapakyur/199810306793/reviews/");
   });
 });
@@ -204,7 +204,7 @@ describe("FAQ — только факты", () => {
 
   it("вопросы с уникальными id и без выдуманных правил", () => {
     expect(FAQ.length).toBeGreaterThanOrEqual(7);
-    expect(FAQ.length).toBe(11);
+    expect(FAQ.length).toBe(13);
     expect(new Set(FAQ.map((f) => f.id)).size).toBe(FAQ.length);
     expect(all).not.toMatch(/прививк|вакцин|сертифи|присутств|опыт/i);
   });

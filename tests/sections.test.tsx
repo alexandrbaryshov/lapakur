@@ -17,7 +17,7 @@ const PHONE_HREF = "tel:+79033581161";
 const PHONE_DISPLAY = "+7 (903) 358-11-61";
 const ADDRESS = "просп. 9-й Пятилетки, 15, Чебоксары";
 const HOURS = "ежедневно, 10:00–20:00";
-const ORG_URL = "https://yandex.ru/maps/org/lapakyur/199810306793/";
+const ORG_URL = "https://yandex.ru/maps/-/CXvTJOi2";
 const REVIEWS_URL = "https://yandex.ru/maps/org/lapakyur/199810306793/reviews/";
 
 const flat = (text: string | null | undefined) => (text ?? "").replace(/\s+/g, " ").trim();
@@ -97,11 +97,11 @@ afterEach(() => {
 // ───────────────────────── прайс ─────────────────────────
 
 describe("Прайс (#price, R16–R18)", () => {
-  it("весь прайс тремя листами: 31 строка, каждая цена, время и ставка за час из данных", () => {
+  it("весь прайс тремя листами: 33 строка, каждая цена, время и ставка за час из данных", () => {
     renderPage();
     const price = section("price");
     const tables = within(price).getAllByRole("table");
-    expect(tables).toHaveLength(3);
+    expect(tables).toHaveLength(4);
 
     let rows = 0;
     PRICE_GROUPS.forEach((group, i) => {
@@ -118,7 +118,7 @@ describe("Прайс (#price, R16–R18)", () => {
         rows += 1;
       });
     });
-    expect(rows).toBe(31);
+    expect(rows).toBe(33);
   });
 
   it("строки сверены с фото прайса (facts.md): Ши-тцу, Самоед, Пудель от 45 см, Алабай", () => {
@@ -127,11 +127,11 @@ describe("Прайс (#price, R16–R18)", () => {
     const rowOf = (breed: string) =>
       [...price.querySelectorAll("tbody tr")].find((tr) => flat(tr.querySelector("th")?.textContent) === breed);
     const text = (breed: string) => flat(rowOf(breed)?.textContent).replace(/\u00a0/g, " ");
-    expect(text("Ши-тцу")).toMatch(/1800 ₽.*2200 ₽.*2000 ₽/);
+    expect(text("Ши-тцу")).toMatch(/2000 ₽.*2400 ₽.*2200 ₽/);
     expect(text("Самоед")).toContain("5 часов");
     expect(text("Самоед")).toContain("от 3000 ₽");
     expect(text("Самоед")).toContain("1400 ₽");
-    expect(text("Пудель от 45 см")).toContain("3500 ₽");
+    expect(text("Пудель от 45 см")).toContain("3700 ₽");
     expect(text("Алабай")).toContain("от 5000 ₽");
   });
 
@@ -139,7 +139,7 @@ describe("Прайс (#price, R16–R18)", () => {
     renderPage();
     const text = flat(section("price").textContent);
     expect(text).toContain("Всё что входит в комплекс, кроме стрижки корпуса (спинки)");
-    expect(text).toContain(
+    expect(text).not.toContain(
       "Собака должна быть СВЕЖЕПОМЫТОЙ. Особенно тщательно мыть голову, уши, лапы. (От этого зависит качество стрижки)",
     );
   });
@@ -149,10 +149,10 @@ describe("Прайс (#price, R16–R18)", () => {
     const price = section("price");
     const text = flat(price.textContent).replace(/\u00a0/g, " ");
     for (const [name, amount] of [
-      ["Бишон", "2200 ₽"],
-      ["Йорк", "1700 ₽"],
-      ["Шпиц", "1800 ₽"],
-      ["Пудель", "2200 ₽"],
+      ["Бишон", "2400 ₽"],
+      ["Йорк", "1900 ₽"],
+      ["Шпиц", "2000 ₽"],
+      ["Пудель", "2400 ₽"],
     ]) {
       expect(within(price).getByRole("heading", { level: 3, name })).toBeTruthy();
       expect(text).toMatch(new RegExp(`${name} · комплекс с мытьём\\s*${amount}`));
@@ -243,7 +243,7 @@ describe("Вопросы (#faq, R20)", () => {
     renderPage();
     const faq = section("faq");
     const buttons = within(faq).getAllByRole("button");
-    expect(buttons).toHaveLength(11);
+    expect(buttons).toHaveLength(13);
     buttons.forEach((b, i) => {
       expect(b.tagName).toBe("BUTTON");
       expect(flat(b.textContent)).toBe(FAQ[i].q);
@@ -256,7 +256,7 @@ describe("Вопросы (#faq, R20)", () => {
     fireEvent.click(buttons[0]);
     expect(buttons[0].getAttribute("aria-expanded")).toBe("true");
     expect(panel(buttons[0]).hasAttribute("inert")).toBe(false);
-    expect(flat(panel(buttons[0]).textContent)).toBe(FAQ[0].a);
+    expect(flat(panel(buttons[0]).textContent)).toBe(flat(FAQ[0].a));
 
     fireEvent.click(buttons[3]);
     expect(buttons[3].getAttribute("aria-expanded")).toBe("true");
