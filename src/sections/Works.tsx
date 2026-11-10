@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Picture } from "../components/Picture";
 import { ALBUMS, type Work } from "../data/works";
 
@@ -39,7 +39,23 @@ function Frame({ work, wide, slot, sizes, onOpen }: FrameProps) {
 }
 
 export function Works() {
-  const [opened, setOpened] = useState<Set<string>>(() => new Set());
+  const section = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      for (const album of ALBUMS) for (const work of album.works.slice(0, 3)) {
+        if (!work.src) continue;
+        const image = new Image();
+        image.sizes = '(min-width: 900px) 28vw, 44vw';
+        if (work.srcSet) image.srcset = work.srcSet;
+        image.src = work.src;
+      }
+      observer.disconnect();
+    }, { rootMargin: '600px' });
+    if (section.current) observer.observe(section.current);
+    return () => observer.disconnect();
+  }, []);
   const [active, setActive] = useState<Work | null>(null);
   const [requested, setRequested] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
@@ -70,12 +86,12 @@ export function Works() {
   }, []);
 
   return (
-    <section id="works" aria-labelledby="works-title" className={styles.section}>
+    <section ref={section} id="works" aria-labelledby="works-title" className={styles.section}>
       <div className={styles.essay}>
         <h2 id="works-title" className={styles.title}>
           Ваши довольные питомцы
         </h2>
-        <div className={styles.albums}>{ALBUMS.map(album => <details key={album.title} className={styles.album} onToggle={event => { if (event.currentTarget.open) setOpened(previous => previous.has(album.title) ? previous : new Set(previous).add(album.title)); }}><summary>{album.title}<span>{album.works.length} фото</span></summary><div className={styles.albumPhotos}>{opened.has(album.title) && album.works.map(work => <Frame key={work.src ?? work.media} work={work} slot="album" wide={false} sizes="(min-width: 900px) 28vw, 44vw" onOpen={el => open(work, el)} />)}</div></details>)}</div>
+        <div className={styles.albums}>{ALBUMS.map(album => <details key={album.title} className={styles.album}><summary>{album.title}<span>{album.works.length} фото</span></summary><div className={styles.albumPhotos}>{album.works.map(work => <Frame key={work.src ?? work.media} work={work} slot="album" wide={false} sizes="(min-width: 900px) 28vw, 44vw" onOpen={el => open(work, el)} />)}</div><button type="button" className={styles.collapse} onClick={event => { const details = event.currentTarget.closest("details"); if (!details) return; details.open = false; const summary = details.querySelector("summary"); summary?.focus({ preventScroll: true }); summary?.scrollIntoView({ block: "nearest" }); }}>Свернуть</button></details>)}</div>
         <CoverInvite onOpen={openCover} />
       </div>
       {requested && (

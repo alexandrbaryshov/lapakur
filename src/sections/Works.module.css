@@ -251,3 +251,7 @@
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .albumPhotos .frame:hover { transform: scale(1.03); }
 }
+
+.collapse { display: block; margin: 0 auto 2rem; min-height: 44px; padding: .65rem 1.5rem; border: 1px solid var(--color-ink-soft); background: transparent; color: var(--color-ink); font: inherit; cursor: pointer; }
+.album:not([open]) > .collapse { display: none; }
+.collapse:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 4px; }

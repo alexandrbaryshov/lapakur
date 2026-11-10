@@ -167,11 +167,12 @@ describe("Прайс (#price, R16–R18)", () => {
 // ───────────────────────── работы ─────────────────────────
 
 describe("Ваши довольные питомцы (#works, R19)", () => {
-  it("5 альбомов: фото загружаются только после раскрытия", async () => {
+  it("5 альбомов: изображения подготовлены заранее и используют lazy loading", async () => {
     renderPage();
     const works = section("works");
     expect(within(works).getByRole("heading", { level: 2, name: "Ваши довольные питомцы" })).toBeTruthy();
-    expect(works.querySelectorAll("img")).toHaveLength(0);
+    expect(works.querySelectorAll("img")).toHaveLength(44);
+    expect([...works.querySelectorAll("img")].every(img => img.loading === "lazy" || img.getAttribute("loading") === "lazy")).toBe(true);
     for (const details of works.querySelectorAll("details")) { details.open = true; fireEvent(details, new Event("toggle")); }
     await waitFor(() => expect(works.querySelectorAll("figure")).toHaveLength(44));
     const figures = works.querySelectorAll("figure");
@@ -187,7 +188,7 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
     const works = section("works");
     const album = works.querySelector("details")!;
     album.open = true; fireEvent(album, new Event("toggle"));
-    await waitFor(() => expect(works.querySelectorAll("figure")).toHaveLength(11));
+    await waitFor(() => expect(album.querySelectorAll("figure")).toHaveLength(11));
     const figure = [...works.querySelectorAll("figure")].find((f) => flat(f.querySelector("figcaption")?.textContent) === "Йоркширский терьер — азиатский стиль");
     figure!.closest("details")!.open = true;
     const trigger = within(figure!).getByRole("button");
@@ -227,7 +228,7 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
     expect(heading.compareDocumentPosition(cover) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(flat(invite.textContent)).not.toContain("Ваш питомец — на обложке");
     // шесть кадров эссе — по-прежнему фотографии работ, приглашение — не кадр
-    expect(works.querySelectorAll("figure")).toHaveLength(0);
+    expect(works.querySelectorAll("figure")).toHaveLength(44);
 
     fireEvent.click(invite);
     const dialog = await screen.findByRole("dialog", { name: "Обложка «Лапакюр»" });
@@ -278,16 +279,13 @@ describe("Вопросы (#faq, R20)", () => {
 // ───────────────────────── визит ─────────────────────────
 
 describe("Визит (#contacts, R21–R23)", () => {
-  it("Яндекс Карта грузится, только когда секция рядом; виджет по координатам и id организации", () => {
+  it("Яндекс Карта грузится заранее; виджет по координатам и id организации", () => {
     renderPage();
     const contacts = section("contacts");
-    expect(contacts.querySelector("iframe")).toBeNull();
+    expect(contacts.querySelector("iframe")?.getAttribute("loading")).toBe("eager");
     const fallback = within(contacts).getByRole("link", { name: "Открыть в Яндекс Картах" });
     expect(fallback.getAttribute("href")).toBe(ORG_URL);
 
-    const targets = observed(contacts);
-    expect(targets.length).toBeGreaterThan(0);
-    intersect(targets[0], true);
     const iframe = contacts.querySelector("iframe");
     expect(iframe).not.toBeNull();
     const src = iframe!.getAttribute("src") ?? "";
@@ -297,13 +295,12 @@ describe("Визит (#contacts, R21–R23)", () => {
     expect(iframe!.getAttribute("title")).toBeTruthy();
   });
 
-  it("сервер карт недоступен — iframe убирается, остаётся заглушка с адресом и ссылкой", async () => {
-    vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new TypeError("Failed to fetch"))));
+  it("нет сети — остаётся заглушка с адресом и ссылкой", async () => {
+    const online = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
     renderPage();
+    online.mockRestore();
     const contacts = section("contacts");
-    intersect(observed(contacts)[0], true);
-    // браузер шлёт load и для своей страницы ошибки в iframe
-    fireEvent.load(contacts.querySelector("iframe")!);
+    online.mockRestore();
     await flushPromises();
     expect(contacts.querySelector("iframe")).toBeNull();
     const fallback = within(contacts).getByRole("link", { name: "Открыть в Яндекс Картах" });
