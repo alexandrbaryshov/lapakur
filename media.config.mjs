@@ -95,6 +95,7 @@ export default {
     "breed-poodle": lineArt(480, WORLD.dove, [240, 480]),
     // фото процедур чистые; «винтаж» (тепло, лёгкое зерно) добавляет пресет — interfaces.md, таск 02
     "price-bichon": portrait(WORLD.paper, { grade: "warm-editorial" }),
+    "price-cat": portrait(WORLD.paper, { grade: "warm-editorial" }),
     "price-yorkie": portrait(WORLD.paper, { grade: "warm-editorial" }),
     "price-spitz": portrait(WORLD.paper, { grade: "warm-editorial" }),
     "price-poodle": portrait(WORLD.paper, { grade: "warm-editorial" }),

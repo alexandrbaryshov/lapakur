@@ -100,7 +100,7 @@ export const PRICE_GROUPS: readonly PriceGroup[] = [
     footnotes: [],
     photo: "price-spitz",
   },
-  { id: "cats", title: "Комплекс кошки", columns: ["Цена, ₽"], rows: [{ breed: "Комплекс с мытьём", cells: [rub(2000)] }, { breed: "Стрижка под машинку", cells: [rub(1600)] }], footnotes: [], photo: "price-bichon" },
+  { id: "cats", title: "Комплекс кошки", columns: ["Цена, ₽"], rows: [{ breed: "Комплекс с мытьём", cells: [rub(2000)] }, { breed: "Стрижка под машинку", cells: [rub(1600)] }], footnotes: [], photo: "price-cat" },
 ];
 
 // ── Главы пород над прайсом (раздел «Направление» спецификации) ──
