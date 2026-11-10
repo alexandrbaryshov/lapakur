@@ -20,7 +20,7 @@ import styles from "./Prices.module.css";
 // Все 31 строка остаются в разметке (поиск, диктор через окно, тесты). Всё — из src/data/.
 
 const PROCEDURES: Record<PriceChapterId, { caption: string; alt: string }> = {
-  bichon: { caption: "внимание к деталям", alt: "Кошка во время ухода в студии" },
+  bichon: { caption: "внимание к деталям", alt: "Мейн-кун расслабленно лежит, пока мастер вычёсывает шерсть вдоль спины" },
   yorkie: { caption: "бережный уход", alt: "Йоркширский терьер во время ухода" },
   spitz: { caption: "обработка инструмента после каждого клиента", alt: "Обработка груминг-инструмента" },
   poodle: { caption: "премиальные итальянские средства для ухода", alt: "Профессиональные шампуни для ухода за питомцами" },
@@ -35,7 +35,7 @@ function ProcedurePhoto({ chapterId }: { chapterId: PriceChapterId }) {
   return (
     <figure className={styles.photo} data-chapter={chapterId}>
       <m.div className={styles.plate} {...zoom}>
-        <Picture media={chapter.photo} sizes={PHOTO_SIZES} alt={procedure.alt} imgClassName={styles.plateImg} />
+        <Picture media={chapterId === "bichon" ? "price-cat" : chapter.photo} sizes={PHOTO_SIZES} alt={procedure.alt} imgClassName={styles.plateImg} />
       </m.div>
       <figcaption className={styles.photoCaption}>
         {procedure.caption}

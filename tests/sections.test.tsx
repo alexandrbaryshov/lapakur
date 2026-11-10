@@ -158,7 +158,7 @@ describe("Прайс (#price, R16–R18)", () => {
       expect(text).toMatch(new RegExp(`${name} · комплекс с мытьём\\s*${amount}`));
     }
     const srcsets = [...price.querySelectorAll("img")].map((img) => img.getAttribute("srcset") ?? "");
-    for (const key of ["price-bichon", "price-yorkie", "price-spitz", "price-poodle"]) {
+    for (const key of ["price-cat", "price-yorkie", "price-spitz", "price-poodle"]) {
       expect(srcsets.some((s) => s.includes(`media/${key}-`)), key).toBe(true);
     }
   });
