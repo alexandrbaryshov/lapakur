@@ -14,7 +14,7 @@ import { buildMedia } from "../scripts/media.mjs";
 const INTERFACE_KEYS = [
   "hero-poster", "hero-video", "hero-mask", "curtain", "curtain-rod", "call-dog",
   "breed-bichon", "breed-yorkie", "breed-spitz", "breed-poodle",
-  "price-bichon", "price-yorkie", "price-spitz", "price-poodle",
+  "price-bichon", "price-cat", "price-yorkie", "price-spitz", "price-poodle",
   "works-cocker-black", "works-cocker", "works-bichon", "works-yorkie", "works-spitz", "works-poodle",
   "og-image",
 ];
@@ -84,7 +84,7 @@ describe("npm run media — пустой media-src/", () => {
     manifest = await run(box);
   });
 
-  it("заглушки для всех 21 ключа из interfaces.md", () => {
+  it("заглушки для всех ключей медиа, включая фото кошки", () => {
     expect(Object.keys(manifest).sort()).toEqual([...INTERFACE_KEYS].sort());
     for (const key of INTERFACE_KEYS) expect(manifest[key].stub).toBe(true);
     expect(manifest["hero-video"].kind).toBe("video");

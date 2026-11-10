@@ -131,8 +131,8 @@ describe("PRICE_GROUPS — прайс дословно по facts.md", () => {
       for (const r of g.rows) expect(r.cells).toHaveLength(g.columns.length);
     }
     const photos = PRICE_GROUPS.map((g) => g.photo);
-    expect(new Set(photos).size).toBe(3);
-    for (const p of photos) expect(p).toMatch(/^price-(bichon|yorkie|spitz|poodle)$/);
+    expect(new Set(photos).size).toBe(PRICE_GROUPS.length);
+    for (const p of photos) expect(p).toMatch(/^price-(bichon|yorkie|spitz|poodle|cat)$/);
   });
 
   it("четыре главы пород из «Направления»: 2200 / 1700 / 1800 / 2200 ₽ комплекса с мытьём", () => {
