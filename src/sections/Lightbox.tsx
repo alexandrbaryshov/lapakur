@@ -1,5 +1,5 @@
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
-import { useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
 import { Picture } from "../components/Picture";
 import { useZoom } from "../components/zoom";
@@ -22,6 +22,9 @@ export function Lightbox({ work, onClose }: LightboxProps) {
   const zoom = useZoom(1.05);
   const closeRef = useRef<HTMLButtonElement>(null);
   const open = work !== null;
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const photoSrc = work?.fullSrc ?? work?.src;
+  const loading = Boolean(photoSrc && loadedSrc !== photoSrc);
 
   useEffect(() => {
     if (!open) return;
@@ -76,8 +79,16 @@ export function Lightbox({ work, onClose }: LightboxProps) {
             exit={reduceMotion ? undefined : { scale: 0.98, y: 6 }}
             transition={fade}
           >
-            <div className={styles.frame}>
-              {work.src ? <img src={work.fullSrc ?? work.src} width={work.width} height={work.height} decoding="async" alt={work.breed} className={styles.img} /> : (<Picture
+            <div className={styles.frame} data-loading={loading || undefined} aria-busy={loading}>
+              {loading && <div className={styles.loader} role="status" onClick={event => event.stopPropagation()}>
+                <span className="visually-hidden">Загружаем фотографию</span>
+                <div className={styles.pawCircle} aria-hidden="true">
+                  {Array.from({ length: 8 }, (_, index) => <span className={styles.pawStep} key={index} style={{ "--step": index } as CSSProperties}>
+                    <svg viewBox="0 0 32 36" fill="currentColor"><ellipse cx="7" cy="13" rx="3.5" ry="5" transform="rotate(-25 7 13)" /><ellipse cx="13" cy="6" rx="3.5" ry="5" /><ellipse cx="22" cy="7" rx="3.5" ry="5" /><ellipse cx="28" cy="15" rx="3.5" ry="5" transform="rotate(30 28 15)" /><path d="M7 27c0-4 5-12 10-12s10 8 10 12c0 5-5 6-10 3-5 3-10 2-10-3Z" /></svg>
+                  </span>)}
+                </div>
+              </div>}
+              {work.src ? <img key={photoSrc} ref={image => { if (image?.complete && image.naturalWidth > 0 && photoSrc) setLoadedSrc(photoSrc); }} onLoad={() => { if (photoSrc) setLoadedSrc(photoSrc); }} onError={() => { if (photoSrc) setLoadedSrc(photoSrc); }} src={work.fullSrc ?? work.src} width={work.width} height={work.height} decoding="async" alt={work.breed} className={styles.img} /> : (<Picture
                 media={work.media}
                 sizes="(min-width: 900px) 600px, 92vw"
                 alt={`${work.breed} после груминга в студии`}

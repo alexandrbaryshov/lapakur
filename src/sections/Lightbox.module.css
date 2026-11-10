@@ -95,3 +95,12 @@
     max-height: calc(100dvh - 9rem);
   }
 }
+
+.frame[data-loading] { min-width: min(72vw, 320px); min-height: min(56vh, 360px); outline: none; background: transparent; }
+.frame[data-loading] .img { opacity: 0; }
+.loader { position: absolute; inset: 0; display: grid; place-items: center; cursor: default; }
+.pawCircle { position: relative; width: 120px; height: 120px; color: var(--color-ink-soft); }
+.pawStep { position: absolute; left: 48px; top: 48px; width: 24px; height: 27px; transform: rotate(calc(var(--step) * 45deg)) translateY(-45px) rotate(90deg); }
+.pawStep svg { width: 100%; height: 100%; opacity: .12; animation: paw-walk 1.6s linear infinite; animation-delay: calc(var(--step) * .2s); }
+@keyframes paw-walk { 0%, 100% { opacity: .12; } 10%, 25% { opacity: 1; } 65% { opacity: .12; } }
+@media (prefers-reduced-motion: reduce) { .pawStep svg { animation: none; opacity: .6; } }
