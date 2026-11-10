@@ -167,12 +167,15 @@ describe("Прайс (#price, R16–R18)", () => {
 // ───────────────────────── работы ─────────────────────────
 
 describe("Ваши довольные питомцы (#works, R19)", () => {
-  it("4 альбома с 11 фотографиями и подписями", () => {
+  it("5 альбомов: фото загружаются только после раскрытия", async () => {
     renderPage();
     const works = section("works");
     expect(within(works).getByRole("heading", { level: 2, name: "Ваши довольные питомцы" })).toBeTruthy();
+    expect(works.querySelectorAll("img")).toHaveLength(0);
+    for (const details of works.querySelectorAll("details")) { details.open = true; fireEvent(details, new Event("toggle")); }
+    await waitFor(() => expect(works.querySelectorAll("figure")).toHaveLength(44));
     const figures = works.querySelectorAll("figure");
-    expect(figures).toHaveLength(11);
+    expect(figures).toHaveLength(44);
     const captions = [...figures].map((f) => flat(f.querySelector("figcaption")?.textContent)).sort();
     expect(captions).toEqual(ALBUMS.flatMap(a => a.works).map((w) => w.breed).sort());
     const srcsets = [...works.querySelectorAll("img")].map((img) => img.getAttribute("srcset") ?? "");
@@ -182,15 +185,18 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
   it("нажатие открывает фото крупнее; закрывают Esc, крестик и нажатие вне фото; фокус возвращается", async () => {
     renderPage();
     const works = section("works");
-    const figure = [...works.querySelectorAll("figure")].find((f) => flat(f.querySelector("figcaption")?.textContent) === "Йорк-в Азиатском стиле 1");
+    const album = works.querySelector("details")!;
+    album.open = true; fireEvent(album, new Event("toggle"));
+    await waitFor(() => expect(works.querySelectorAll("figure")).toHaveLength(11));
+    const figure = [...works.querySelectorAll("figure")].find((f) => flat(f.querySelector("figcaption")?.textContent) === "Йоркширский терьер — азиатский стиль");
     figure!.closest("details")!.open = true;
     const trigger = within(figure!).getByRole("button");
 
     // Esc
     fireEvent.click(trigger);
     let dialog = await screen.findByRole("dialog");
-    expect(within(dialog).getByRole("img").getAttribute("src")).toBe("./media/albums/yorkies/1.webp");
-    expect(flat(dialog.textContent)).toContain("Йорк-в Азиатском стиле 1");
+    expect(within(dialog).getByRole("img").getAttribute("src")).toBe("./media/albums/yorkies/01-1200.webp");
+    expect(flat(dialog.textContent)).toContain("Йоркширский терьер — азиатский стиль");
     fireEvent.keyDown(document, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
     expect(document.activeElement).toBe(trigger);
@@ -221,7 +227,7 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
     expect(heading.compareDocumentPosition(cover) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(flat(invite.textContent)).not.toContain("Ваш питомец — на обложке");
     // шесть кадров эссе — по-прежнему фотографии работ, приглашение — не кадр
-    expect(works.querySelectorAll("figure")).toHaveLength(11);
+    expect(works.querySelectorAll("figure")).toHaveLength(0);
 
     fireEvent.click(invite);
     const dialog = await screen.findByRole("dialog", { name: "Обложка «Лапакюр»" });

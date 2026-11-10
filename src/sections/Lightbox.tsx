@@ -77,7 +77,7 @@ export function Lightbox({ work, onClose }: LightboxProps) {
             transition={fade}
           >
             <div className={styles.frame}>
-              {work.src ? <img src={work.src} alt={work.breed} className={styles.img} /> : (<Picture
+              {work.src ? <img src={work.fullSrc ?? work.src} width={work.width} height={work.height} decoding="async" alt={work.breed} className={styles.img} /> : (<Picture
                 media={work.media}
                 sizes="(min-width: 900px) 600px, 92vw"
                 alt={`${work.breed} после груминга в студии`}

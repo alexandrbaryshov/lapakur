@@ -223,3 +223,31 @@
 .album summary:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 4px; }
 .albumPhotos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; padding: 1rem 0 3rem; }
 @media (min-width: 900px) { .albumPhotos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.album summary { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; overflow-wrap: anywhere; }
+.album summary span { float: none; flex-shrink: 0; font-family: var(--font-sans); }
+
+/* Явный маркер: flex у summary скрывает стандартную стрелку браузера. */
+.album summary { position: relative; padding-left: 1.25rem; list-style: none; }
+.album summary::-webkit-details-marker { display: none; }
+.album summary::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(1.5rem + 0.45em);
+  width: 0;
+  height: 0;
+  border-top: 0.18em solid transparent;
+  border-bottom: 0.18em solid transparent;
+  border-left: 0.25em solid currentColor;
+  transform-origin: 40% 50%;
+}
+.album[open] > summary::before { transform: rotate(90deg); }
+
+/* Альбом раскрывается сразу; кадры не ждут прокрутки для проявления. */
+.albumPhotos .img { animation: none; }
+
+.album summary { touch-action: manipulation; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .albumPhotos .frame:hover { transform: scale(1.03); }
+}

@@ -9,7 +9,7 @@ import {
   useTransform,
   type AnimationPlaybackControls,
 } from "motion/react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { buildThread, drawnFraction, type Box, type InkSamples, type ThreadLayout } from "./InkLine.geometry";
 import styles from "./InkLine.module.css";
 
@@ -22,7 +22,7 @@ import styles from "./InkLine.module.css";
 /** Перо — на этой доле высоты экрана: нить чуть опережает взгляд. */
 const PEN = 0.72;
 /** Шаг отсчётов пути, px. */
-const SAMPLE_STEP = 6;
+const MAX_SAMPLES = 256;
 const ENTRANCE = { duration: 2.6, ease: [0.45, 0.05, 0.2, 1] as const };
 
 type Shape = { d: string; heroD: string; width: number; height: number; top: number };
@@ -141,25 +141,35 @@ export default function InkThread({ className }: { className?: string }) {
   }, []);
 
   // отсчёты нового пути: длина, высота; нить сразу встаёт в положение пера
-  useLayoutEffect(() => {
+  useEffect(() => {
     const path = pathRef.current;
     const hero = heroRef.current;
     if (!shape || reduce || !path || !hero || typeof path.getTotalLength !== "function") return;
     const total = path.getTotalLength();
-    const n = Math.max(2, Math.ceil(total / SAMPLE_STEP) + 1);
+    const n = MAX_SAMPLES;
     const lengths = new Float64Array(n);
     const maxY = new Float64Array(n);
     let low = -Infinity;
-    for (let i = 0; i < n; i++) {
-      const len = Math.min(total, i * SAMPLE_STEP);
-      low = Math.max(low, path.getPointAtLength(len).y);
-      lengths[i] = len;
-      maxY[i] = low;
-    }
-    samples.current = { lengths, maxY, total, heroLength: hero.getTotalLength() };
-    pen.current = Math.max(pen.current, window.scrollY + window.innerHeight * PEN - shape.top);
-    jump.current = true;
-    update();
+    let index = 0;
+    let frame = 0;
+    // Ограничиваем работу одним коротким пакетом за кадр: клики не ждут SVG-геометрию.
+    const sample = () => {
+      const started = performance.now();
+      do {
+        const len = total * index / (n - 1);
+        low = Math.max(low, path.getPointAtLength(len).y);
+        lengths[index] = len;
+        maxY[index] = low;
+        index++;
+      } while (index < n && performance.now() - started < 2);
+      if (index < n) { frame = requestAnimationFrame(sample); return; }
+      samples.current = { lengths, maxY, total, heroLength: hero.getTotalLength() };
+      pen.current = Math.max(pen.current, window.scrollY + window.innerHeight * PEN - shape.top);
+      jump.current = true;
+      update();
+    };
+    frame = requestAnimationFrame(sample);
+    return () => cancelAnimationFrame(frame);
   }, [shape, reduce, update]);
 
   useMotionValueEvent(scrollY, "change", (y) => {

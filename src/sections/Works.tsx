@@ -1,7 +1,5 @@
-import { m } from "motion/react";
 import { lazy, Suspense, useCallback, useRef, useState } from "react";
 import { Picture } from "../components/Picture";
-import { useZoom } from "../components/zoom";
 import { ALBUMS, type Work } from "../data/works";
 
 import { CoverInvite } from "./CoverInvite";
@@ -18,31 +16,30 @@ const CoverStudio = lazy(() => import("./CoverStudio").then((module) => ({ defau
 type FrameProps = { work: Work; wide: boolean; slot: string; sizes: string; onOpen: (el: HTMLButtonElement) => void };
 
 function Frame({ work, wide, slot, sizes, onOpen }: FrameProps) {
-  const zoom = useZoom(1.03);
   return (
     <figure className={styles.item} data-slot={slot} data-wide={wide || undefined}>
-      <m.button
+      <button
         type="button"
         className={styles.frame}
         aria-haspopup="dialog"
         aria-label={`Открыть крупнее: ${work.breed}`}
         onClick={(event) => onOpen(event.currentTarget)}
-        {...zoom}
       >
-        {work.src ? <img src={work.src} alt={work.breed} className={styles.img} loading="lazy" /> : (<Picture
+        {work.src ? <img src={work.src} srcSet={work.srcSet} sizes={sizes} width={work.width} height={work.height} alt={work.breed} className={styles.img} loading="lazy" decoding="async" /> : (<Picture
           media={work.media}
           sizes={sizes}
           alt={`${work.breed} после груминга в студии`}
           className={styles.picture}
           imgClassName={styles.img}
         />)}
-      </m.button>
+      </button>
       <figcaption className={styles.caption}>{work.breed}</figcaption>
     </figure>
   );
 }
 
 export function Works() {
+  const [opened, setOpened] = useState<Set<string>>(() => new Set());
   const [active, setActive] = useState<Work | null>(null);
   const [requested, setRequested] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
@@ -78,7 +75,7 @@ export function Works() {
         <h2 id="works-title" className={styles.title}>
           Ваши довольные питомцы
         </h2>
-        <div className={styles.albums}>{ALBUMS.map(album => <details key={album.title} className={styles.album}><summary>{album.title}<span>{album.works.length} фото</span></summary><div className={styles.albumPhotos}>{album.works.map(work => <Frame key={work.src ?? work.media} work={work} slot="album" wide={false} sizes="(min-width: 900px) 28vw, 44vw" onOpen={el => open(work, el)} />)}</div></details>)}</div>
+        <div className={styles.albums}>{ALBUMS.map(album => <details key={album.title} className={styles.album} onToggle={event => { if (event.currentTarget.open) setOpened(previous => previous.has(album.title) ? previous : new Set(previous).add(album.title)); }}><summary>{album.title}<span>{album.works.length} фото</span></summary><div className={styles.albumPhotos}>{opened.has(album.title) && album.works.map(work => <Frame key={work.src ?? work.media} work={work} slot="album" wide={false} sizes="(min-width: 900px) 28vw, 44vw" onOpen={el => open(work, el)} />)}</div></details>)}</div>
         <CoverInvite onOpen={openCover} />
       </div>
       {requested && (
