@@ -96,7 +96,6 @@ export function Lightbox({ work, onClose }: LightboxProps) {
                 priority
               />)}
             </div>
-            <figcaption className={styles.caption}>{work.breed}</figcaption>
           </m.figure>
           <m.button ref={closeRef} type="button" className={styles.close} onClick={onClose} {...zoom}>
             <span className={styles.cross} aria-hidden="true" />

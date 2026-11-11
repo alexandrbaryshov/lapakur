@@ -198,7 +198,7 @@ export const ALBUMS: { title: string; works: Work[] }[] = [
     ]
   },
   {
-    "title": "Да-пудели/мальтипу",
+    "title": "Пудели / мальтипу",
     "works": [
       {
         "media": "works-poodle",
@@ -311,7 +311,7 @@ export const ALBUMS: { title: string; works: Work[] }[] = [
     ]
   },
   {
-    "title": "Спаниэли/ши тцу",
+    "title": "Спаниели / ши тцу",
     "works": [
       {
         "media": "works-cocker",

@@ -33,7 +33,6 @@ function Frame({ work, wide, slot, sizes, onOpen }: FrameProps) {
           imgClassName={styles.img}
         />)}
       </button>
-      <figcaption className={styles.caption}>{work.breed}</figcaption>
     </figure>
   );
 }
