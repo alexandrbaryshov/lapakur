@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
+import { FeatureBoundary } from "./FeatureBoundary";
 
 // Сквозная линия «Ателье одной линии» (spec.md, «Направление»; impeccable: ink-thread, codeDrawn):
 // одна чернильная нить выходит из линии земли логотипа, обвивает обложку и прошивает страницу
@@ -28,8 +29,8 @@ export function InkLine({ className }: { className?: string }) {
   }, []);
   if (!loaded) return null;
   return (
-    <Suspense fallback={null}>
+    <FeatureBoundary><Suspense fallback={null}>
       <InkThread className={className} />
-    </Suspense>
+    </Suspense></FeatureBoundary>
   );
 }

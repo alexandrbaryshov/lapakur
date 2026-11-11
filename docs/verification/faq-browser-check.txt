@@ -1,0 +1,16 @@
+{ width: 390, state: 'closed', count: 0, first: [] }
+{ width: 390, state: 'answer', count: 0, first: [] }
+{ width: 390, state: 'album', count: 0, first: [] }
+{ width: 390, state: 'collapsed', count: 0, first: [] }
+{ width: 900, state: 'closed', count: 0, first: [] }
+{ width: 900, state: 'answer', count: 0, first: [] }
+{ width: 900, state: 'album', count: 0, first: [] }
+{ width: 900, state: 'collapsed', count: 0, first: [] }
+{ width: 1440, state: 'closed', count: 0, first: [] }
+{ width: 1440, state: 'answer', count: 0, first: [] }
+{ width: 1440, state: 'album', count: 0, first: [] }
+{ width: 1440, state: 'collapsed', count: 0, first: [] }
+{ width: 1876, state: 'closed', count: 0, first: [] }
+{ width: 1876, state: 'answer', count: 0, first: [] }
+{ width: 1876, state: 'album', count: 0, first: [] }
+{ width: 1876, state: 'collapsed', count: 0, first: [] }

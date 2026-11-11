@@ -1,0 +1,172 @@
+{
+  "network": "Slow 4G (DevTools): 562,5 мс, 1,44 Мбит/с",
+  "screen": "390×844, DPR 3, шторка закрыта, без прокрутки",
+  "fcpMs": 1516,
+  "lcpMs": 1684,
+  "loadMs": 3326,
+  "videoStartMs": null,
+  "firstScreenBeforeVideo": true,
+  "bytesBeforeVideo": 340256,
+  "imagesBelowFirstScreenRequested": [],
+  "externalRequests": [],
+  "mapIframes": 0,
+  "curtainShown": true,
+  "requests": [
+    {
+      "path": "",
+      "start": 0,
+      "end": 678,
+      "kb": 14.9
+    },
+    {
+      "path": "assets/index-iqHNrTMh.js",
+      "start": 609,
+      "end": 2403,
+      "kb": 110.8
+    },
+    {
+      "path": "assets/index-qj5R1f8X.css",
+      "start": 609,
+      "end": 1423,
+      "kb": 11.8
+    },
+    {
+      "path": "assets/prata-cyrillic-400-normal-CW5LVkdR.woff2",
+      "start": 609,
+      "end": 1465,
+      "kb": 13.5
+    },
+    {
+      "path": "media/hero-poster-800.avif",
+      "start": 618,
+      "end": 1671,
+      "kb": 29
+    },
+    {
+      "path": "curtain-rod-optimized.avif",
+      "start": 1425,
+      "end": 2286,
+      "kb": 12.2
+    },
+    {
+      "path": "media/curtain-480.avif",
+      "start": 1425,
+      "end": 3046,
+      "kb": 11.1
+    },
+    {
+      "path": "assets/jost-cyrillic-400-normal-bVZEi0jL.woff2",
+      "start": 1425,
+      "end": 2090,
+      "kb": 4.4
+    },
+    {
+      "path": "assets/jost-latin-400-normal-q-RKOgPK.woff2",
+      "start": 1425,
+      "end": 2242,
+      "kb": 9.7
+    },
+    {
+      "path": "media/logo.svg",
+      "start": 1426,
+      "end": 2886,
+      "kb": 11.1
+    },
+    {
+      "path": "media/hero-mask-608.png",
+      "start": 1426,
+      "end": 2886,
+      "kb": 2.9
+    },
+    {
+      "path": "assets/prata-latin-400-normal-DtyCfkTi.woff2",
+      "start": 1436,
+      "end": 2418,
+      "kb": 19.5
+    },
+    {
+      "path": "assets/jost-cyrillic-500-normal-DtB2bvF0.woff2",
+      "start": 1437,
+      "end": 2352,
+      "kb": 4.7
+    },
+    {
+      "path": "assets/jost-latin-500-normal-41lBe9I9.woff2",
+      "start": 1437,
+      "end": 2746,
+      "kb": 10.8
+    },
+    {
+      "path": "media/call-dog-160.avif",
+      "start": 1492,
+      "end": 2950,
+      "kb": 5.6
+    },
+    {
+      "path": "assets/motionFeatures-CWa7sK-T.js",
+      "start": 2446,
+      "end": 3062,
+      "kb": 4.9
+    },
+    {
+      "path": "assets/SVGVisualElement-CNW4nQ-v.js",
+      "start": 2446,
+      "end": 3513,
+      "kb": 10.5
+    },
+    {
+      "path": "assets/is-html-element-CRg0Qz-J.js",
+      "start": 2446,
+      "end": 3451,
+      "kb": 0.5
+    },
+    {
+      "path": "assets/is-object-BXFza5Ij.js",
+      "start": 2446,
+      "end": 3518,
+      "kb": 0.4
+    },
+    {
+      "path": "assets/CurtainPanel-BEs8Xu_V.js",
+      "start": 2452,
+      "end": 3626,
+      "kb": 2.3
+    },
+    {
+      "path": "assets/index-C6RV2MZD.js",
+      "start": 2452,
+      "end": 3652,
+      "kb": 3.6
+    },
+    {
+      "path": "assets/CurtainPanel-Cc2ZnJY-.css",
+      "start": 2452,
+      "end": 3326,
+      "kb": 1.5
+    },
+    {
+      "path": "assets/InkLine.thread-gVU3-qUB.js",
+      "start": 3327,
+      "end": 3967,
+      "kb": 11.6
+    },
+    {
+      "path": "assets/InkLine-BtfHDP0R.css",
+      "start": 3327,
+      "end": 4028,
+      "kb": 0.7
+    },
+    {
+      "path": "media/logo.svg",
+      "start": 3328,
+      "end": 4142,
+      "kb": 11.1
+    },
+    {
+      "path": "media/curtain-rod-800.avif",
+      "start": 3654,
+      "end": 4354,
+      "kb": 21.3
+    }
+  ]
+}

@@ -37,12 +37,15 @@ function union(boxes: Box[]): Box | undefined {
 }
 
 /** Раскладка страницы для линии: прямоугольники блоков, а для заголовков и телефона — рамка текста. */
-function readLayout(page: HTMLElement): (ThreadLayout & { height: number }) | null {
+export function readLayout(page: HTMLElement): (ThreadLayout & { height: number }) | null {
   const origin = page.getBoundingClientRect();
   if (origin.width === 0) return null;
   const toBox = (r: DOMRect): Box | undefined =>
     r.width || r.height ? { x: r.left - origin.left, y: r.top - origin.top, w: r.width, h: r.height } : undefined;
-  const block = (el: Element | null) => (el ? toBox(el.getBoundingClientRect()) : undefined);
+  // Chrome can report nonzero layout boxes for content inside closed <details>.
+  // Those invisible photos must not move the route through the following section.
+  const block = (el: Element | null) =>
+    el && !el.closest("details:not([open])") ? toBox(el.getBoundingClientRect()) : undefined;
   const text = (el: Element | null) => {
     if (!el) return undefined;
     const range = document.createRange();
@@ -115,6 +118,7 @@ export default function InkThread({ className }: { className?: string }) {
     const page = svgRef.current?.parentElement;
     if (!page) return;
     let timer = 0;
+    let active = true;
     const measure = () => {
       const layout = readLayout(page);
       if (!layout) return;
@@ -127,16 +131,20 @@ export default function InkThread({ className }: { className?: string }) {
       );
     };
     const schedule = () => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(measure, 150);
+      if (!active) return;
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(measure);
     };
     measure();
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
     observer?.observe(page);
+    page.addEventListener("toggle", schedule, true);
     document.fonts?.ready.then(schedule, () => {});
     return () => {
+      active = false;
       observer?.disconnect();
-      window.clearTimeout(timer);
+      page.removeEventListener("toggle", schedule, true);
+      cancelAnimationFrame(timer);
     };
   }, []);
 
@@ -209,6 +217,7 @@ export default function InkThread({ className }: { className?: string }) {
       className={[styles.ink, className].filter(Boolean).join(" ")}
       data-region="ink-thread"
       viewBox={shape ? `0 0 ${shape.width} ${shape.height}` : undefined}
+      style={shape ? { width: shape.width, height: shape.height } : undefined}
       preserveAspectRatio="none"
       aria-hidden="true"
       focusable="false"

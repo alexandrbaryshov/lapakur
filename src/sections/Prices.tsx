@@ -1,6 +1,7 @@
 import { m } from "motion/react";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Picture } from "../components/Picture";
+import { FeatureBoundary } from "../components/FeatureBoundary";
 import { PriceChapters } from "../components/PriceChapters";
 import { PriceTable } from "../components/PriceTable";
 import { useZoom } from "../components/zoom";
@@ -196,9 +197,12 @@ export function Prices() {
         </div>
       </div>
       {requested && (
-        <Suspense fallback={null}>
+        <FeatureBoundary onError={() => {
+          setEnhanced(false);
+          document.documentElement.removeAttribute("data-sheets");
+        }}><Suspense fallback={null}>
           <PriceSheetDialog group={active} onClose={close} />
-        </Suspense>
+        </Suspense></FeatureBoundary>
       )}
     </section>
   );

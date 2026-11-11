@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Picture } from "../components/Picture";
+import { FeatureBoundary } from "../components/FeatureBoundary";
 import { ALBUMS, type Work } from "../data/works";
 
 import { CoverInvite } from "./CoverInvite";
@@ -46,6 +47,7 @@ export function Works() {
       for (const album of ALBUMS) for (const work of album.works.slice(0, 3)) {
         if (!work.src) continue;
         const image = new Image();
+        image.fetchPriority = "low";
         image.sizes = '(min-width: 900px) 28vw, 44vw';
         if (work.srcSet) image.srcset = work.srcSet;
         image.src = work.src;
@@ -94,14 +96,14 @@ export function Works() {
         <CoverInvite onOpen={openCover} />
       </div>
       {requested && (
-        <Suspense fallback={null}>
+        <FeatureBoundary fallback={<p role="status">Не удалось загрузить просмотр фото. <a href={active?.src}>Открыть фото</a></p>}><Suspense fallback={null}>
           <Lightbox work={active} onClose={close} />
-        </Suspense>
+        </Suspense></FeatureBoundary>
       )}
       {coverRequested && (
-        <Suspense fallback={null}>
+        <FeatureBoundary fallback={<p role="status">Не удалось загрузить камеру. Проверьте соединение и обновите страницу.</p>}><Suspense fallback={null}>
           <CoverStudio open={coverOpen} onClose={closeCover} />
-        </Suspense>
+        </Suspense></FeatureBoundary>
       )}
     </section>
   );

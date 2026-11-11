@@ -1,0 +1,180 @@
+{
+  "network": "Slow 4G (DevTools): 562,5 мс, 1,44 Мбит/с",
+  "screen": "390×844, DPR 3, шторка закрыта, без прокрутки",
+  "fcpMs": 2536,
+  "lcpMs": 2652,
+  "loadMs": 8275,
+  "videoStartMs": null,
+  "firstScreenBeforeVideo": true,
+  "bytesBeforeVideo": 339900,
+  "imagesBelowFirstScreenRequested": [],
+  "externalRequests": [
+    "https://yandex.ru/map-widget/v1/?ll=47.280633%2C56.097437&z=16&oid=199810306793&ol=biz&pt=47.280633%2C56.097437%2Cpm2pnm"
+  ],
+  "mapIframes": 1,
+  "curtainShown": true,
+  "requests": [
+    {
+      "path": "",
+      "start": 0,
+      "end": 1641,
+      "kb": 14.9
+    },
+    {
+      "path": "assets/index-HKtOv-7d.js",
+      "start": 1575,
+      "end": 3347,
+      "kb": 110.5
+    },
+    {
+      "path": "assets/index-qj5R1f8X.css",
+      "start": 1576,
+      "end": 2421,
+      "kb": 11.8
+    },
+    {
+      "path": "assets/prata-cyrillic-400-normal-CW5LVkdR.woff2",
+      "start": 1576,
+      "end": 2437,
+      "kb": 13.5
+    },
+    {
+      "path": "media/hero-poster-800.avif",
+      "start": 1582,
+      "end": 2625,
+      "kb": 29
+    },
+    {
+      "path": "curtain-rod-optimized.avif",
+      "start": 2424,
+      "end": 3295,
+      "kb": 12.2
+    },
+    {
+      "path": "media/curtain-480.avif",
+      "start": 2424,
+      "end": 3288,
+      "kb": 11.1
+    },
+    {
+      "path": "assets/jost-cyrillic-400-normal-bVZEi0jL.woff2",
+      "start": 2425,
+      "end": 3104,
+      "kb": 4.4
+    },
+    {
+      "path": "assets/jost-latin-400-normal-q-RKOgPK.woff2",
+      "start": 2425,
+      "end": 3265,
+      "kb": 9.7
+    },
+    {
+      "path": "media/logo.svg",
+      "start": 2425,
+      "end": 4043,
+      "kb": 11.1
+    },
+    {
+      "path": "media/hero-mask-608.png",
+      "start": 2427,
+      "end": 3889,
+      "kb": 2.9
+    },
+    {
+      "path": "assets/prata-latin-400-normal-DtyCfkTi.woff2",
+      "start": 2444,
+      "end": 3420,
+      "kb": 19.5
+    },
+    {
+      "path": "assets/jost-cyrillic-500-normal-DtB2bvF0.woff2",
+      "start": 2445,
+      "end": 3704,
+      "kb": 4.7
+    },
+    {
+      "path": "assets/jost-latin-500-normal-41lBe9I9.woff2",
+      "start": 2446,
+      "end": 3996,
+      "kb": 10.8
+    },
+    {
+      "path": "media/call-dog-160.avif",
+      "start": 2501,
+      "end": 4012,
+      "kb": 5.6
+    },
+    {
+      "path": "assets/motionFeatures-CYGGeOmE.js",
+      "start": 3379,
+      "end": 4306,
+      "kb": 4.9
+    },
+    {
+      "path": "assets/SVGVisualElement-B1Fx1Lgu.js",
+      "start": 3379,
+      "end": 4523,
+      "kb": 10.5
+    },
+    {
+      "path": "assets/is-html-element-CRg0Qz-J.js",
+      "start": 3379,
+      "end": 4585,
+      "kb": 0.5
+    },
+    {
+      "path": "assets/is-object-BXFza5Ij.js",
+      "start": 3379,
+      "end": 4599,
+      "kb": 0.4
+    },
+    {
+      "path": "assets/CurtainPanel-DPkMuNlV.js",
+      "start": 3383,
+      "end": 4645,
+      "kb": 2.3
+    },
+    {
+      "path": "assets/index-D70nUKMq.js",
+      "start": 3383,
+      "end": 4676,
+      "kb": 3.6
+    },
+    {
+      "path": "assets/CurtainPanel-Cc2ZnJY-.css",
+      "start": 3383,
+      "end": 4028,
+      "kb": 1.5
+    },
+    {
+      "path": "https://yandex.ru/map-widget/v1/?ll=47.280633%2C56.097437&z=16&oid=199810306793&ol=biz&pt=47.280633%2C56.097437%2Cpm2pnm",
+      "start": 3390,
+      "end": null,
+      "kb": 0
+    },
+    {
+      "path": "media/curtain-rod-800.avif",
+      "start": 4678,
+      "end": 5376,
+      "kb": 21.3
+    },
+    {
+      "path": "assets/InkLine.thread-JAMsDZax.js",
+      "start": 8276,
+      "end": 8971,
+      "kb": 11.6
+    },
+    {
+      "path": "assets/InkLine-BtfHDP0R.css",
+      "start": 8276,
+      "end": 8860,
+      "kb": 0.7
+    },
+    {
+      "path": "media/logo.svg",
+      "start": 8278,
+      "end": 8986,
+      "kb": 11.1
+    }
+  ]
+}

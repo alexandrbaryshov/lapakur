@@ -9,6 +9,15 @@ const page = `<html><head>
   </head><body></body></html>`;
 
 describe("applySiteUrl — абсолютные адреса для публикации", () => {
+  it("rejects executable schemes and credentials", () => {
+    for (const url of ["javascript:alert(1)", "https://user:password@example.com", "https://example.com/#fragment"]) {
+      expect(() => applySiteUrl(page, url)).toThrow();
+    }
+  });
+
+  it("does not interpret replacement patterns in the URL", () => {
+    expect(applySiteUrl(page, "https://example.com/$&/")).toContain('href="https://example.com/$&amp;/"');
+  });
   it("og:image абсолютный, canonical и og:url — адрес сайта", () => {
     const out = applySiteUrl(page, "https://example.github.io/lapakur");
     expect(out).toContain('<meta property="og:image" content="https://example.github.io/lapakur/media/og-image-1200.jpg" />');

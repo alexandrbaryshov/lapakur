@@ -95,13 +95,22 @@ function HeroVideo({ size }: { size: VideoSize }) {
   // Петля играет, только пока обложка видна: за пределами экрана — пауза.
   useEffect(() => {
     const el = ref.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) el.play().catch(() => {});
+    if (!el) return;
+    let visible = true;
+    const sync = () => {
+      if (visible && !document.hidden) el.play().catch(() => {});
       else el.pause();
+    };
+    const io = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
     });
-    io.observe(el);
-    return () => io.disconnect();
+    io?.observe(el);
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      io?.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+    };
   }, []);
 
   return (
@@ -118,6 +127,7 @@ function HeroVideo({ size }: { size: VideoSize }) {
       tabIndex={-1}
       disablePictureInPicture
       onPlaying={() => setPlaying(true)}
+      onError={() => setPlaying(false)}
     >
       {/* MP4 (H.264) первым: его играют все браузеры и он легче WebM; WebM — запасной */}
       <source src={files.mp4} type="video/mp4" />

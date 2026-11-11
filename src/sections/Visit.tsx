@@ -32,9 +32,23 @@ function YandexMap() {
   const [frameLoaded, setFrameLoaded] = useState(false);
   const zoom = useZoom(1.03);
 
-  // Start after mounting so the external map can load while visitors browse the page.
+  // Warm the map well before it enters the viewport, without competing with the hero.
   useEffect(() => {
-    setState(navigator.onLine === false ? "failed" : "loading");
+    if (navigator.onLine === false) {
+      setState("failed");
+      return;
+    }
+    if (typeof IntersectionObserver === "undefined") {
+      setState("loading");
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      setState("loading");
+      observer.disconnect();
+    }, { rootMargin: "1600px" });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
   }, []);
 
   // Пока виджет грузится, он прозрачен и под ним видна заглушка. Сервер недоступен
@@ -70,6 +84,7 @@ function YandexMap() {
           src={YANDEX_MAP_SRC}
           title={`${STUDIO.name} на Яндекс Картах: ${STUDIO.address}`}
           loading="eager"
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
           onLoad={() => setFrameLoaded(true)}
           onError={() => setState("failed")}

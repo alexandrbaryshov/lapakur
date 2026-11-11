@@ -19,12 +19,16 @@ const HEAD_MARKER = "<!--head-script-->";
 
 /** Абсолютные og:image, og:url и canonical для страницы по адресу `siteUrl` (с косой чертой в конце или без). */
 export function applySiteUrl(page, siteUrl) {
-  const base = siteUrl.replace(/\/*$/, "/");
+  const parsed = new URL(siteUrl);
+  if (!["https:", "http:"].includes(parsed.protocol) || parsed.username || parsed.password || parsed.search || parsed.hash) {
+    throw new Error("SITE_URL must be an HTTP(S) URL without credentials, query or fragment");
+  }
+  const base = parsed.href.replace(/\/*$/, "/").replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
   const image = /(<meta property="og:image" content=")(?:\.\/|\/)?/;
   if (!image.test(page)) throw new Error("В dist/index.html нет og:image");
   return page
-    .replace(image, `$1${base}`)
-    .replace("</head>", `  <link rel="canonical" href="${base}" />\n    <meta property="og:url" content="${base}" />\n  </head>`);
+    .replace(image, (_match, prefix) => `${prefix}${base}`)
+    .replace("</head>", () => `  <link rel="canonical" href="${base}" />\n    <meta property="og:url" content="${base}" />\n  </head>`);
 }
 
 export async function buildSite({ root = ROOT, siteUrl = process.env.SITE_URL } = {}) {

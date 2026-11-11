@@ -34,6 +34,7 @@ jobs:
           sudo apt-get install -y ffmpeg
           echo "FFMPEG_BIN=/usr/bin/ffmpeg" >> "$GITHUB_ENV"
       - run: npm ci
+      - run: npm run audit:security
       # check = типы, линтер, тесты, сборка с пререндером и бюджет размеров;
       # SITE_URL делает og:image, og:url и canonical абсолютными (scripts/build.mjs)
       - run: npm run check

@@ -110,7 +110,8 @@ class Cdp {
     ws.addEventListener("message", (event) => {
       const msg = JSON.parse(event.data);
       if (msg.id && this.pending.has(msg.id)) {
-        const { ok, fail } = this.pending.get(msg.id);
+        const { ok, fail, timer } = this.pending.get(msg.id);
+        clearTimeout(timer);
         this.pending.delete(msg.id);
         if (msg.error) fail(new Error(`${msg.error.message} (${msg.error.code})`));
         else ok(msg.result);
@@ -121,8 +122,14 @@ class Cdp {
   }
   send(method, params = {}) {
     const id = ++this.id;
-    this.ws.send(JSON.stringify({ id, method, params }));
-    return new Promise((ok, fail) => this.pending.set(id, { ok, fail }));
+    return new Promise((ok, fail) => {
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        fail(new Error(`CDP timeout: ${method}`));
+      }, 90000);
+      this.pending.set(id, { ok, fail, timer });
+      this.ws.send(JSON.stringify({ id, method, params }));
+    });
   }
   waitFor(method, timeout = 30_000) {
     return new Promise((ok, fail) => {
@@ -145,6 +152,11 @@ class Cdp {
     return result.value;
   }
   close() {
+    for (const { timer, fail } of this.pending.values()) {
+      clearTimeout(timer);
+      fail(new Error("CDP connection closed"));
+    }
+    this.pending.clear();
     this.ws.close();
   }
 }

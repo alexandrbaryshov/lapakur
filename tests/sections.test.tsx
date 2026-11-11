@@ -283,6 +283,8 @@ describe("Визит (#contacts, R21–R23)", () => {
   it("Яндекс Карта грузится заранее; виджет по координатам и id организации", () => {
     renderPage();
     const contacts = section("contacts");
+    expect(contacts.querySelector("iframe")).toBeNull();
+    intersect(observed(contacts)[0], true);
     expect(contacts.querySelector("iframe")?.getAttribute("loading")).toBe("eager");
     const fallback = within(contacts).getByRole("link", { name: "Открыть в Яндекс Картах" });
     expect(fallback.getAttribute("href")).toBe(ORG_URL);
