@@ -44,7 +44,7 @@ export function Works() {
     if (typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(entries => {
       if (!entries.some(entry => entry.isIntersecting)) return;
-      for (const album of ALBUMS) for (const work of album.works.slice(0, 3)) {
+      for (const album of ALBUMS) for (const work of album.works.slice(0, 6)) {
         if (!work.src) continue;
         const image = new Image();
         image.fetchPriority = "low";
