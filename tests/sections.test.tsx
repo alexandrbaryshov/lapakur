@@ -177,8 +177,8 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
     await waitFor(() => expect(works.querySelectorAll("figure")).toHaveLength(44));
     const figures = works.querySelectorAll("figure");
     expect(figures).toHaveLength(44);
-    const captions = [...figures].map((f) => flat(f.querySelector("figcaption")?.textContent)).sort();
-    expect(captions).toEqual(ALBUMS.flatMap(a => a.works).map((w) => w.breed).sort());
+    expect(works.querySelector("figcaption")).toBeNull();
+    expect([...figures].map((f) => f.querySelector("img")?.alt).sort()).toEqual(ALBUMS.flatMap(a => a.works).map((w) => w.breed).sort());
     const srcsets = [...works.querySelectorAll("img")].map((img) => img.getAttribute("srcset") ?? "");
     for (const work of ALBUMS.flatMap(a => a.works).filter(w => !w.src)) expect(srcsets.some((s) => s.includes(`media/${work.media}-`)), work.media).toBe(true);
   });
@@ -189,7 +189,7 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
     const album = works.querySelector("details")!;
     album.open = true; fireEvent(album, new Event("toggle"));
     await waitFor(() => expect(album.querySelectorAll("figure")).toHaveLength(11));
-    const figure = [...works.querySelectorAll("figure")].find((f) => flat(f.querySelector("figcaption")?.textContent) === "Йоркширский терьер — азиатский стиль");
+    const figure = [...works.querySelectorAll("figure")].find((f) => f.querySelector("img")?.alt === "Йоркширский терьер — азиатский стиль");
     figure!.closest("details")!.open = true;
     const trigger = within(figure!).getByRole("button");
 
@@ -197,7 +197,8 @@ describe("Ваши довольные питомцы (#works, R19)", () => {
     fireEvent.click(trigger);
     let dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByRole("img").getAttribute("src")).toBe("./media/albums/yorkies/01-1200.webp");
-    expect(flat(dialog.textContent)).toContain("Йоркширский терьер — азиатский стиль");
+    expect(within(dialog).getByRole("img", { name: "Йоркширский терьер — азиатский стиль" })).toBeTruthy();
+    expect(dialog.querySelector("figcaption")).toBeNull();
     fireEvent.keyDown(document, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
     expect(document.activeElement).toBe(trigger);
